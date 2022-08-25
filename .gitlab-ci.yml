@@ -1,0 +1,73 @@
+variables:
+  RELEASE: "false"
+  RELEASE_PROD: "false"
+
+stages:
+  - test
+  - build-dev
+  - build-prod
+
+test:
+  stage: test
+  only:
+    variables:
+      - $RELEASE == "false" && $RELEASE_PROD == "false"
+  before_script:
+    - apk add make docker-compose
+    - docker system prune -f -a
+    - docker image prune -f -a
+  script:
+    - make TAG=cdi/build/frontend:test CI_PIPELINE_ID=$CI_PIPELINE_ID BUILD_TYPE=dev build
+    - make test
+
+build-dev:
+  stage: build-dev
+  except:
+    - tags
+  only:
+    variables:
+      - $RELEASE == "true"
+  before_script:
+    - mkdir -p ~/.ssh || true
+    - eval `ssh-agent -s`
+    - ssh-add <(echo "$AUTOMATION_PRIVATE_KEY")
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    
+    - docker system prune -f -a
+    - docker image prune -f -a
+    - apk add make git
+    - cat registry.json | docker login -u _json_key --password-stdin https://asia.gcr.io
+  script:
+    - export TAGID=prod-$(date "+%Y%m%d")-$CI_PIPELINE_ID
+    - export TAG=asia.gcr.io/castellum-digital-indonesia/jd-docter:$TAGID
+    - make TAG=$TAG CI_PIPELINE_ID=$CI_PIPELINE_ID BUILD_TYPE=dev build
+    - docker push $TAG
+
+    # Let's do a magic update for app
+    - ssh fhir@castellumdigital.org "(cd demo/jumpadokter && sed -i -r 's/JD_APP\=(.+)/JD_APP='"$TAGID"'/g' .env && chmod +x app && ./app )"
+
+build-prod:
+  stage: build-prod
+  except:
+    - tags
+  only:
+    variables:
+      - $RELEASE_PROD == "true"
+  before_script:
+    - mkdir -p ~/.ssh || true
+    - eval `ssh-agent -s`
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    
+    - docker system prune -f -a
+    - docker image prune -f -a
+    - apk add make git
+    - cat registry.json | docker login -u _json_key --password-stdin https://asia.gcr.io
+  script:
+    - export TAGID=prod-$(date "+%Y%m%d")-$CI_PIPELINE_ID
+    - export TAG=asia.gcr.io/castellum-digital-indonesia/jd-docter:$TAGID
+    - make TAG=$TAG CI_PIPELINE_ID=$CI_PIPELINE_ID BUILD_TYPE=prod build
+    - docker push $TAG
+
+    # Let's do a magic update for app
+    - ssh jumpadokter@jumpadokter.com "(cd app && chmod +x run.sh && ./run.sh $TAGID)"

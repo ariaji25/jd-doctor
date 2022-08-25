@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "castellum-digital-indonesia",
+  "private_key_id": "fc7cc8c1653fe9a9333f92a60caa0ac74c80d4dd",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC2ZguF7xWWWVVG\nLKVz4hALeU0A7Ba5OVMBzCdK9UOUn6N15Mfdw0KJmQF+NnU0XyyofO19568iMyPX\nRh7vDORFjN+DYJ4iOZIXF2DrckfBOGDyDkOGggJNAk6yqNSpwhKw1y2QxH5kFmZQ\np4V/KZQiFZXuSWVKAAebdPqO9HmARMwN99LaMUbraM26frs/xsJ5nQTNpQPL/Q1f\nU+0Z45I8zrBdsTSfVfen4foCPQkUTz2BY2AT7/YCuikygHO7yQTffkqJCo5Hex23\nBl9nD0mK8q4SbuC8NHLt8unc/hSssFzkG1/a+vcfQnpcpN3JpXyCdnTeNJb4DkAp\nyf9hupZLAgMBAAECggEAAVZlWys7rUHtTnNkfkOcVk8Rf6aIVqhdyRbBYlbC8M05\naEJngsmNQdpxZ5fS1f6TvCfi5LyOngoVOl1jGa6l85mK4ef5br42/v6NICeGNRus\nwpRL/zIz/eqA+23MxOGAzWIqSPAKlvRt5OeT+A6kXIkWt/8pt0c7PoQD2FYtuk4D\no5kBGrYAMbFBowRpx+cFn4QtGog44x2PJakHli3Oyc1p7n0JzQXbFIAwT0UPTmrZ\nZXhi/QjKrYyOMbSxZrkxHsT22G05NOjRZCxNROK8ZyArl0rAIDnSfccIa9jOCqAH\nx6iB6V7ZpYfvpXjiJOaCm40FVsU05Iw7rx9cVK2AOQKBgQD6HLCIEeLgcxodZ5cJ\ny6oeZjOfBgkXZkF8fGFUpxB0KTCmgxqVS+Hhcl3zYAqD5XgDqatCe2/YNlTJjc/M\nwGqukPh1dn3GUrGHNm/CqoX+Dut4LkB0AZVr6vtcJXv3npexvVBizGwnoHKitxzY\ngSrC0J8C9pNGEA2glK3QMXpCswKBgQC6sUcPac1AlJ7PSbvRLTmkVuxqG6NoEkA/\nP4IwCK1rYmc5DN+7nZNj9CtlZ/QZm0mbp5JebrGZHZSDP6SS6HGCT50+4+JDK8Rn\nCwq4KN4yQTbTTs6CuXoVhOF2+ypiHPS+bHo2CE9fwwHbjHXq8M2FZ2PM3CKNUkx2\nqKwKF3/KCQKBgElEKjpR8wII9bdzZv1JmfX5vllxLSybmcdbsC9aGSnN/yBn+1uM\ntQiTtg3bLnlguP1psG9zNVpC4CeC0UKLgzTL5tyR71ovUy3mtmpyBXpc6IF2Gw9g\nf2LznNpraJsq7Aj3ChtHAs/A4pPjzCFoBRy4fDwj+xRlE3jc1OXN+KCdAoGAFwI0\nPM0QU849SFTRBfWp7fwchPNFD1V4f5MHK35WSS7Gg/x3Mns4KBB2rLfEGMfPqZRc\ncLD5yGIh5I8abFSjcKj5O0AAqcCiIwT0XEAFKnJpHF/RCcFsL2zCENTho1foPfPG\nmBQsHCQ/fVxxR/RHkBJu9VeIFpy2+cTN9yxwPmkCgYBsfYD3gY3R5TSe7qLNhLfQ\n0ppDfiwGa3Eyi+Jzof/G8SvvPJfqU3fMvYCwn5SpmZNQxlM7OEDO4P+w48mMthjD\ndGuzinomKwo2stF/Kdpn1ima15S51x5bsZkLR/vsuYBoPkp8q6hqEBfPeNX3dkY7\np5MxDDkrGJ8tB4ESR1DDoA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "pembantu@castellum-digital-indonesia.iam.gserviceaccount.com",
+  "client_id": "117459695427560797039",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/pembantu%40castellum-digital-indonesia.iam.gserviceaccount.com"
+}
