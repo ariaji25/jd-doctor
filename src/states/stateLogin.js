@@ -1,7 +1,8 @@
 import { proxy } from 'valtio';
 
 const stateLogin = proxy({
-  nohp: '',
+  username: '',
+  password: '',
   processing: false,
   showInputOtp: false,
   error: '',

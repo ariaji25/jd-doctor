@@ -20,25 +20,23 @@ const settings = {
 
 const Carousel = () => {
   const cards = [
-    '/img/carousel1.png',
-    '/img/carousel2.png',
-    '/img/carousel3.png',
+    '/img/login-carousel.png',
   ];
 
-  const bodys = [
-    {
-      title: "Halo, Perkenalkan kami \nJumpaDokter",
-      body: "Panggil dokter dari rumah dan lebih mudah dengan JumpaDokter",
-    },
-    {
-      title: "Berobat ke dokter tanpa \nantri lama-lama",
-      body: "Setelah kamu panggil dokter tenangkan diri biarkan kami para dokter menghampiri",
-    },
-    {
-      title: "Semoga \nlekas sembuh...",
-      body: "Jangan lupa istirahat yang cukup, minum air putih yang banyak dan minum obat",
-    },
-  ];
+  // const bodys = [
+  //   {
+  //     title: "Halo, Perkenalkan kami \nJumpaDokter",
+  //     body: "Panggil dokter dari rumah dan lebih mudah dengan JumpaDokter",
+  //   },
+  //   {
+  //     title: "Berobat ke dokter tanpa \nantri lama-lama",
+  //     body: "Setelah kamu panggil dokter tenangkan diri biarkan kami para dokter menghampiri",
+  //   },
+  //   {
+  //     title: "Semoga \nlekas sembuh...",
+  //     body: "Jangan lupa istirahat yang cukup, minum air putih yang banyak dan minum obat",
+  //   },
+  // ];
 
   return (
     <Box
@@ -46,7 +44,7 @@ const Carousel = () => {
       w="full"
       color={colors.PRIMARY}
       overflow={"hidden"}
-      height={"700px"}
+    // height={"700px"}
     >
       <Slider {...settings}>
         {cards.map((url, index) => (
@@ -61,12 +59,12 @@ const Carousel = () => {
               />
             </Box>
 
-            <Text fontSize="3xl" fontWeight="bold" lineHeight="42px">
+            {/* <Text fontSize="3xl" fontWeight="bold" lineHeight="42px">
               {bodys[index].title}
             </Text>
             <Text mb="8" fontSize="lg" fontWeight="light" color={colors.HITAM_PUDAR}>
               {bodys[index].body}
-            </Text>
+            </Text> */}
           </div>
         ))}
       </Slider>

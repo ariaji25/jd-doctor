@@ -1,9 +1,14 @@
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import {
   Box,
   Circle,
   Flex,
   Image,
-  Input, Text
+  Input,
+  Text,
+  InputGroup,
+  InputRightElement,
+  Button,
 } from '@chakra-ui/react';
 import TextSmall from 'components/text/TextSmall';
 import { forwardRef, useState } from 'react';
@@ -56,6 +61,19 @@ const InputUnderlined = (
           setIsValid(validator(e))
         }
         break
+      case 'password':
+        setValue(e.target.value)
+        onChange({
+          target: {
+            id: props.id,
+            value: e.target.value,
+            attributes: [{
+              value: props.uid
+            }]
+          }
+        });
+        setIsValid(validator(e))
+        break
       default:
         setValue(e.target.value)
         onChange({
@@ -92,25 +110,59 @@ const InputUnderlined = (
             dateFormat={'dd/MM/yyyy'}
             selected={value}
             onChange={handleOnChange} />
-          : <Input
-            {...props}
-            ref={ref}
-            marginStart={0}
-            marginInlineStart={0}
-            marginEnd={0}
-            marginInlineEnd={0}
-            paddingLeft={0}
-            fontSize={{ base: 'sm', sm: 'md' }}
-            color={colors.PRIMARY}
-            fontWeight="bold"
-            border="0"
-            rounded="none"
-            h="35px"
-            _focus={{ outline: 'none' }}
-            maxLength={maxLength}
-            value={value}
-            onChange={handleOnChange}
-          />}
+          : props.type === 'password' ?
+            <InputGroup size='md'>
+              <Input
+                {...props}
+                ref={ref}
+                marginStart={0}
+                marginInlineStart={0}
+                marginEnd={0}
+                marginInlineEnd={0}
+                paddingLeft={0}
+                fontSize={{ base: 'sm', sm: 'md' }}
+                color={colors.PRIMARY}
+                fontWeight="bold"
+                border="0"
+                rounded="none"
+                h="35px"
+                _focus={{ outline: 'none' }}
+                maxLength={maxLength}
+                value={value}
+                onChange={handleOnChange}
+                type={props.show ? 'text' : 'password'}
+              />
+              <InputRightElement width='4.5rem'>
+                <Button h='1.75rem' size='sm' bg='transparent' onClick={props.handleShow} _hover={{ background: 'transparent' }} _focus={{ boxShadow: 'none !important' }}>
+                  {props.show ?
+                    <Image alt="" ml="4" h="20px" src={'icon/eye.svg'} />
+                    :
+                    <Image alt="" ml="4" h="20px" src={'icon/eye-off.svg'} />
+                  }
+                </Button>
+              </InputRightElement>
+            </InputGroup>
+
+            : <Input
+              {...props}
+              ref={ref}
+              marginStart={0}
+              marginInlineStart={0}
+              marginEnd={0}
+              marginInlineEnd={0}
+              paddingLeft={0}
+              fontSize={{ base: 'sm', sm: 'md' }}
+              color={colors.PRIMARY}
+              fontWeight="bold"
+              border="0"
+              rounded="none"
+              h="35px"
+              _focus={{ outline: 'none' }}
+              maxLength={maxLength}
+              value={value}
+              onChange={handleOnChange}
+            />
+        }
         {onClear && (
           <Circle
             size="20px"
