@@ -13,6 +13,7 @@ const ButtonMain = (props, ref) => {
       borderRadius="full"
       bg={props.bg ?? colors.PRIMARY}
       color={props.color ?? 'white'}
+      border={`2px solid ${colors.PRIMARY}`}
       fontWeight="medium"
       {...props}
     >
