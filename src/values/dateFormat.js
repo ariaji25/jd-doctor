@@ -1,0 +1,3 @@
+const DATE_DEFAULT_FORMAT = 'YYYY-MM-DD';
+
+export default DATE_DEFAULT_FORMAT;
