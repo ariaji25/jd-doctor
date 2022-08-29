@@ -99,7 +99,7 @@ const ListCompPatientClinic = () => {
             >Dashboard</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbItem isCurrentPage>
-            <BreadcrumbLink color={colors.PRIMARY}>Semua data pasien klinik</BreadcrumbLink>
+            <BreadcrumbLink color={colors.PRIMARY} fontWeight={'bold'}>Semua data pasien klinik</BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>
       </Flex>

@@ -104,7 +104,7 @@ const ListCompPatient = () => {
             <BreadcrumbLink onClick={() => history.push('/dashboard')}>Dashboard</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbItem isCurrentPage>
-            <BreadcrumbLink >Semua data pasien klinik</BreadcrumbLink>
+            <BreadcrumbLink color={colors.PRIMARY} fontWeight={'bold'}>Data pasien</BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>
       </Flex>
