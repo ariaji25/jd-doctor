@@ -17,6 +17,7 @@ import {
   PrivacyPolicyPage,
   TermAndConditionPage
 } from "views";
+import PageNotFound from 'views/404';
 import DetailArticle from "views/article/DetailArticle";
 import DashboardPage from 'views/dashboard';
 import ListCompPatient from 'views/dashboard/list-patient';
@@ -115,6 +116,8 @@ const App = ({ history }) => {
               <Route exact path="/dashboard/list-patient-clinic" component={ListCompPatientClinic} />
               <Route exact path="/dashboard/medical-record/:idPatient" component={MedicalRecord} />
               <Route exact path="/dashboard/medical-record/:idPatient/:mrMethod" component={MedicalRecordManage} />
+
+              <Route exact component={PageNotFound} />
             </Switch>
           </Router>
         </dispatchStateContext.Provider>
