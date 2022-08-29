@@ -36,3 +36,9 @@ body {
 .datepicker-square {
   display: none;
 }
+
+.react-calendar{
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid #C4C4C4;
+}

@@ -17,7 +17,13 @@ import {
   PrivacyPolicyPage,
   TermAndConditionPage
 } from "views";
+import PageNotFound from 'views/404';
 import DetailArticle from "views/article/DetailArticle";
+import DashboardPage from 'views/dashboard';
+import ListCompPatient from 'views/dashboard/list-patient';
+import ListCompPatientClinic from 'views/dashboard/list-patient-clinic';
+import MedicalRecord from 'views/dashboard/medical-record';
+import MedicalRecordManage from 'views/dashboard/medical-record/medical-record-manage';
 import PaymentSuccessPage from 'views/payment/PaymentSuccess';
 import { RegisterPage } from 'views/register/Register';
 
@@ -105,6 +111,13 @@ const App = ({ history }) => {
 
               {/* Routes below only for authenticated users */}
               {/* <PrivateRoute component={BasePage} /> */}
+              <Route exact path="/dashboard" component={DashboardPage} />
+              <Route exact path="/dashboard/list-patient" component={ListCompPatient} />
+              <Route exact path="/dashboard/list-patient-clinic" component={ListCompPatientClinic} />
+              <Route exact path="/dashboard/medical-record/:idPatient" component={MedicalRecord} />
+              <Route exact path="/dashboard/medical-record/:idPatient/:mrMethod" component={MedicalRecordManage} />
+
+              <Route exact component={PageNotFound} />
             </Switch>
           </Router>
         </dispatchStateContext.Provider>
