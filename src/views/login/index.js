@@ -14,10 +14,13 @@ import InputNoHP from 'components/input/InputNoHP';
 import InputUnderlined from 'components/input/InputUnderlined';
 import PageContainer from 'components/PageContainer';
 import SideModal from 'components/SideModal';
+import ToastNotif from 'components/Toast';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import apiAuth from 'services/apiAuth';
 import apiOtp from 'services/apiOtp';
 import stateLogin from 'states/stateLogin';
+import { setTokenToStorage } from 'utils';
 import { useSnapshot } from 'valtio';
 import colors from 'values/colors';
 
@@ -42,8 +45,15 @@ const LoginForm = ({ onClikWaHelp }) => {
 
     try {
       stateLogin.processing = true;
-      await apiOtp.request(stateLogin.nohp);
-      stateLogin.showInputOtp = true;
+      const loginResponse = await apiAuth.login(username.target.value, password.target.value)
+      if (loginResponse.code === 200) {
+        setTokenToStorage(loginResponse.data.token)
+        window.browserHistory.push("/dashboard")
+      } else {
+        ToastNotif({
+          message: "Username atau password tidak dikenal"
+        })
+      }
     } catch (error) {
       console.error('❌ onSubmit:', e);
     } finally {
@@ -51,7 +61,6 @@ const LoginForm = ({ onClikWaHelp }) => {
     }
   };
 
-  console.log(showPassword, "showwww")
   return (
     <>
       <Box w="full" color={colors.PRIMARY}>

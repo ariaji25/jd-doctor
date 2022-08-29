@@ -31,7 +31,10 @@ const urls = {
   PAYMENT_STATUS: `${config.apiURL}/api/payment-status`,
 
   // Bucket
-  BUCKET_UPLOAD_REGISTER: `${config.apiURL}/api/register-bucket`
+  BUCKET_UPLOAD_REGISTER: `${config.apiURL}/api/register-bucket`,
+
+  // LOGIN
+  LOGIN_URL: `${config.apiURL}/api/login`
 };
 
 export default urls;
