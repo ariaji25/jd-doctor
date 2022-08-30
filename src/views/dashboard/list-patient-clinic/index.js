@@ -12,6 +12,7 @@ import {
 import { useState, useEffect } from 'react'
 import { FiFilter, FiSearch } from 'react-icons/fi';
 import { useHistory } from 'react-router-dom';
+import EmptyComponent from 'components/EmptyComponent';
 
 const ListCompPatientClinic = () => {
   const history = useHistory();
@@ -131,92 +132,101 @@ const ListCompPatientClinic = () => {
               </Flex>
             </Flex>
             <Box maxHeight={'500px'} height={'500px'} paddingTop={'10px'} display={'grid'}>
-              <TableContainer overflowY={'scroll'} overflowX={'scroll'} height='inherit'>
-                <Table variant='striped' colorScheme={'gray'}>
-                  <Thead color={'#5670CD'}>
-                    <Tr>
-                      <Td>Tanggal periksa</Td>
-                      <Td>Layanan</Td>
-                      <Td>Dokter</Td>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {listKlinik.map((r, i) => (
-                      <Tr key={i}>
-                        <Td>{r.time}</Td>
-                        <Td>{r.service}</Td>
-                        <Td fontWeight={'bold'}>{r.name}</Td>
+              {listKliniks.length > 0 ?
+                <TableContainer overflowY={'scroll'} overflowX={'scroll'} height='inherit'>
+                  <Table variant='striped' colorScheme={'gray'}>
+                    <Thead color={'#5670CD'}>
+                      <Tr>
+                        <Td>Tanggal periksa</Td>
+                        <Td>Layanan</Td>
+                        <Td>Dokter</Td>
                       </Tr>
-                    ))}
-                  </Tbody>
-                </Table>
-              </TableContainer>
+                    </Thead>
+                    <Tbody>
+                      {listKlinik.map((r, i) => (
+                        <Tr key={i}>
+                          <Td>{r.time}</Td>
+                          <Td>{r.service}</Td>
+                          <Td fontWeight={'bold'}>{r.name}</Td>
+                        </Tr>
+                      ))}
+                    </Tbody>
+                  </Table>
+                </TableContainer>
+                :
+                <EmptyComponent
+                  src={'/img/empty-state-clinic.svg'}
+                  caption={'Jadwal klinik masih kosong'}
+                />
+              }
             </Box>
-            <Box paddingTop={'20px'}>
-              <Pagination
-                pagesCount={pagesCount}
-                currentPage={currentPage}
-                isDisabled={isDisabled}
-                onPageChange={handlePageChange}
-              >
-                <PaginationContainer
-                  align="center"
-                  justify="flex-end"
-                  p={4}
-                  w="full"
+            {listKliniks.length > 0 &&
+              <Box paddingTop={'20px'}>
+                <Pagination
+                  pagesCount={pagesCount}
+                  currentPage={currentPage}
+                  isDisabled={isDisabled}
+                  onPageChange={handlePageChange}
                 >
-                  <PaginationPageGroup
-                    isInline
+                  <PaginationContainer
                     align="center"
-                    separator={
-                      <PaginationSeparator
-                        onClick={() =>
-                          console.log(
-                            "Im executing my own function along with Separator component functionality"
-                          )
-                        }
-                        bg={'white'}
-                        color={colors.PRIMARY}
-                        border={`1px solid ${colors.PRIMARY}`}
-                        borderRadius={'34px'}
-                        fontSize="sm"
-                        padding={'20px'}
-                        w={7}
-                        jumpSize={11}
-                      />
-                    }
+                    justify="flex-end"
+                    p={4}
+                    w="full"
                   >
-                    {pages.map((page) => (
-                      <PaginationPage
-                        w={7}
-                        bg="white"
-                        color={colors.PRIMARY}
-                        border={`1px solid ${colors.PRIMARY}`}
-                        padding={'20px'}
-                        borderRadius={'34px'}
-                        key={`pagination_page_${page}`}
-                        page={page}
-                        onClick={() =>
-                          console.log(
-                            "Im executing my own function along with Page component functionality"
-                          )
-                        }
-                        fontSize="sm"
-                        _hover={{
-                          bg: colors.BIRU_TERANG
-                        }}
-                        _current={{
-                          bg: colors.PRIMARY,
-                          color: 'white',
-                          fontSize: "sm",
-                          w: 7
-                        }}
-                      />
-                    ))}
-                  </PaginationPageGroup>
-                </PaginationContainer>
-              </Pagination>
-            </Box>
+                    <PaginationPageGroup
+                      isInline
+                      align="center"
+                      separator={
+                        <PaginationSeparator
+                          onClick={() =>
+                            console.log(
+                              "Im executing my own function along with Separator component functionality"
+                            )
+                          }
+                          bg={'white'}
+                          color={colors.PRIMARY}
+                          border={`1px solid ${colors.PRIMARY}`}
+                          borderRadius={'34px'}
+                          fontSize="sm"
+                          padding={'20px'}
+                          w={7}
+                          jumpSize={11}
+                        />
+                      }
+                    >
+                      {pages.map((page) => (
+                        <PaginationPage
+                          w={7}
+                          bg="white"
+                          color={colors.PRIMARY}
+                          border={`1px solid ${colors.PRIMARY}`}
+                          padding={'20px'}
+                          borderRadius={'34px'}
+                          key={`pagination_page_${page}`}
+                          page={page}
+                          onClick={() =>
+                            console.log(
+                              "Im executing my own function along with Page component functionality"
+                            )
+                          }
+                          fontSize="sm"
+                          _hover={{
+                            bg: colors.BIRU_TERANG
+                          }}
+                          _current={{
+                            bg: colors.PRIMARY,
+                            color: 'white',
+                            fontSize: "sm",
+                            w: 7
+                          }}
+                        />
+                      ))}
+                    </PaginationPageGroup>
+                  </PaginationContainer>
+                </Pagination>
+              </Box>
+            }
           </Box>
         </Box>
       </Box>
@@ -225,6 +235,8 @@ const ListCompPatientClinic = () => {
 }
 
 export default ListCompPatientClinic
+
+const listKliniks = []
 
 const listKlinik = [
   {
