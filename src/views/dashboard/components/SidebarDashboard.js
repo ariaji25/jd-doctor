@@ -1,9 +1,10 @@
-import { Box, Flex, Avatar, Image } from '@chakra-ui/react';
+import { Box, Flex, Avatar, Image, Center } from '@chakra-ui/react';
 import colors from 'values/colors';
 import ButtonMain from 'components/button/ButtonMain';
 import { FiCheckCircle, FiXCircle } from 'react-icons/fi'
 import Calendar from 'react-calendar';
 import { useState } from 'react'
+import EmptyComponent from 'components/EmptyComponent';
 
 const SidebarDashboard = () => {
   const [value, onChange] = useState(new Date());
@@ -31,7 +32,7 @@ const SidebarDashboard = () => {
           <Flex bg={'red'} color={'white'} padding={'0 6px'} fontSize={'14px'} margin={'3px'} alignItems={'center'} borderRadius={'12px'}>2</Flex>
         </Flex>
         <Flex flex={2} justifyContent='space-between' flexDirection='column' overflowY={'scroll'} maxHeight={'568px'}>
-          {listRawat.map((r, i) => (
+          {listRawats.length > 0 ? listRawat.map((r, i) => (
             <Box key={i} bg={'white'} border={'1px solid #C4C4C4'} borderRadius={'5px'} margin={'6px 0px'} padding={'13px 0 13px 13px'}>
               <Box flex={3} color={colors.PRIMARY} fontWeight={'bold'} fontSize={'16px'}>{r.name} - {r.problem}</Box>
               <Box borderBottom={'1px solid #EFEFEF'} paddingBottom={'4px'} fontSize={'13px'}>
@@ -65,7 +66,16 @@ const SidebarDashboard = () => {
                 </Flex>
               </Flex>
             </Box>
-          ))}
+          ))
+            :
+            <Center minH={'460px'}>
+              <EmptyComponent
+                src={'/img/empty-state-notif.svg'}
+                caption={'Belum ada notifikasi Homecare'}
+                width={20}
+              />
+            </Center>
+          }
         </Flex>
       </Box>
       <Flex margin={"32px 20px 16px 20px"} borderRadius={'5px'} flexDirection={'column'}>
@@ -87,7 +97,7 @@ const SidebarDashboard = () => {
 
 export default SidebarDashboard
 
-
+const listRawats = []
 
 const listRawat = [
   {

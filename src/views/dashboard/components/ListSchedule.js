@@ -1,9 +1,10 @@
-import { useDisclosure, Box, Flex, Avatar, Image } from '@chakra-ui/react';
+import { useDisclosure, Box, Flex, Avatar, Image, Center } from '@chakra-ui/react';
 import colors from 'values/colors';
 import ButtonMain from 'components/button/ButtonMain';
 import SideModal from 'components/SideModal';
 import DetailPatientModal from './DetailPatientModal';
 import { useState } from 'react';
+import EmptyComponent from 'components/EmptyComponent';
 
 const ListSchedule = ({ state, selectedTab, tabs }) => {
   const { isOpen, onToggle } = useDisclosure();
@@ -26,7 +27,7 @@ const ListSchedule = ({ state, selectedTab, tabs }) => {
           ))}
         </Flex>
         <Flex flex={2} justifyContent='space-between' flexDirection='column' overflowY={'scroll'}>
-          {listRawat.map((r, i) => (
+          {listRawats.length > 0 ? listRawat.map((r, i) => (
             <Flex key={i} flex={1} justifyContent={'center'} gap={2} border={'1px solid #C4C4C4'} borderRadius={'5px'} margin={'14px 0px 0px 20px'}>
               <Box flex={1} padding={'13px 0 13px 13px'}>
                 <Avatar name={r.name} src={r.img} color={'black'} bg={'transparent'} border={'1px solid #C0C0C0'} />
@@ -54,7 +55,15 @@ const ListSchedule = ({ state, selectedTab, tabs }) => {
                 </Box>
               </Flex>
             </Flex>
-          ))}
+          ))
+            :
+            <Center minH={'430px'}>
+              <EmptyComponent
+                src={'/img/empty-state-homecare.svg'}
+                caption={'Jadwal Homecare masih kosong'}
+              />
+            </Center>
+          }
         </Flex>
       </Flex>
       <SideModal
@@ -71,6 +80,7 @@ const ListSchedule = ({ state, selectedTab, tabs }) => {
 
 export default ListSchedule
 
+const listRawats = []
 
 const listRawat = [
   {
