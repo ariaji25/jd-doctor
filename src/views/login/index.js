@@ -48,6 +48,7 @@ const LoginForm = ({ onClikWaHelp }) => {
       const loginResponse = await apiAuth.login(username.target.value, password.target.value)
       if (loginResponse.code === 200) {
         setTokenToStorage(loginResponse.data.token)
+        localStorage.setItem("email", username.target.value)
         window.browserHistory.push("/dashboard")
       } else {
         ToastNotif({

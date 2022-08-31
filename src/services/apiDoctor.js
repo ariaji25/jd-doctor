@@ -1,6 +1,19 @@
 import { dateFormat } from 'utils';
 import request from 'utils/request';
+import keyStorage from 'values/keyStorage';
 import urls from 'values/urls';
+
+
+const ATTR = {
+  nrm: 'kOJUHSrbkBS',
+  nama: 'HyfzjNVhlzM',
+  tanggalLahir: 'SSsiEz3cVbn',
+  jenisKelamin: 'TlO4kdMfHqa',
+  alamatDomisili: 'aRHSGgFeOjr',
+  nohp: 'x9tchw0swEu',
+  nik: 'xGjeKnsJobT',
+  email: 'KNhGfY4ApxB'
+};
 
 const list = async (clinic) => {
   const d = await request.get(urls.DOCTOR_LIST(clinic));
@@ -51,6 +64,48 @@ const create = async (attributes) => {
   await request.post(urls.DOCTOR_CREATE, payload);
 };
 
-const apiDoctor = { list, create };
+
+/*
+* nrms : Used to pass the NRM
+* when booked for other patient 
+*/
+const getDetail = async () => {
+  if (localStorage) {
+    const email = (localStorage.getItem(keyStorage.EMAIL) ?? '');
+    const { data } = await request.get(urls.DOCTER_DETAIL(email));
+
+    const { trackedEntityInstances } = data;
+    let instance = trackedEntityInstances.length
+      ? trackedEntityInstances[0]
+      : null;
+
+    if (!instance) {
+      return;
+    }
+
+    const { attributes: attr, trackedEntityInstance: tei } = instance;
+    localStorage.setItem(keyStorage.TEI, tei);
+
+    const biodata = {
+      id: tei,
+      nama: attr.find((a) => a.attribute === ATTR.nama).value,
+      alamatDomisili: attr.find((a) => a.attribute === ATTR.alamatDomisili).value,
+      nik: attr.find((a) => a.attribute === ATTR.nik).value,
+      nohp: attr.find((a) => a.attribute === ATTR.nohp).value,
+      tanggalLahir: attr.find((a) => a.attribute === ATTR.tanggalLahir).value,
+      jenisKelamin: attr.find((a) => a.attribute === ATTR.jenisKelamin).value,
+      email: attr.find((a) => a.attribute === ATTR.jenisKelamin).value,
+    };
+
+    return biodata;
+  }
+};
+
+const logOut = () => {
+  localStorage.clear()
+  window.location("/login")
+}
+
+const apiDoctor = { list, create, getDetail, logOut };
 
 export default apiDoctor;

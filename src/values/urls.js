@@ -34,7 +34,8 @@ const urls = {
   BUCKET_UPLOAD_REGISTER: `${config.apiURL}/api/register-bucket`,
 
   // LOGIN
-  LOGIN_URL: `${config.apiURL}/api/login`
+  LOGIN_URL: `${config.apiURL}/api/login`,
+  DOCTER_DETAIL: (email) => `${config.apiURL}/api/trackedEntityInstances?program=wcA7dgdvgt3&ou=FexDOKZlHSx&filter=KNhGfY4ApxB:EQ:${email}`,
 };
 
 export default urls;

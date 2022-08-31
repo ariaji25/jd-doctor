@@ -4,6 +4,7 @@ import ButtonMain from 'components/button/ButtonMain';
 import { FiCheckCircle, FiXCircle } from 'react-icons/fi'
 import Calendar from 'react-calendar';
 import { useState } from 'react'
+import { getCurrentUserFromStorage } from 'utils';
 
 const SidebarDashboard = () => {
   const [value, onChange] = useState(new Date());
@@ -17,7 +18,7 @@ const SidebarDashboard = () => {
         </Box>
         <Flex flexDirection={'column'} padding={"15px 0"} justifyContent={'center'} lineHeight={1}>
           <Box>Halo dokter,</Box>
-          <Box fontSize={'20px'} fontWeight={'bold'}>dr. Jane Doe</Box>
+          <Box fontSize={'20px'} fontWeight={'bold'}>{getCurrentUserFromStorage() ? getCurrentUserFromStorage().nama ?? "-" : "-"}</Box>
         </Flex>
       </Flex>
       <Box margin={"32px 20px 16px 20px"}>
