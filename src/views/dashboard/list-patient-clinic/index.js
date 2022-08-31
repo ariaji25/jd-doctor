@@ -14,7 +14,7 @@ import { FiFilter, FiSearch } from 'react-icons/fi';
 import { useHistory } from 'react-router-dom';
 import EmptyComponent from 'components/EmptyComponent';
 
-const ListCompPatientClinic = () => {
+const ListPatientClinicPage = () => {
   const history = useHistory();
 
   // states
@@ -234,7 +234,7 @@ const ListCompPatientClinic = () => {
   )
 }
 
-export default ListCompPatientClinic
+export default ListPatientClinicPage
 
 const listKliniks = []
 

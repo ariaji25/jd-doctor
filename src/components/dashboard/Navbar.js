@@ -56,22 +56,28 @@ const Navbars = ({ options, currentUser }) => {
             <LogoWithText h={{ base: '10', md: '12' }} />
           </Link>
         </Box>
-        <Text>Examples</Text>
-        <Text>Blog</Text>
+        {/* <Text>Examples</Text>
+        <Text>Blog</Text> */}
       </Stack>
 
       <Box
-        display={{ base: isOpen ? "block" : "none", md: "block" }}
+        display={{ base: isOpen ? "block" : "none", md: "flex" }}
+        alignItems={'center'}
         mt={{ base: 4, md: 0 }}
       >
         <Menu>
           <MenuButton>
-            <Flex>
-              <Center>
-                <Text color={"blackAlpha.800"} mr={2}>{currentUser && currentUser.nama}</Text>
-                <Avatar />
-              </Center>
-            </Flex>
+            <Center>
+              <Flex>
+                <Center>
+                  <Avatar />
+                  <Flex flexDir={'column'} justifyContent={'center'} alignItems={'start'} pl={2}>
+                    <Text color={"blackAlpha.800"} mr={2} fontSize={'13px'}>Halo dokter,</Text>
+                    <Text color={"blackAlpha.800"} mr={2} fontWeight={'bold'}>{currentUser && currentUser.nama || 'Anonymous'}</Text>
+                  </Flex>
+                </Center>
+              </Flex>
+            </Center>
           </MenuButton>
           <MenuList>
             <MenuItem
@@ -80,7 +86,7 @@ const Navbars = ({ options, currentUser }) => {
                 <Image h="25px" src={`/icon/log_out.svg`} alt="" />
               }
             >
-              <Text color={"red"}>Log out</Text>
+              <Text color={"red"}>Keluar</Text>
             </MenuItem>
           </MenuList>
         </Menu>

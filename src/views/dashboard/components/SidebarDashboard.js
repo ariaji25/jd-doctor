@@ -1,26 +1,44 @@
-import { Box, Flex, Avatar, Image, Center } from '@chakra-ui/react';
+import { Box, Flex, Avatar, Image, Center, MenuButton, MenuList, Menu, MenuItem, Text, Stack } from '@chakra-ui/react';
 import colors from 'values/colors';
 import ButtonMain from 'components/button/ButtonMain';
-import { FiCheckCircle, FiXCircle } from 'react-icons/fi'
+import { FiCheckCircle, FiLogOut, FiXCircle } from 'react-icons/fi'
 import Calendar from 'react-calendar';
 import { useState } from 'react'
 import EmptyComponent from 'components/EmptyComponent';
+import apiOtp from 'services/apiOtp';
+import { useHistory } from 'react-router-dom';
 
 const SidebarDashboard = () => {
+  const history = useHistory()
   const [value, onChange] = useState(new Date());
-
+  const [isOpenLogout, setOpenLogout] = useState(false);
+  const onLogout = () => {
+    apiOtp.loggedOuts();
+  };
   return (
     <Box flex={1.3} maxWidth='500px' background={'#E5E5E5'} paddingBottom={'20px'}>
       {/* <Hide breakpoint='(max-width: 1100px)'> */}
-      <Flex margin={"32px 20px 16px 20px"} background='white' justifyContent={'center'} gap={5} border={'1px solid #C4C4C4'} borderRadius={'5px'}>
-        <Box padding={"15px 0"}>
-          <Avatar size='lg' name='dr. Jane Doe' src={'/img/doctorSidebar.png'} color={'black'} bg={'transparent'} border={'1px solid #C0C0C0'} />
-        </Box>
-        <Flex flexDirection={'column'} padding={"15px 0"} justifyContent={'center'} lineHeight={1}>
-          <Box>Halo dokter,</Box>
-          <Box fontSize={'20px'} fontWeight={'bold'}>dr. Jane Doe</Box>
+      <Stack margin={"32px 20px 0 20px"} gap={0}>
+        <Flex onClick={() => setOpenLogout(!isOpenLogout)} cursor={'pointer'} background='white' justifyContent={'center'} gap={5} border={'1px solid #C4C4C4'} borderRadius={'5px'}>
+          <Box padding={"15px 0"} onClick={() => history.push('/dashboard/profile')}>
+            <Avatar size='lg' name='dr. Jane Doe' src={'/img/doctorSidebar.png'} color={'black'} bg={'transparent'} border={'1px solid #C0C0C0'} />
+          </Box>
+          <Flex flexDirection={'column'} padding={"15px 0"} justifyContent={'center'} lineHeight={1} onClick={() => history.push('/dashboard/profile')}>
+            <Box>Halo dokter,</Box>
+            <Box fontSize={'20px'} fontWeight={'bold'}>dr. Jane Doe</Box>
+          </Flex>
         </Flex>
-      </Flex>
+        {isOpenLogout &&
+          <Flex onClick={onLogout} alignItems={'center'} gap={3} justifyContent={'center'} fontSize={'18px'} color='red' fontWeight={'bold'} margin={"0px 1px 10px 1px !important"} background='white' borderRadius={'0 0px 5px 5px'} padding={'20px'}>
+            <Box>
+              <FiLogOut />
+            </Box>
+            <Box>
+              Keluar
+            </Box>
+          </Flex>
+        }
+      </Stack>
       <Box margin={"32px 20px 16px 20px"}>
         <Flex fontSize={'18px'} fontWeight={'bold'} color={'#505050'} gap={1} alignItems={'center'} paddingBottom={'14px'}>
           <Box>

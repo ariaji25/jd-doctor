@@ -18,7 +18,6 @@ const ListSchedule = ({ state, selectedTab, tabs }) => {
           {tabs && tabs.map((r) => (
             <Flex flex={1} alignItems={'center'} justifyContent={'center'} cursor={'pointer'} style={state.selectedTab === r.id ? { background: colors.PRIMARY, color: 'white', borderRadius: '6px 6px 0 0' } : {}} whiteSpace='pre' padding={'5px'}
               onClick={() => {
-                console.log('cok', r.id)
                 state.selectedTab = r.id
               }}
             >

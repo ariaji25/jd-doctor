@@ -20,10 +20,12 @@ import {
 import PageNotFound from 'views/404';
 import DetailArticle from "views/article/DetailArticle";
 import DashboardPage from 'views/dashboard';
-import ListCompPatient from 'views/dashboard/list-patient';
-import ListCompPatientClinic from 'views/dashboard/list-patient-clinic';
-import MedicalRecord from 'views/dashboard/medical-record';
-import MedicalRecordManage from 'views/dashboard/medical-record/medical-record-manage';
+import ListPatientPage from 'views/dashboard/list-patient';
+import ListPatientClinicPage from 'views/dashboard/list-patient-clinic';
+import MedicalRecordPage from 'views/dashboard/medical-record';
+import MedicalRecordManagePage from 'views/dashboard/medical-record/medical-record-manage';
+import ProfilePage from 'views/dashboard/profile';
+import ForgotPasswordPage from 'views/forgot-password';
 import PaymentSuccessPage from 'views/payment/PaymentSuccess';
 import { RegisterPage } from 'views/register/Register';
 
@@ -104,6 +106,7 @@ const App = ({ history }) => {
               <Route path="/about" component={AboutPage} />
               <Route exact path="/doctor/:id?" component={DoctorPage} />
               <Route path="/login" component={LoginPage} />
+              <Route path="/forgot-password" component={ForgotPasswordPage} />
               <Route path="/term-and-condition" component={TermAndConditionPage} />
               <Route path="/privacy-policy" component={PrivacyPolicyPage} />
               <Route path="/payment-success" component={PaymentSuccessPage} />
@@ -112,10 +115,11 @@ const App = ({ history }) => {
               {/* Routes below only for authenticated users */}
               {/* <PrivateRoute component={BasePage} /> */}
               <Route exact path="/dashboard" component={DashboardPage} />
-              <Route exact path="/dashboard/list-patient" component={ListCompPatient} />
-              <Route exact path="/dashboard/list-patient-clinic" component={ListCompPatientClinic} />
-              <Route exact path="/dashboard/medical-record/:idPatient" component={MedicalRecord} />
-              <Route exact path="/dashboard/medical-record/:idPatient/:mrMethod" component={MedicalRecordManage} />
+              <Route exact path="/dashboard/profile" component={ProfilePage} />
+              <Route exact path="/dashboard/list-patient" component={ListPatientPage} />
+              <Route exact path="/dashboard/list-patient-clinic" component={ListPatientClinicPage} />
+              <Route exact path="/dashboard/medical-record/:idPatient" component={MedicalRecordPage} />
+              <Route exact path="/dashboard/medical-record/:idPatient/:mrMethod" component={MedicalRecordManagePage} />
 
               <Route exact component={PageNotFound} />
             </Switch>

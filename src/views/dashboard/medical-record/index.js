@@ -14,7 +14,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { FiPlusCircle, FiFilter, FiSearch } from 'react-icons/fi';
 import EmptyComponent from 'components/EmptyComponent';
 
-const MedicalRecord = () => {
+const MedicalRecordPage = () => {
   const history = useHistory();
   let { idPatient } = useParams();
 
@@ -274,7 +274,7 @@ const MedicalRecord = () => {
   )
 }
 
-export default MedicalRecord
+export default MedicalRecordPage
 
 const listPasiens = []
 

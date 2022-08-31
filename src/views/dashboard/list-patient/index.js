@@ -19,7 +19,7 @@ const tabs = [
   { id: 2, name: 'Homecare' },
 ]
 
-const ListCompPatient = () => {
+const ListPatientPage = () => {
   const history = useHistory();
   const [selectedTab, setSelectedTab] = useState(1)
 
@@ -250,7 +250,7 @@ const ListCompPatient = () => {
   )
 }
 
-export default ListCompPatient
+export default ListPatientPage
 
 const listPasiens = []
 
