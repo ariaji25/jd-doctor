@@ -25,6 +25,7 @@ import ListPatientClinicPage from 'views/dashboard/list-patient-clinic';
 import MedicalRecordPage from 'views/dashboard/medical-record';
 import MedicalRecordManagePage from 'views/dashboard/medical-record/medical-record-manage';
 import ProfilePage from 'views/dashboard/profile';
+import BiodataProfile from 'views/dashboard/profile/components/BiodataProfile';
 import ForgotPasswordPage from 'views/forgot-password';
 import PaymentSuccessPage from 'views/payment/PaymentSuccess';
 import { RegisterPage } from 'views/register/Register';
@@ -116,6 +117,7 @@ const App = ({ history }) => {
               {/* <PrivateRoute component={BasePage} /> */}
               <Route exact path="/dashboard" component={DashboardPage} />
               <Route exact path="/dashboard/profile" component={ProfilePage} />
+              <Route exact path="/dashboard/profile/biodata" component={BiodataProfile} />
               <Route exact path="/dashboard/list-patient" component={ListPatientPage} />
               <Route exact path="/dashboard/list-patient-clinic" component={ListPatientClinicPage} />
               <Route exact path="/dashboard/medical-record/:idPatient" component={MedicalRecordPage} />
