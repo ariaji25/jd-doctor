@@ -2,6 +2,7 @@ import { proxy } from 'valtio';
 
 const stateMedicalRecord = proxy({
   selectedTab: 1,
+  selectedTabInternal: 1,
   idPatient: '',
 
   keadaanUmum: '',
