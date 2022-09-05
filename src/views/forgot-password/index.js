@@ -22,19 +22,15 @@ import { useSnapshot } from 'valtio';
 import colors from 'values/colors';
 
 const ForgotPasswordForm = ({ onClikWaHelp }) => {
-  const { username, password, processing } = useSnapshot(stateLogin);
+  const { email, processing } = useSnapshot(stateLogin);
   const [showPassword, setShowPassword] = useState(false)
 
   const handleShow = () => {
     setShowPassword(!showPassword);
   };
 
-  const onChangeUsername = (username) => {
-    stateLogin.username = username;
-  };
-
-  const onChangePassword = (password) => {
-    stateLogin.password = password;
+  const onChangeEmail = (email) => {
+    stateLogin.email = email;
   };
 
   const onSubmit = async (e) => {
@@ -51,39 +47,34 @@ const ForgotPasswordForm = ({ onClikWaHelp }) => {
     }
   };
 
-  console.log(showPassword, "showwww")
   return (
     <>
       <Box w="full" color={colors.PRIMARY}>
         <form onSubmit={onSubmit}>
-          <Text pb={8} fontSize="3xl" fontWeight="bold" color='#505050'>
-            Hay dok, Silahkan login!
-          </Text>
+          <Box color='#505050'>
+            <Text pb={4} fontSize="3xl" fontWeight="bold" >
+              Jangan khawatir
+            </Text>
+            <Text pb={8}>
+              Kami disini membantu untuk mengembalikan akun anda
+              silahkan masukkan email yang anda gunakan untuk registrasi
+              dan kami akan mengirimkan link untuk mengatur ulang kata sandi
+            </Text>
+          </Box>
           <Box>
             <InputUnderlined
               isRequired
-              icon="/icon/user.svg"
-              label="Username/Email"
-              onChange={onChangeUsername}
+              icon="/icon/mail.svg"
+              label="Email"
+              onChange={onChangeEmail}
               type="text"
-              value={username}
-            />
-          </Box>
-          <Box pt={4}>
-            <InputUnderlined
-              isRequired
-              icon="/icon/credit_card.svg"
-              label='Password'
-              onChange={onChangePassword}
-              type='password'
-              handleShow={handleShow}
-              value={password}
-              show={showPassword}
+              placeholder='mail@email.com'
+              value={email}
             />
           </Box>
           <Box h="8" />
           <ButtonMain type="submit" disabled={processing} w="full">
-            Login
+            Kirim
           </ButtonMain>
           <Text
             my="6"
@@ -92,11 +83,8 @@ const ForgotPasswordForm = ({ onClikWaHelp }) => {
             color='#505050'
             textAlign='center'
           >
-            Lupa Password
+            Kembali
           </Text>
-          <ButtonMain type="submit" disabled={processing} w="full" bg="white" color={colors.PRIMARY}>
-            Registrasi sebagai dokter
-          </ButtonMain>
         </form>
       </Box>
     </>
@@ -123,7 +111,7 @@ const ForgotPasswordPage = () => {
             >
               <ForgotPasswordForm onClikWaHelp={onToggle} />
 
-              <Carousel />
+              <Carousel onPage={'forgot-password'} />
             </Box>
           )}
           {showInputOtp && (

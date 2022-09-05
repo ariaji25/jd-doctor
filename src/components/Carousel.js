@@ -18,10 +18,14 @@ const settings = {
   slidesToScroll: 1,
 };
 
-const Carousel = () => {
-  const cards = [
+const Carousel = ({ onPage }) => {
+  const cardsLogin = [
     '/img/login-carousel.png',
   ];
+  const cardsForgotPassword = [
+    '/img/forgot-password-carousel.png',
+  ];
+  const cards = onPage === 'login' ? cardsLogin : cardsForgotPassword
 
   // const bodys = [
   //   {
