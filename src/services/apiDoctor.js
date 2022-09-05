@@ -103,7 +103,7 @@ const getDetail = async () => {
 
 const logOut = () => {
   localStorage.clear()
-  window.location("/login")
+  window.location = "/login"
 }
 
 const apiDoctor = { list, create, getDetail, logOut };

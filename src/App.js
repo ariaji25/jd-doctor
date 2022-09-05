@@ -22,10 +22,12 @@ import {
 import PageNotFound from 'views/404';
 import DetailArticle from "views/article/DetailArticle";
 import DashboardPage from 'views/dashboard';
-import ListCompPatient from 'views/dashboard/list-patient';
-import ListCompPatientClinic from 'views/dashboard/list-patient-clinic';
-import MedicalRecord from 'views/dashboard/medical-record';
-import MedicalRecordManage from 'views/dashboard/medical-record/medical-record-manage';
+import ListPatientPage from 'views/dashboard/list-patient';
+import ListPatientClinicPage from 'views/dashboard/list-patient-clinic';
+import MedicalRecordPage from 'views/dashboard/medical-record';
+import MedicalRecordManagePage from 'views/dashboard/medical-record/medical-record-manage';
+import ProfilePage from 'views/dashboard/profile';
+import ForgotPasswordPage from 'views/forgot-password';
 import PaymentSuccessPage from 'views/payment/PaymentSuccess';
 import { RegisterPage } from 'views/register/Register';
 
@@ -70,7 +72,7 @@ const App = ({ history }) => {
           window.browserHistory.push("/");
         }
       } else {
-        apiDoctor.logOut();
+        window.browserHistory.push("/login");
       }
     } catch (error) {
       console.log(error);
@@ -112,6 +114,8 @@ const App = ({ history }) => {
               <Route exact path="/doctor/:id?" component={DoctorPage} /> */}
               <Route path="/login" component={LoginPage} />
               {/* <Route path="/term-and-condition" component={TermAndConditionPage} />
+              <Route path="/forgot-password" component={ForgotPasswordPage} />
+              <Route path="/term-and-condition" component={TermAndConditionPage} />
               <Route path="/privacy-policy" component={PrivacyPolicyPage} />
               <Route path="/payment-success" component={PaymentSuccessPage} /> */}
               <Route path="/sign-up" component={RegisterPage} />

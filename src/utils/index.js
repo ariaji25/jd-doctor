@@ -35,7 +35,7 @@ const removeFromLocalStorage = (key) => {
 
 const isAuthenticated = () => {
   const currentUser = localStorage.getItem(keyStorage.EMAIL);
-  return currentUser.length > 0;
+  return currentUser && currentUser.length > 0;
 };
 
 const setTokenToStorage = (token) => {

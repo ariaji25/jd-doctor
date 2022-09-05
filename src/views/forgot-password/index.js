@@ -14,18 +14,14 @@ import InputNoHP from 'components/input/InputNoHP';
 import InputUnderlined from 'components/input/InputUnderlined';
 import PageContainer from 'components/PageContainer';
 import SideModal from 'components/SideModal';
-import ToastNotif from 'components/Toast';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import apiAuth from 'services/apiAuth';
-import apiDoctor from 'services/apiDoctor';
 import apiOtp from 'services/apiOtp';
 import stateLogin from 'states/stateLogin';
-import { setCurrentUserToStorage, setTokenToStorage } from 'utils';
 import { useSnapshot } from 'valtio';
 import colors from 'values/colors';
 
-const LoginForm = ({ onClikWaHelp }) => {
+const ForgotPasswordForm = ({ onClikWaHelp }) => {
   const { username, password, processing } = useSnapshot(stateLogin);
   const [showPassword, setShowPassword] = useState(false)
 
@@ -46,18 +42,8 @@ const LoginForm = ({ onClikWaHelp }) => {
 
     try {
       stateLogin.processing = true;
-      const loginResponse = await apiAuth.login(username.target.value, password.target.value)
-      if (loginResponse.code === 200) {
-        setTokenToStorage(loginResponse.data.token)
-        localStorage.setItem("email", username.target.value)
-        const currentUser = await apiDoctor.getDetail();
-        setCurrentUserToStorage(currentUser);
-        window.browserHistory.push("/dashboard")
-      } else {
-        ToastNotif({
-          message: "Username atau password tidak dikenal"
-        })
-      }
+      await apiOtp.request(stateLogin.nohp);
+      stateLogin.showInputOtp = true;
     } catch (error) {
       console.error('❌ onSubmit:', e);
     } finally {
@@ -65,6 +51,7 @@ const LoginForm = ({ onClikWaHelp }) => {
     }
   };
 
+  console.log(showPassword, "showwww")
   return (
     <>
       <Box w="full" color={colors.PRIMARY}>
@@ -116,7 +103,7 @@ const LoginForm = ({ onClikWaHelp }) => {
   );
 };
 
-const LoginPage = () => {
+const ForgotPasswordPage = () => {
   const { showInputOtp } = useSnapshot(stateLogin);
   const { isOpen, onToggle } = useDisclosure();
 
@@ -134,7 +121,7 @@ const LoginPage = () => {
               alignItems="baseline"
               gap={{ lg: '200px' }}
             >
-              <LoginForm onClikWaHelp={onToggle} />
+              <ForgotPasswordForm onClikWaHelp={onToggle} />
 
               <Carousel />
             </Box>
@@ -163,4 +150,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default ForgotPasswordPage;

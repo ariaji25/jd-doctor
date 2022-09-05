@@ -1,26 +1,46 @@
-import { Box, Flex, Avatar, Image } from '@chakra-ui/react';
+import { Box, Flex, Avatar, Image, Center, MenuButton, MenuList, Menu, MenuItem, Text, Stack } from '@chakra-ui/react';
 import colors from 'values/colors';
 import ButtonMain from 'components/button/ButtonMain';
-import { FiCheckCircle, FiXCircle } from 'react-icons/fi'
+import { FiCheckCircle, FiLogOut, FiXCircle } from 'react-icons/fi'
 import Calendar from 'react-calendar';
 import { useState } from 'react'
 import { getCurrentUserFromStorage } from 'utils';
+import EmptyComponent from 'components/EmptyComponent';
+import apiOtp from 'services/apiOtp';
+import { useHistory } from 'react-router-dom';
+import apiDoctor from 'services/apiDoctor';
 
 const SidebarDashboard = () => {
+  const history = useHistory()
   const [value, onChange] = useState(new Date());
-
+  const [isOpenLogout, setOpenLogout] = useState(false);
+  const onLogout = () => {
+    apiDoctor.logOut()
+  };
   return (
     <Box flex={1.3} maxWidth='500px' background={'#E5E5E5'} paddingBottom={'20px'}>
       {/* <Hide breakpoint='(max-width: 1100px)'> */}
-      <Flex margin={"32px 20px 16px 20px"} background='white' justifyContent={'center'} gap={5} border={'1px solid #C4C4C4'} borderRadius={'5px'}>
-        <Box padding={"15px 0"}>
-          <Avatar size='lg' name='dr. Jane Doe' src={'/img/doctorSidebar.png'} color={'black'} bg={'transparent'} border={'1px solid #C0C0C0'} />
-        </Box>
-        <Flex flexDirection={'column'} padding={"15px 0"} justifyContent={'center'} lineHeight={1}>
-          <Box>Halo dokter,</Box>
-          <Box fontSize={'20px'} fontWeight={'bold'}>{getCurrentUserFromStorage() ? getCurrentUserFromStorage().nama ?? "-" : "-"}</Box>
+      <Stack margin={"32px 20px 0 20px"} gap={0}>
+        <Flex onClick={() => setOpenLogout(!isOpenLogout)} cursor={'pointer'} background='white' justifyContent={'center'} gap={5} border={'1px solid #C4C4C4'} borderRadius={'5px'}>
+          <Box padding={"15px 0"} onClick={() => history.push('/dashboard/profile')}>
+            <Avatar size='lg' name='dr. Jane Doe' src={'/img/doctorSidebar.png'} color={'black'} bg={'transparent'} border={'1px solid #C0C0C0'} />
+          </Box>
+          <Flex flexDirection={'column'} padding={"15px 0"} justifyContent={'center'} lineHeight={1} onClick={() => history.push('/dashboard/profile')}>
+            <Box>Halo dokter,</Box>
+            <Box fontSize={'20px'} fontWeight={'bold'}>{getCurrentUserFromStorage() ? getCurrentUserFromStorage().nama ?? "-" : "-"}</Box>
+          </Flex>
         </Flex>
-      </Flex>
+        {isOpenLogout &&
+          <Flex onClick={onLogout} alignItems={'center'} gap={3} justifyContent={'center'} fontSize={'18px'} color='red' fontWeight={'bold'} margin={"0px 1px 10px 1px !important"} background='white' borderRadius={'0 0px 5px 5px'} padding={'20px'}>
+            <Box>
+              <FiLogOut />
+            </Box>
+            <Box>
+              Keluar
+            </Box>
+          </Flex>
+        }
+      </Stack>
       <Box margin={"32px 20px 16px 20px"}>
         <Flex fontSize={'18px'} fontWeight={'bold'} color={'#505050'} gap={1} alignItems={'center'} paddingBottom={'14px'}>
           <Box>
@@ -32,7 +52,7 @@ const SidebarDashboard = () => {
           <Flex bg={'red'} color={'white'} padding={'0 6px'} fontSize={'14px'} margin={'3px'} alignItems={'center'} borderRadius={'12px'}>2</Flex>
         </Flex>
         <Flex flex={2} justifyContent='space-between' flexDirection='column' overflowY={'scroll'} maxHeight={'568px'}>
-          {listRawat.map((r, i) => (
+          {listRawats.length > 0 ? listRawat.map((r, i) => (
             <Box key={i} bg={'white'} border={'1px solid #C4C4C4'} borderRadius={'5px'} margin={'6px 0px'} padding={'13px 0 13px 13px'}>
               <Box flex={3} color={colors.PRIMARY} fontWeight={'bold'} fontSize={'16px'}>{r.name} - {r.problem}</Box>
               <Box borderBottom={'1px solid #EFEFEF'} paddingBottom={'4px'} fontSize={'13px'}>
@@ -66,7 +86,16 @@ const SidebarDashboard = () => {
                 </Flex>
               </Flex>
             </Box>
-          ))}
+          ))
+            :
+            <Center minH={'460px'}>
+              <EmptyComponent
+                src={'/img/empty-state-notif.svg'}
+                caption={'Belum ada notifikasi Homecare'}
+                width={20}
+              />
+            </Center>
+          }
         </Flex>
       </Box>
       <Flex margin={"32px 20px 16px 20px"} borderRadius={'5px'} flexDirection={'column'}>
@@ -88,7 +117,7 @@ const SidebarDashboard = () => {
 
 export default SidebarDashboard
 
-
+const listRawats = []
 
 const listRawat = [
   {

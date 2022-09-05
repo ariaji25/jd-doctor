@@ -12,6 +12,7 @@ import {
 import { useState, useEffect } from 'react'
 import { FiSearch } from 'react-icons/fi';
 import { useHistory } from 'react-router-dom';
+import EmptyComponent from 'components/EmptyComponent';
 
 const ListDataPatient = () => {
   const history = useHistory();
@@ -105,114 +106,123 @@ const ListDataPatient = () => {
           </Box>
         </Flex>
         <Box maxHeight={'347px'} height={'347px'} paddingTop={'20px'} display={'grid'}>
-          <TableContainer overflowY={'scroll'} overflowX={'scroll'} height='inherit'>
-            <Table variant='striped' colorScheme={'gray'}>
-              <Thead color={'#5670CD'}>
-                <Tr>
-                  <Td>Tanggal berobat</Td>
-                  <Td>Nama lengkap pasien</Td>
-                  <Td>Jenis Kelamin</Td>
-                  <Td>Tanggal Lahir</Td>
-                  <Td>Alamat Pasien</Td>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {listPasien.map((r, i) => (
-                  <Tr key={i}>
-                    <Td>{r.time}</Td>
-                    <Td fontWeight={'bold'}>{r.name}</Td>
-                    <Td>{r.gender}</Td>
-                    <Td>{r.birth}</Td>
-                    <Td>{r.address}</Td>
+          {listPasiens.length > 0 ?
+            <TableContainer overflowY={'scroll'} overflowX={'scroll'} height='inherit'>
+              <Table variant='striped' colorScheme={'gray'}>
+                <Thead color={'#5670CD'}>
+                  <Tr>
+                    <Td>Tanggal berobat</Td>
+                    <Td>Nama lengkap pasien</Td>
+                    <Td>Jenis Kelamin</Td>
+                    <Td>Tanggal Lahir</Td>
+                    <Td>Alamat Pasien</Td>
                   </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </TableContainer>
+                </Thead>
+                <Tbody>
+                  {listPasien.map((r, i) => (
+                    <Tr key={i}>
+                      <Td>{r.time}</Td>
+                      <Td fontWeight={'bold'}>{r.name}</Td>
+                      <Td>{r.gender}</Td>
+                      <Td>{r.birth}</Td>
+                      <Td>{r.address}</Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </TableContainer>
+            :
+            <EmptyComponent
+              src={'/img/empty-state-patient.svg'}
+              caption={'Belum ada data pasien'}
+            />
+          }
         </Box>
-        <Box paddingTop={'20px'}>
-          <Pagination
-            pagesCount={pagesCount}
-            currentPage={currentPage}
-            isDisabled={isDisabled}
-            onPageChange={handlePageChange}
-          >
-            <PaginationContainer
-              align="center"
-              justify="flex-end"
-              p={4}
-              w="full"
+        {listPasiens.length > 0 &&
+          <Box paddingTop={'20px'}>
+            <Pagination
+              pagesCount={pagesCount}
+              currentPage={currentPage}
+              isDisabled={isDisabled}
+              onPageChange={handlePageChange}
             >
-              <PaginationPageGroup
-                isInline
+              <PaginationContainer
                 align="center"
-                separator={
-                  <PaginationSeparator
-                    onClick={() =>
-                      console.log(
-                        "Im executing my own function along with Separator component functionality"
-                      )
-                    }
-                    bg={'white'}
-                    color={colors.PRIMARY}
-                    border={`1px solid ${colors.PRIMARY}`}
-                    borderRadius={'34px'}
-                    fontSize="sm"
-                    padding={'20px'}
-                    w={7}
-                    jumpSize={11}
-                  />
-                }
+                justify="flex-end"
+                p={4}
+                w="full"
               >
-                {pages.map((page) => (
-                  <PaginationPage
-                    w={7}
-                    bg="white"
-                    color={colors.PRIMARY}
-                    border={`1px solid ${colors.PRIMARY}`}
-                    padding={'20px'}
-                    borderRadius={'34px'}
-                    key={`pagination_page_${page}`}
-                    page={page}
-                    onClick={() =>
-                      console.log(
-                        "Im executing my own function along with Page component functionality"
-                      )
-                    }
-                    fontSize="sm"
-                    _hover={{
-                      bg: colors.BIRU_TERANG
-                    }}
-                    _current={{
-                      bg: colors.PRIMARY,
-                      color: 'white',
-                      fontSize: "sm",
-                      w: 7
-                    }}
-                  />
-                ))}
-              </PaginationPageGroup>
-              <PaginationNext
-                _hover={{
-                  bg: colors.BIRU_TERANG
-                }}
-                bg={colors.PRIMARY}
-                color='white'
-                borderRadius={'42px'}
-                marginLeft={4}
-                onClick={() => {
-                  history.push('/dashboard/list-patient')
-                  console.log(
-                    "Im executing my own function along with Next component functionality"
-                  )
-                }
-                }
-              >
-                <Text>Lihat semua</Text>
-              </PaginationNext>
-            </PaginationContainer>
-          </Pagination>
-        </Box>
+                <PaginationPageGroup
+                  isInline
+                  align="center"
+                  separator={
+                    <PaginationSeparator
+                      onClick={() =>
+                        console.log(
+                          "Im executing my own function along with Separator component functionality"
+                        )
+                      }
+                      bg={'white'}
+                      color={colors.PRIMARY}
+                      border={`1px solid ${colors.PRIMARY}`}
+                      borderRadius={'34px'}
+                      fontSize="sm"
+                      padding={'20px'}
+                      w={7}
+                      jumpSize={11}
+                    />
+                  }
+                >
+                  {pages.map((page) => (
+                    <PaginationPage
+                      w={7}
+                      bg="white"
+                      color={colors.PRIMARY}
+                      border={`1px solid ${colors.PRIMARY}`}
+                      padding={'20px'}
+                      borderRadius={'34px'}
+                      key={`pagination_page_${page}`}
+                      page={page}
+                      onClick={() =>
+                        console.log(
+                          "Im executing my own function along with Page component functionality"
+                        )
+                      }
+                      fontSize="sm"
+                      _hover={{
+                        bg: colors.BIRU_TERANG
+                      }}
+                      _current={{
+                        bg: colors.PRIMARY,
+                        color: 'white',
+                        fontSize: "sm",
+                        w: 7
+                      }}
+                    />
+                  ))}
+                </PaginationPageGroup>
+                <PaginationNext
+                  _hover={{
+                    bg: colors.BIRU_TERANG
+                  }}
+                  bg={colors.PRIMARY}
+                  color='white'
+                  borderRadius={'42px'}
+                  marginLeft={4}
+                  onClick={() => {
+                    history.push('/dashboard/list-patient')
+                    console.log(
+                      "Im executing my own function along with Next component functionality"
+                    )
+                  }
+                  }
+                >
+                  <Text>Lihat semua</Text>
+                </PaginationNext>
+              </PaginationContainer>
+            </Pagination>
+          </Box>
+        }
       </Box>
     </Box>
   )
@@ -220,6 +230,7 @@ const ListDataPatient = () => {
 
 export default ListDataPatient
 
+const listPasiens = []
 
 const listPasien = [
   {

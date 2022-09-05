@@ -2,6 +2,7 @@ import { Box, Flex, TableContainer, Table, Thead, Tr, Tbody, Td, Divider, Center
 import colors from 'values/colors';
 import ButtonMain from 'components/button/ButtonMain';
 import { useHistory } from 'react-router-dom';
+import EmptyComponent from 'components/EmptyComponent';
 
 const ListDataClinic = () => {
   const history = useHistory();
@@ -28,37 +29,46 @@ const ListDataClinic = () => {
       </Flex>
       <Box borderRight={'1px solid #C0C0C0'} maxHeight={'430px'} height={'430px'}>
         <Box padding={'20px 20px 0 0'}>
-          <Flex justifyContent={'space-between'}>
-            <Box fontSize={'18px'} fontWeight={'bold'} color={colors.PRIMARY}>
-              Klinik
-            </Box>
-            <Box>
-              <ButtonMain onClick={() => history.push('/dashboard/list-patient-clinic')}>Lihat Semua</ButtonMain>
-            </Box>
-          </Flex>
+          {listKliniks.length > 0 &&
+            <Flex justifyContent={'space-between'}>
+              <Box fontSize={'18px'} fontWeight={'bold'} color={colors.PRIMARY}>
+                Klinik
+              </Box>
+              <Box>
+                <ButtonMain onClick={() => history.push('/dashboard/list-patient-clinic')}>Lihat Semua</ButtonMain>
+              </Box>
+            </Flex>
+          }
           <Box maxHeight={'347px'} height={'347px'} paddingTop={'20px'} display={'grid'}>
-            <TableContainer overflowY={'scroll'} overflowX={'scroll'} height='inherit'>
-              <Table variant='striped' colorScheme={'gray'}>
-                <Thead color={'#5670CD'}>
-                  <Tr>
-                    <Td>No.Antrian</Td>
-                    <Td>Nama lengkap pasien</Td>
-                    <Td>Layanan</Td>
-                    <Td>Waktu</Td>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {listKlinik.map((r, i) => (
-                    <Tr key={i}>
-                      <Td>{r.no}</Td>
-                      <Td fontWeight={'bold'}>{r.name}</Td>
-                      <Td>{r.service}</Td>
-                      <Td fontWeight={'bold'}>{r.time}</Td>
+            {listKliniks.length > 0 ?
+              <TableContainer overflowY={'scroll'} overflowX={'scroll'} height='inherit'>
+                <Table variant='striped' colorScheme={'gray'}>
+                  <Thead color={'#5670CD'}>
+                    <Tr>
+                      <Td>No.Antrian</Td>
+                      <Td>Nama lengkap pasien</Td>
+                      <Td>Layanan</Td>
+                      <Td>Waktu</Td>
                     </Tr>
-                  ))}
-                </Tbody>
-              </Table>
-            </TableContainer>
+                  </Thead>
+                  <Tbody>
+                    {listKlinik.map((r, i) => (
+                      <Tr key={i}>
+                        <Td>{r.no}</Td>
+                        <Td fontWeight={'bold'}>{r.name}</Td>
+                        <Td>{r.service}</Td>
+                        <Td fontWeight={'bold'}>{r.time}</Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+              </TableContainer>
+              :
+              <EmptyComponent
+                src={'/img/empty-state-clinic.svg'}
+                caption={'Jadwal klinik masih kosong'}
+              />
+            }
           </Box>
         </Box>
       </Box>
@@ -67,6 +77,8 @@ const ListDataClinic = () => {
 }
 
 export default ListDataClinic
+
+const listKliniks = []
 
 const listKlinik = [
   {

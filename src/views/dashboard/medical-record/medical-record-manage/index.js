@@ -26,7 +26,7 @@ const tabs = [
   { id: 8, name: 'Dada dan axilla' },
 ]
 
-const MedicalRecordManage = () => {
+const MedicalRecordManagePage = () => {
   const history = useHistory()
   let { idPatient } = useParams()
   const state = useSnapshot(stateMedicalRecord);
@@ -151,4 +151,4 @@ const MedicalRecordManage = () => {
   )
 }
 
-export default MedicalRecordManage
+export default MedicalRecordManagePage
