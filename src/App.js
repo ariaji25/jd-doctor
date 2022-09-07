@@ -23,6 +23,7 @@ import DashboardPage from 'views/dashboard';
 import ListPatientPage from 'views/dashboard/list-patient';
 import ListPatientClinicPage from 'views/dashboard/list-patient-clinic';
 import MedicalRecordPage from 'views/dashboard/medical-record';
+import MedicalRecordDetailPage from 'views/dashboard/medical-record/medical-record-detail';
 import MedicalRecordManagePage from 'views/dashboard/medical-record/medical-record-manage';
 import ProfilePage from 'views/dashboard/profile';
 import BiodataProfile from 'views/dashboard/profile/components/BiodataProfile';
@@ -121,6 +122,7 @@ const App = ({ history }) => {
               <Route exact path="/dashboard/list-patient" component={ListPatientPage} />
               <Route exact path="/dashboard/list-patient-clinic" component={ListPatientClinicPage} />
               <Route exact path="/dashboard/medical-record/:idPatient" component={MedicalRecordPage} />
+              <Route exact path="/dashboard/medical-record/:idPatient/detail" component={MedicalRecordDetailPage} />
               <Route exact path="/dashboard/medical-record/:idPatient/:mrMethod" component={MedicalRecordManagePage} />
 
               <Route exact component={PageNotFound} />
