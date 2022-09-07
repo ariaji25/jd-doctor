@@ -28,7 +28,7 @@ const DashboardPage = () => {
             <Box flex={3.5}>
               <Box padding={"32px 28px 16px 28px"}>
                 <Box paddingBottom={'50px'}>
-                  <Link to={"/landing"}>
+                  <Link to={"/"}>
                     <LogoWithText h={{ base: '10', md: '12' }} />
                   </Link>
                 </Box>
