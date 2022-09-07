@@ -27,6 +27,7 @@ import ListPatientClinicPage from 'views/dashboard/list-patient-clinic';
 import MedicalRecordPage from 'views/dashboard/medical-record';
 import MedicalRecordManagePage from 'views/dashboard/medical-record/medical-record-manage';
 import ProfilePage from 'views/dashboard/profile';
+import BiodataProfile from 'views/dashboard/profile/components/BiodataProfile';
 import ForgotPasswordPage from 'views/forgot-password';
 import PaymentSuccessPage from 'views/payment/PaymentSuccess';
 import { RegisterPage } from 'views/register/Register';
@@ -122,8 +123,6 @@ const App = ({ history }) => {
 
               {/* Routes below only for authenticated users */}
               <PrivateRoute component={BasePage} />
-
-              <Route exact component={PageNotFound} />
             </Switch>
           </Router>
         </dispatchStateContext.Provider>

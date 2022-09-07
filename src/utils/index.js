@@ -151,8 +151,13 @@ const readArrayBuffer = (file, result) => {
   };
 }
 
+const addZeroPad = (num, totalLength) => {
+  return `${num}`.padStart(totalLength, '0')
+}
+
 
 export {
+  addZeroPad,
   dateFormat,
   errHandler,
   decodeToken,

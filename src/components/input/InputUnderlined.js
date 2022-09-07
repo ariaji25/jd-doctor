@@ -1,4 +1,3 @@
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import {
   Box,
   Circle,
@@ -16,8 +15,34 @@ import ReactDatePicker from 'react-datepicker';
 import { dateFormat } from 'utils';
 import colors from 'values/colors';
 
+const customDateInput = ({ value, onClick, onChange }, ref) => (
+  <Input
+    autoComplete="off"
+    background="white"
+    value={value}
+    ref={ref}
+    onClick={onClick}
+    onChange={onChange}
+    marginStart={0}
+    marginInlineStart={0}
+    marginEnd={0}
+    marginInlineEnd={0}
+    paddingLeft={0}
+    fontSize={{ base: 'sm', sm: 'md' }}
+    color={colors.PRIMARY}
+    fontWeight="bold"
+    border="0"
+    rounded="none"
+    h="35px"
+    _focus={{ outline: 'none' }}
+  />
+);
+customDateInput.displayName = "DateInput";
+
+const CustomInput = forwardRef(customDateInput);
+
 const InputUnderlined = (
-  { icon, onClear, label, maxLength, onChange, validator, ...props },
+  { typeIcon, icon, onClear, label, maxLength, onChange, validator, ...props },
   ref
 ) => {
   const [isValid, setIsValid] = useState(false)
@@ -30,6 +55,7 @@ const InputUnderlined = (
   };
 
   const handleOnChange = (e) => {
+    console.log(e, "valalllll")
     if (props.type) switch (props.type) {
       case 'date':
         console.log(e)
@@ -103,13 +129,36 @@ const InputUnderlined = (
         </Flex>
       )}
       <Flex alignItems="center" borderBottom="1px solid #ccc" w="full">
-        <LeadingIcon />
+        {typeIcon === 'library' ?
+          <Flex mr="4" h="25px" alignItems={'center'}>
+            {icon}
+          </Flex>
+          :
+          <LeadingIcon />
+        }
 
         {props.type === 'date'
-          ? <ReactDatePicker
-            dateFormat={'dd/MM/yyyy'}
-            selected={value}
-            onChange={handleOnChange} />
+          ?
+          <InputGroup size='md'>
+            {/* <SingleDatepicker
+              name="date-input"
+              date={value}
+              onDateChange={handleOnChange}
+            /> */}
+            <ReactDatePicker
+              selected={value}
+              onChange={handleOnChange}
+              // isClearable={isClearable}
+              // showPopperArrow={showPopperArrow}
+              className="react-datapicker__input-text"
+              dateFormat={'dd/MM/yyyy'}
+              customInput={<CustomInput />}
+            />
+            {/* <ReactDatePicker
+              dateFormat={'dd/MM/yyyy'}
+              selected={value}
+              onChange={handleOnChange} /> */}
+          </InputGroup>
           : props.type === 'password' ?
             <InputGroup size='md'>
               <Input

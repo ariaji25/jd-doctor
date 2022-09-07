@@ -5,12 +5,14 @@ const EmptyComponent = ({ src, caption, width }) => {
     <Center >
       <Stack>
         <Center>
-          <Image
-            cursor={'pointer'}
-            alt={'empty'}
-            src={src}
-            width={width}
-          />
+          {src &&
+            <Image
+              cursor={'pointer'}
+              alt={'empty'}
+              src={src}
+              width={width}
+            />
+          }
         </Center>
         <Box>{caption}</Box>
       </Stack>

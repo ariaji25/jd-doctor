@@ -79,6 +79,7 @@ const LoginForm = ({ onClikWaHelp }) => {
               label="Username/Email"
               onChange={onChangeUsername}
               type="text"
+              placeholder='mail@email.com'
               value={username}
             />
           </Box>
@@ -90,6 +91,7 @@ const LoginForm = ({ onClikWaHelp }) => {
               onChange={onChangePassword}
               type='password'
               handleShow={handleShow}
+              placeholder='Masukkan password'
               value={password}
               show={showPassword}
             />
@@ -136,7 +138,7 @@ const LoginPage = () => {
             >
               <LoginForm onClikWaHelp={onToggle} />
 
-              <Carousel />
+              <Carousel onPage={'login'} />
             </Box>
           )}
           {showInputOtp && (
