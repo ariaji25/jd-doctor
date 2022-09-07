@@ -3,6 +3,7 @@ import ButtonMain from "components/button/ButtonMain";
 import Navbar from "components/dashboard/Navbar"
 import EmptyComponent from "components/EmptyComponent";
 import { FiCalendar, FiCircle, FiCreditCard, FiEdit, FiEye, FiFile, FiFileText, FiHeart, FiMail, FiMap, FiMapPin, FiPlusCircle, FiUser } from "react-icons/fi";
+import { getCurrentUserFromStorage } from "utils";
 import colors from "values/colors";
 
 
@@ -35,7 +36,7 @@ const DetailProfile = () => {
         </Box>
         <Stack>
           <Text fontSize={'24px'} fontWeight={'bold'} color={colors.PRIMARY}>
-            dr. Hadiguna Ahmad
+            {getCurrentUserFromStorage() ? getCurrentUserFromStorage().nama ?? '-' : '-'}
           </Text>
           <Text fontWeight={'bold'} color={colors.PRIMARY}>
             🔬 Dokter Umum

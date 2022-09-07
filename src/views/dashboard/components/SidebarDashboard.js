@@ -4,16 +4,18 @@ import ButtonMain from 'components/button/ButtonMain';
 import { FiCheckCircle, FiLogOut, FiXCircle } from 'react-icons/fi'
 import Calendar from 'react-calendar';
 import { useState } from 'react'
+import { getCurrentUserFromStorage } from 'utils';
 import EmptyComponent from 'components/EmptyComponent';
 import apiOtp from 'services/apiOtp';
 import { useHistory } from 'react-router-dom';
+import apiDoctor from 'services/apiDoctor';
 
 const SidebarDashboard = () => {
   const history = useHistory()
   const [value, onChange] = useState(new Date());
   const [isOpenLogout, setOpenLogout] = useState(false);
   const onLogout = () => {
-    apiOtp.loggedOuts();
+    apiDoctor.logOut()
   };
   return (
     <Box flex={1.3} maxWidth='500px' background={'#E5E5E5'} paddingBottom={'20px'}>
@@ -25,7 +27,7 @@ const SidebarDashboard = () => {
           </Box>
           <Flex flexDirection={'column'} padding={"15px 0"} justifyContent={'center'} lineHeight={1} onClick={() => history.push('/dashboard/profile')}>
             <Box>Halo dokter,</Box>
-            <Box fontSize={'20px'} fontWeight={'bold'}>dr. Jane Doe</Box>
+            <Box fontSize={'20px'} fontWeight={'bold'}>{getCurrentUserFromStorage() ? getCurrentUserFromStorage().nama ?? "-" : "-"}</Box>
           </Flex>
         </Flex>
         {isOpenLogout &&

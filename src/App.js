@@ -4,8 +4,10 @@ import { connect } from "react-redux";
 import { Route, Router, Switch } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import apiDoctor from 'services/apiDoctor';
 import apiOtp from 'services/apiOtp';
 import { apiPatient } from 'services/apiPatient';
+import { setCurrentUserToStorage } from 'utils';
 import keyStorage from 'values/keyStorage';
 import {
   AboutPage,
@@ -51,7 +53,6 @@ const dispatchStateContext = React.createContext(undefined);
 
 
 const App = ({ history }) => {
-  const nrm = localStorage.getItem(keyStorage.NRM);
   const location = history.location.pathname;
 
   const [state, dispatch] = React.useReducer(
@@ -61,17 +62,23 @@ const App = ({ history }) => {
 
   const init = async () => {
     try {
-      if (nrm) {
-        const currentUser = await apiPatient.getDetail();
-        if (currentUser && location === "/landing") {
+      const email = localStorage.getItem(keyStorage.EMAIL);
+      console.log("Username", email)
+      if (email) {
+        const currentUser = await apiDoctor.getDetail();
+        console.log("User", currentUser)
+        if (currentUser && (location === "/" || location === "/dashboard")) {
+          console.log(currentUser)
+          setCurrentUserToStorage(currentUser)
           window.browserHistory.push("/");
         }
+      } else {
+        window.browserHistory.push("/login");
       }
     } catch (error) {
       console.log(error);
-
-      if (!publicPath.includes(location.split("/")[1])) {
-        apiOtp.loggedOuts();
+      if (!publicPath.includes(location.split("/login")[1])) {
+        apiDoctor.logOut();
       }
     }
   };
@@ -101,29 +108,21 @@ const App = ({ history }) => {
           <ToastContainer />
           <Router history={history}>
             <Switch>
-              <Route path="/landing" component={LandingPage} />
-              <Route exact path="/article" component={ArticlePage} />
+              {/* <Route path="/landing" component={LandingPage} /> */}
+              {/* <Route exact path="/article" component={ArticlePage} />
               <Route exact path="/article/detail/:id" component={DetailArticle} />
               <Route path="/about" component={AboutPage} />
-              <Route exact path="/doctor/:id?" component={DoctorPage} />
+              <Route exact path="/doctor/:id?" component={DoctorPage} /> */}
               <Route path="/login" component={LoginPage} />
+              {/* <Route path="/term-and-condition" component={TermAndConditionPage} />
               <Route path="/forgot-password" component={ForgotPasswordPage} />
               <Route path="/term-and-condition" component={TermAndConditionPage} />
               <Route path="/privacy-policy" component={PrivacyPolicyPage} />
-              <Route path="/payment-success" component={PaymentSuccessPage} />
+              <Route path="/payment-success" component={PaymentSuccessPage} /> */}
               <Route path="/sign-up" component={RegisterPage} />
 
               {/* Routes below only for authenticated users */}
-              {/* <PrivateRoute component={BasePage} /> */}
-              <Route exact path="/dashboard" component={DashboardPage} />
-              <Route exact path="/dashboard/profile" component={ProfilePage} />
-              <Route exact path="/dashboard/profile/biodata" component={BiodataProfile} />
-              <Route exact path="/dashboard/list-patient" component={ListPatientPage} />
-              <Route exact path="/dashboard/list-patient-clinic" component={ListPatientClinicPage} />
-              <Route exact path="/dashboard/medical-record/:idPatient" component={MedicalRecordPage} />
-              <Route exact path="/dashboard/medical-record/:idPatient/:mrMethod" component={MedicalRecordManagePage} />
-
-              <Route exact component={PageNotFound} />
+              <PrivateRoute component={BasePage} />
             </Switch>
           </Router>
         </dispatchStateContext.Provider>
