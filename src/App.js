@@ -95,8 +95,8 @@ const App = ({ history }) => {
               <Route path="/about" component={AboutPage} />
               <Route exact path="/doctor/:id?" component={DoctorPage} /> */}
               <Route path="/login" component={LoginPage} />
-              {/* <Route path="/term-and-condition" component={TermAndConditionPage} />
               <Route path="/forgot-password" component={ForgotPasswordPage} />
+              {/* <Route path="/term-and-condition" component={TermAndConditionPage} />
               <Route path="/term-and-condition" component={TermAndConditionPage} />
               <Route path="/privacy-policy" component={PrivacyPolicyPage} />
               <Route path="/payment-success" component={PaymentSuccessPage} /> */}

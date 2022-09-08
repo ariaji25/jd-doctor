@@ -1,6 +1,6 @@
 make --dry-run --always-make --keep-going --print-directory
-make: Entering directory '/home/kusumaningrat/Documents/CDI/jd-docter'
-rm -rf /home/kusumaningrat/Documents/CDI/jd-docter/build
-rm -rf /home/kusumaningrat/Documents/CDI/jd-docter/tmp
-make: Leaving directory '/home/kusumaningrat/Documents/CDI/jd-docter'
+make: Entering directory '/home/kusumaningrat/Documents/CDI/jd-doctor'
+rm -rf /home/kusumaningrat/Documents/CDI/jd-doctor/build
+rm -rf /home/kusumaningrat/Documents/CDI/jd-doctor/tmp
+make: Leaving directory '/home/kusumaningrat/Documents/CDI/jd-doctor'
  

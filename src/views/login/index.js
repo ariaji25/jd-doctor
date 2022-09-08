@@ -1,6 +1,6 @@
 import {
   Box,
-  Button, Flex, ListItem,
+  Button, CircularProgress, Flex, ListItem,
   OrderedList,
   Text,
   useDisclosure
@@ -16,7 +16,7 @@ import PageContainer from 'components/PageContainer';
 import SideModal from 'components/SideModal';
 import ToastNotif from 'components/Toast';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import apiAuth from 'services/apiAuth';
 import apiDoctor from 'services/apiDoctor';
 import apiOtp from 'services/apiOtp';
@@ -26,6 +26,7 @@ import { useSnapshot } from 'valtio';
 import colors from 'values/colors';
 
 const LoginForm = ({ onClikWaHelp }) => {
+  const history = useHistory()
   const { username, password, processing } = useSnapshot(stateLogin);
   const [showPassword, setShowPassword] = useState(false)
 
@@ -98,7 +99,7 @@ const LoginForm = ({ onClikWaHelp }) => {
           </Box>
           <Box h="8" />
           <ButtonMain type="submit" disabled={processing} w="full">
-            Login
+            {stateLogin.processing ? <CircularProgress isIndeterminate color={colors.PRIMARY} size={'25px'} /> : 'Login'}
           </ButtonMain>
           <Text
             my="6"
@@ -106,12 +107,25 @@ const LoginForm = ({ onClikWaHelp }) => {
             cursor="pointer"
             color='#505050'
             textAlign='center'
+            onClick={() => history.push('/forgot-password')}
           >
             Lupa Password
           </Text>
-          <ButtonMain type="submit" disabled={processing} w="full" bg="white" color={colors.PRIMARY}>
+          <ButtonMain type="button" disabled={processing} w="full" bg="white" color={colors.PRIMARY}
+            onClick={() => history.push('/sign-up')}
+          >
             Registrasi sebagai dokter
           </ButtonMain>
+          <Text
+            my="6"
+            fontSize={{ base: 'xs', md: 'unset' }}
+            cursor="pointer"
+            color='#505050'
+            textAlign='center'
+            onClick={() => history.push('/registration-status')}
+          >
+            Cek status pendaftaran
+          </Text>
         </form>
       </Box>
     </>
