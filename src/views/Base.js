@@ -2,22 +2,11 @@ import React from "react";
 import { Route } from 'react-router-dom';
 import DashboardPage from './dashboard';
 import ListPatientPage from "./dashboard/list-patient";
-import ListCompPatient from "./dashboard/list-patient";
 import ListPatientClinicPage from "./dashboard/list-patient-clinic";
-import ListCompPatientClinic from "./dashboard/list-patient-clinic";
 import MedicalRecordPage from "./dashboard/medical-record";
-import MedicalRecord from "./dashboard/medical-record";
 import MedicalRecordManagePage from "./dashboard/medical-record/medical-record-manage";
-import MedicalRecordManage from "./dashboard/medical-record/medical-record-manage";
 import ProfilePage from "./dashboard/profile";
 import BiodataProfile from "./dashboard/profile/components/BiodataProfile";
-import ServicePage from './order';
-import AppointmentPage from './order/appointment';
-import PatientPage from './order/patient';
-import SchedulePage from './order/schedule';
-import SummaryPage from './order/summary';
-import PaymentPage from "./payment/Payment";
-import PaymentMethodPage from "./payment/PaymentMethod";
 
 const BasePage = () => {
   return (

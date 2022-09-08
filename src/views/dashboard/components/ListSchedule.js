@@ -8,51 +8,19 @@ import EmptyComponent from 'components/EmptyComponent';
 import { dateFormat, getCurrentUserFromStorage } from 'utils';
 import apiDoctor from 'services/apiDoctor';
 import { apiPatient } from 'services/apiPatient';
+import { layananList, queryConditions } from 'utils/constant';
 
-const ListSchedule = ({ state, selectedTab, tabs }) => {
+const ListSchedule = ({ state, selectedTab, tabs, isLoading, serviceHistory, totals }) => {
   const { isOpen, onToggle } = useDisclosure(false);
   const [selectedPatient, setSelectedPatient] = useState('')
 
-  const [serviceHistory, setServiceHistory] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
   const [modalLoading, setModalLoading] = useState(false)
-
-  const getServiceHistory = () => {
-    console.log("DoctorId", getCurrentUserFromStorage().id)
-    console.log("Date", dateFormat(new Date(), "yyyy-MM-dd"))
-    apiDoctor.getHomeCareServiceHistory(
-      dateFormat(new Date(), "yyyy-MM-dd"),
-      getCurrentUserFromStorage().id
-    ).then((r) => {
-      console.log("ResponseHistory", r);
-      var i = 1;
-      var history = r.events.map((ev) => {
-        const data = {
-          id: i,
-          patientId: ev.trackedEntityInstance,
-          img: '/img/doctorSidebar.png',
-          name: ev.dataValues.find((e) => e.dataElement === 'FwdxzpQ8w2I') ? ev.dataValues.find((e) => e.dataElement === 'FwdxzpQ8w2I').value ?? '-' : '-',
-          address: ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6') ? ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6').value ?? '-' : '-',
-          schedule: ev.dataValues.find((e) => e.dataElement === 'X7GUfsOErZh') ? ev.dataValues.find((e) => e.dataElement === 'X7GUfsOErZh').value ?? '-' : '-',
-          problem: ev.dataValues.find((e) => e.dataElement === 'Yh6ylx8D3tO') ? ev.dataValues.find((e) => e.dataElement === 'Yh6ylx8D3tO').value ?? '-' : '-',
-          service: ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6') ? ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6').value ?? '-' : '-',
-        }
-        i++;
-        return data;
-      })
-      console.log("Response", history)
-      // history = history.filter(filter)
-      setServiceHistory(history)
-      setIsLoading(false)
-    }).catch(e => {
-      setIsLoading(false)
-    })
-  }
 
   const getPatientDetail = (ev) => {
     setModalLoading(true)
     apiPatient.getPatienDetailByID(ev.patientId).then((p) => {
       const data = {
+        id: ev.patientId,
         name: p.attributes.find((a) => a.attribute === "HyfzjNVhlzM") ? p.attributes.find((a) => a.attribute === "HyfzjNVhlzM").value ?? '-' : '-',
         phone: p.attributes.find((a) => a.attribute === "NCLBUYYxnWU") ? p.attributes.find((a) => a.attribute === "NCLBUYYxnWU").value ?? '-' : '-',
         address: p.attributes.find((a) => a.attribute === "aRHSGgFeOjr") ? p.attributes.find((a) => a.attribute === "aRHSGgFeOjr").value ?? '-' : '-',
@@ -68,14 +36,7 @@ const ListSchedule = ({ state, selectedTab, tabs }) => {
     })
   }
 
-  const init = useCallback(() => {
-    setIsLoading(true)
-    getServiceHistory();
-  }, [])
-
-  useEffect(() => {
-    init()
-  }, [init])
+  console.log(totals);
 
   return (
     <>
@@ -88,7 +49,7 @@ const ListSchedule = ({ state, selectedTab, tabs }) => {
                 state.selectedTab = r.id
               }}
             >
-              {r.label} <Flex style={state.selectedTab === r.id ? { background: 'white', color: colors.PRIMARY } : { background: colors.PRIMARY, color: 'white' }} padding={'0 6px'} fontSize={'12px'} margin={'3px'} alignItems={'center'} borderRadius={'12px'}>2</Flex>
+              {r.label} <Flex style={state.selectedTab === r.id ? { background: 'white', color: colors.PRIMARY } : { background: colors.PRIMARY, color: 'white' }} padding={'0 6px'} fontSize={'12px'} margin={'3px'} alignItems={'center'} borderRadius={'12px'}>{totals ? totals[r.id] : 0}</Flex>
             </Flex>
           ))}
         </Flex>
@@ -98,7 +59,7 @@ const ListSchedule = ({ state, selectedTab, tabs }) => {
             : serviceHistory.length > 0 ? serviceHistory.map((r, i) => (
               <Flex key={i} flex={1} justifyContent={'center'} gap={2} border={'1px solid #C4C4C4'} borderRadius={'5px'} margin={'14px 0px 0px 20px'}>
                 <Box flex={1} padding={'13px 0 13px 13px'}>
-                  <Avatar name={r.name} src={r.img} color={'black'} bg={'transparent'} border={'1px solid #C0C0C0'} />
+                  <Avatar icon={<Image src={r.img} w='25px' />} color={'black'} bg={'transparent'} border={'1px solid #C0C0C0'}/>
                 </Box>
                 <Flex flex={5} flexDirection={'column'} padding={'13px 13px 13px 0'}>
                   <Flex gap={1} justifyContent='end'>
@@ -112,7 +73,7 @@ const ListSchedule = ({ state, selectedTab, tabs }) => {
                     </Flex>
                   </Flex>
                   <Box fontSize={'13px'}><b>Hari ini</b> - {r.schedule}</Box>
-                  <Box fontSize={'13px'}>{r.address}</Box>
+                  <Box fontSize={'13px'}>{r.problem}</Box>
                   <Box paddingTop={'6px'}>
                     <ButtonMain width={'100%'} onClick={() => {
                       getPatientDetail(r)
@@ -136,7 +97,7 @@ const ListSchedule = ({ state, selectedTab, tabs }) => {
       </Flex>
       <SideModal
         title={'Detail Pasien'}
-        isOpen={selectedPatient&&isOpen}
+        isOpen={selectedPatient && isOpen}
         onToogle={onToggle}
         positionContent='center'
       >
