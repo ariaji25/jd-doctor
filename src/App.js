@@ -25,6 +25,7 @@ import DashboardPage from 'views/dashboard';
 import ListPatientPage from 'views/dashboard/list-patient';
 import ListPatientClinicPage from 'views/dashboard/list-patient-clinic';
 import MedicalRecordPage from 'views/dashboard/medical-record';
+import MedicalRecordDetailPage from 'views/dashboard/medical-record/medical-record-detail';
 import MedicalRecordManagePage from 'views/dashboard/medical-record/medical-record-manage';
 import ProfilePage from 'views/dashboard/profile';
 import BiodataProfile from 'views/dashboard/profile/components/BiodataProfile';
