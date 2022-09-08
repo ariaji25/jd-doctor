@@ -12,6 +12,11 @@ export const PageMode = {
   edit: 'edit',
 };
 
+export const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+
+
 
 export const maximumFileSize = 1024000
 export const maximumProfileSize = 2048000

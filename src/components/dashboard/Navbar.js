@@ -54,7 +54,7 @@ const Navbars = ({ options, currentUser }) => {
         mt={{ base: 4, md: 0 }}
       >
         <Box>
-          <Link to={"/landing"}>
+          <Link to={"/"}>
             <LogoWithText h={{ base: '10', md: '12' }} />
           </Link>
         </Box>
