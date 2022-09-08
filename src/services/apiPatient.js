@@ -247,10 +247,16 @@ const checkTeiAvailable = async (tei) => {
   }
 };
 
+const getPatienDetailByID = async (id) => {
+  const response = await request.get(urls.PATIENT_UPDATE(id))
+  return response.data;
+}
+
 export const apiPatient = {
   create,
   update,
   getDetail,
   checkTeiAvailable,
-  getPatientByNIK
+  getPatientByNIK,
+  getPatienDetailByID
 };

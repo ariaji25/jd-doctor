@@ -1,4 +1,4 @@
-import { Box, Flex, Image, TableContainer, Table, Thead, Tr, Tbody, Td, InputGroup, InputLeftElement, Input, Divider, Breadcrumb, BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react';
+import { Box, Flex, Image, TableContainer, Table, Thead, Tr, Tbody, Td, InputGroup, InputLeftElement, Input, Divider, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Menu, MenuList, MenuButton, MenuItem } from '@chakra-ui/react';
 import colors from 'values/colors';
 import ButtonMain from 'components/button/ButtonMain';
 import {
@@ -11,7 +11,7 @@ import {
 } from "@ajna/pagination";
 import { useState, useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom';
-import { FiPlusCircle, FiFilter, FiSearch } from 'react-icons/fi';
+import { FiPlusCircle, FiFilter, FiSearch, FiEye, FiEdit, FiTrash } from 'react-icons/fi';
 import EmptyComponent from 'components/EmptyComponent';
 
 const MedicalRecordPage = () => {
@@ -164,11 +164,12 @@ const MedicalRecordPage = () => {
               </Flex>
             </Flex>
             <Box maxHeight={'500px'} height={'500px'} paddingTop={'10px'} display={'grid'}>
-              {listPasiens.length > 0 ?
+              {listPasien.length > 0 ?
                 <TableContainer overflowY={'scroll'} overflowX={'scroll'} height='inherit'>
                   <Table variant='striped' colorScheme={'gray'}>
                     <Thead color={'#5670CD'}>
                       <Tr>
+                        <Td p={0}></Td>
                         <Td>Tanggal periksa</Td>
                         <Td>Layanan</Td>
                         <Td>Keluhan</Td>
@@ -181,6 +182,33 @@ const MedicalRecordPage = () => {
                     <Tbody>
                       {listPasien.map((r, i) => (
                         <Tr key={i}>
+                          <Td p={0}>
+                            <Menu isLazy>
+                              {({ isOpen }) => (
+                                <>
+                                  <MenuButton isActive={isOpen} >
+                                    <Image src={'/icon/vertical-dot.svg'} />
+                                  </MenuButton>
+                                  <MenuList>
+                                    <MenuItem onClick={() => history.push(`/dashboard/medical-record/${idPatient}/detail`)} display={'flex'} gap={3}>
+                                      <Box><FiEye /></Box>
+                                      <Box>Lihat detail</Box>
+                                    </MenuItem>
+                                    <MenuItem onClick={() => history.push(`/dashboard/medical-record/${idPatient}/edit`)} display={'flex'} gap={3}>
+                                      <Box><FiEdit /></Box>
+                                      <Box>Edit</Box>
+                                    </MenuItem>
+                                    <MenuItem onClick={() => alert('delete')} color={'red'} display={'flex'} gap={3}>
+                                      <Box><FiTrash /></Box>
+                                      <Box>Hapus</Box>
+                                    </MenuItem>
+                                  </MenuList>
+                                </>
+                              )}
+                            </Menu>
+
+
+                          </Td>
                           <Td>{r.time}</Td>
                           <Td>{r.service}</Td>
                           <Td>{r.problem}</Td>
@@ -200,7 +228,7 @@ const MedicalRecordPage = () => {
                 />
               }
             </Box>
-            {listPasiens.length > 0 &&
+            {listPasien.length > 0 &&
               <Box paddingTop={'20px'}>
                 <Pagination
                   pagesCount={pagesCount}

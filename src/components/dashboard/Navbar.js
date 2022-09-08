@@ -16,7 +16,9 @@ import {
 import React from "react";
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import apiDoctor from "services/apiDoctor";
 import apiOtp from 'services/apiOtp';
+import { getCurrentUserFromStorage } from "utils";
 import LogoWithText from '../LogoWithText';
 
 
@@ -25,7 +27,7 @@ const Navbars = ({ options, currentUser }) => {
   const handleToggle = () => (isOpen ? onClose() : onOpen());
 
   const onLogout = () => {
-    apiOtp.loggedOuts();
+    apiDoctor.logOut();
   };
 
   return (
@@ -52,7 +54,7 @@ const Navbars = ({ options, currentUser }) => {
         mt={{ base: 4, md: 0 }}
       >
         <Box>
-          <Link to={"/landing"}>
+          <Link to={"/"}>
             <LogoWithText h={{ base: '10', md: '12' }} />
           </Link>
         </Box>
@@ -73,7 +75,8 @@ const Navbars = ({ options, currentUser }) => {
                   <Avatar />
                   <Flex flexDir={'column'} justifyContent={'center'} alignItems={'start'} pl={2}>
                     <Text color={"blackAlpha.800"} mr={2} fontSize={'13px'}>Halo dokter,</Text>
-                    <Text color={"blackAlpha.800"} mr={2} fontWeight={'bold'}>{currentUser && currentUser.nama || 'Anonymous'}</Text>
+                    <Text color={"blackAlpha.800"} mr={2} fontWeight={'bold'}>{getCurrentUserFromStorage() && getCurrentUserFromStorage().nama || '-'}
+                    </Text>
                   </Flex>
                 </Center>
               </Flex>
