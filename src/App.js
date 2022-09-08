@@ -32,6 +32,7 @@ import BiodataProfile from 'views/dashboard/profile/components/BiodataProfile';
 import ForgotPasswordPage from 'views/forgot-password';
 import PaymentSuccessPage from 'views/payment/PaymentSuccess';
 import { RegisterPage } from 'views/register/Register';
+import RegistrationStatusPage from 'views/registration-status';
 
 const publicPath = [
   "login",
@@ -74,7 +75,7 @@ const App = ({ history }) => {
           window.browserHistory.push("/");
         }
       } else {
-        window.browserHistory.push("/login");
+        // window.browserHistory.push("/login");
       }
     } catch (error) {
       console.log(error);
@@ -116,6 +117,7 @@ const App = ({ history }) => {
               <Route exact path="/doctor/:id?" component={DoctorPage} /> */}
               <Route path="/login" component={LoginPage} />
               <Route path="/forgot-password" component={ForgotPasswordPage} />
+              <Route path="/registration-status" component={RegistrationStatusPage} />
               {/* <Route path="/term-and-condition" component={TermAndConditionPage} />
               <Route path="/term-and-condition" component={TermAndConditionPage} />
               <Route path="/privacy-policy" component={PrivacyPolicyPage} />
