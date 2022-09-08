@@ -1,6 +1,7 @@
 import dateFns from "date-fns/format";
 import id from "date-fns/locale/id";
 import jwtDecode from 'jwt-decode';
+import keyStorage from "values/keyStorage";
 import { CURRENT_USER_KEY, TOKEN_KEY } from "./constant";
 
 const setDataToStorage = (key, data) => {
@@ -33,8 +34,8 @@ const removeFromLocalStorage = (key) => {
 };
 
 const isAuthenticated = () => {
-  const currentUser = getCurrentUserFromStorage();
-  return currentUser || (currentUser && currentUser.isAuthenticated);
+  const currentUser = localStorage.getItem(keyStorage.EMAIL);
+  return currentUser && currentUser.length > 0;
 };
 
 const setTokenToStorage = (token) => {
@@ -150,8 +151,13 @@ const readArrayBuffer = (file, result) => {
   };
 }
 
+const addZeroPad = (num, totalLength) => {
+  return `${num}`.padStart(totalLength, '0')
+}
+
 
 export {
+  addZeroPad,
   dateFormat,
   errHandler,
   decodeToken,
