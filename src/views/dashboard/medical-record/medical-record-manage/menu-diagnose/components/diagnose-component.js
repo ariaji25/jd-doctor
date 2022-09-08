@@ -3,7 +3,21 @@ import InputUnderlined from "components/input/InputUnderlined";
 import ButtonMain from "components/button/ButtonMain";
 import { FiPlusCircle, FiTrash } from "react-icons/fi";
 import EmptyComponent from "components/EmptyComponent";
+import {
+  AutoComplete,
+  AutoCompleteInput,
+  AutoCompleteItem,
+  AutoCompleteList,
+} from "@choc-ui/chakra-autocomplete";
+import colors from "values/colors";
 
+const countries = [
+  "nigeria",
+  "japan",
+  "india",
+  "united states",
+  "south korea",
+];
 const DiagnoseComponent = () => {
   return (
     <Stack px={24} py={5} gap={3}>
@@ -11,10 +25,36 @@ const DiagnoseComponent = () => {
       <Flex alignItems={'end'}>
         <Box flex={1}>Coding diagnosis</Box>
         <Box flex={1}>
-          <InputUnderlined
-            type='text'
-            placeholder='Diagnosis'
-          />
+          <AutoComplete openOnFocus>
+            <AutoCompleteInput
+              variant="filled"
+              placeholder="Diagnosis"
+              borderBottom={'1.5px solid #e0e0e0'}
+              bg={'transparent'}
+              marginStart={0}
+              marginInlineStart={0}
+              marginEnd={0}
+              marginInlineEnd={0}
+              paddingLeft={0}
+              fontSize={{ base: 'sm', sm: 'md' }}
+              color={colors.PRIMARY}
+              fontWeight="bold"
+              border="0"
+              _hover={{ background: 'transparent' }}
+              rounded="none"
+              h="35px" />
+            <AutoCompleteList>
+              {countries.map((country, cid) => (
+                <AutoCompleteItem
+                  key={`option-${cid}`}
+                  value={country}
+                  textTransform="capitalize"
+                >
+                  {country}
+                </AutoCompleteItem>
+              ))}
+            </AutoCompleteList>
+          </AutoComplete>
         </Box>
       </Flex>
       <Flex alignItems={'end'}>

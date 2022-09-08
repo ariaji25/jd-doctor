@@ -1,19 +1,17 @@
 import { Box, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Divider, Flex, Image, Modal, ModalBody, ModalContent, ModalOverlay, Stack, Text, useDisclosure, } from "@chakra-ui/react"
-import Content from "components/Content";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import colors from "values/colors"
-import MedicalNavigation from "../medical-record-manage/components/MedicalHeader";
-import MedicalHeader from "../medical-record-manage/components/MedicalHeader";
-
 
 const MedicalRecordDetailPage = () => {
   const history = useHistory()
+  let { idPatient } = useParams()
+
   return (
     <Box minW={0} flex={'auto'}>
       <Flex padding={'30px'}>
         <Box pt={1}>
           <Image
-            onClick={() => history.push('/dashboard')}
+            onClick={() => history.push(`/dashboard/medical-record/${idPatient}`)}
             cursor={'pointer'}
             alt={'arrow-left'}
             src='/icon/arrow-left.svg'
