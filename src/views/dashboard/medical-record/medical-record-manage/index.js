@@ -74,8 +74,8 @@ const MedicalRecordManagePage = () => {
               <MenuTreatment />
             }
           </Flex>
-          <Box px={40} py={5}>
-            <ButtonMain width={'100%'} onClick={onOpen}>Simpan</ButtonMain>
+          <Box px={40} py={5} textAlign={'center'}>
+            <ButtonMain width={'100%'} maxW={'700px'} onClick={onOpen}>Simpan</ButtonMain>
           </Box>
         </Box>
       </Flex>
