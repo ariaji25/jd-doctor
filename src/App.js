@@ -31,6 +31,7 @@ import ProfilePage from 'views/dashboard/profile';
 import BiodataProfile from 'views/dashboard/profile/components/BiodataProfile';
 import ForgotPasswordPage from 'views/forgot-password';
 import PaymentSuccessPage from 'views/payment/PaymentSuccess';
+import RecoveryPasswordPage from 'views/recovery-password';
 import { RegisterPage } from 'views/register/Register';
 
 const publicPath = [
@@ -116,11 +117,13 @@ const App = ({ history }) => {
               <Route exact path="/doctor/:id?" component={DoctorPage} /> */}
               <Route path="/login" component={LoginPage} />
               <Route path="/forgot-password" component={ForgotPasswordPage} />
+              <Route path="/recovery-password/:param" component={RecoveryPasswordPage} />
               {/* <Route path="/term-and-condition" component={TermAndConditionPage} />
               <Route path="/term-and-condition" component={TermAndConditionPage} />
               <Route path="/privacy-policy" component={PrivacyPolicyPage} />
               <Route path="/payment-success" component={PaymentSuccessPage} /> */}
               <Route path="/sign-up" component={RegisterPage} />
+              <Route component={PageNotFound} />
 
               {/* Routes below only for authenticated users */}
               <PrivateRoute component={BasePage} />

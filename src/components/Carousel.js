@@ -25,7 +25,10 @@ const Carousel = ({ onPage }) => {
   const cardsForgotPassword = [
     '/img/forgot-password-carousel.png',
   ];
-  const cards = onPage === 'login' ? cardsLogin : cardsForgotPassword
+  const cardsRecovery = [
+    '/img/recovery-password-carousel.svg',
+  ];
+  const cards = onPage === 'login' ? cardsLogin : onPage === 'recovery' ? cardsRecovery : cardsForgotPassword
 
   // const bodys = [
   //   {
