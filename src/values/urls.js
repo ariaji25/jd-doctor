@@ -36,7 +36,8 @@ const urls = {
   // LOGIN
   LOGIN_URL: `${config.apiURL}/api/login`,
   DOCTER_DETAIL: (email) => `${config.apiURL}/api/trackedEntityInstances?program=wcA7dgdvgt3&ou=FexDOKZlHSx&filter=KNhGfY4ApxB:EQ:${email}`,
-  DOCTER_SERVICE_HISTORY: (id) => `${config.apiURL}/api/events?filter=Mu6xWeUWtWV:eq:${id}`,
+  DOCTER_CLINIC_SERVICE_HISTORY: (id) => `${config.apiURL}/api/events?filter=Mu6xWeUWtWV:eq:${id}&filter=Sd9Z8lFBuQB:like:Kunjungan`,
+  DOCTER_HOMECARE_SERVICE_HISTORY: (id) => `${config.apiURL}/api/events?filter=Mu6xWeUWtWV:eq:${id}&filter=xLeRj3JlXLO:gt:1`,
 };
 
 export default urls;

@@ -107,9 +107,8 @@ const logOut = () => {
 }
 
 const getClinicServiceHistory = async (date, id) => {
-  const response = await request.get(urls.DOCTER_SERVICE_HISTORY(id), {
+  const response = await request.get(urls.DOCTER_CLINIC_SERVICE_HISTORY(id), {
     params: {
-      filter: 'Sd9Z8lFBuQB:eq:Kunjungan Klinik',
       filter: `arxuhT0GhPy:eq:${date}`,
       fields: '[*]',
       order: 'created:ASC'
@@ -119,9 +118,8 @@ const getClinicServiceHistory = async (date, id) => {
 }
 
 const getHomeCareServiceHistory = async (date, id) => {
-  const response = await request.get(urls.DOCTER_SERVICE_HISTORY(id), {
+  const response = await request.get(urls.DOCTER_HOMECARE_SERVICE_HISTORY(id), {
     params: {
-      filter: 'Sd9Z8lFBuQB:eq:Pelayanan dir rumah',
       filter: `arxuhT0GhPy:eq:${date}`,
       fields: '[*]',
       order: 'created:ASC'
