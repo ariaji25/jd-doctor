@@ -1,7 +1,7 @@
-import { Box, Flex, Avatar, Image, Center, MenuButton, MenuList, Menu, MenuItem, Text, Stack, CircularProgress } from '@chakra-ui/react';
+import { Box, Flex, Avatar, Image, Center, MenuButton, MenuList, Menu, MenuItem, Text, Stack, CircularProgress, Divider } from '@chakra-ui/react';
 import colors from 'values/colors';
 import ButtonMain from 'components/button/ButtonMain';
-import { FiCheckCircle, FiLogOut, FiXCircle } from 'react-icons/fi'
+import { FiCheckCircle, FiHardDrive, FiLogOut, FiUser, FiXCircle } from 'react-icons/fi'
 import Calendar from 'react-calendar';
 import { useCallback, useEffect, useState } from 'react'
 import { dateFormat, getCurrentUserFromStorage } from 'utils';
@@ -84,14 +84,30 @@ const SidebarDashboard = () => {
           </Flex>
         </Flex>
         {isOpenLogout &&
-          <Flex onClick={onLogout} alignItems={'center'} gap={3} justifyContent={'center'} fontSize={'18px'} color='red' fontWeight={'bold'} margin={"0px 1px 10px 1px !important"} background='white' borderRadius={'0 0px 5px 5px'} padding={'20px'}>
+          <Stack margin={"0px 1px 10px 1px !important"} cursor={'pointer'} background='white' borderRadius={'0 0px 5px 5px'} padding={'20px'}>
+            <Flex onClick={() => history.push('/dashboard/profile')} alignItems={'center'} gap={3} fontSize={'18px'} fontWeight={'bold'} >
+              <Box>
+                <FiUser />
+              </Box>
+              <Box>
+                Edit profile
+              </Box>
+            </Flex>
+            <Flex onClick={() => history.push('/recovery-password')} alignItems={'center'} gap={3} fontSize={'18px'} fontWeight={'bold'} >
+              <Box><FiHardDrive /></Box>
+              <Box>
+                Ubah password
+              </Box>
+            </Flex>
             <Box>
-              <FiLogOut />
+              <Divider border={'2px solid #C0C0C0'} />
             </Box>
-            <Box>
-              Keluar
-            </Box>
-          </Flex>
+            <Flex onClick={onLogout} alignItems={'center'} gap={3} fontSize={'18px'} color='red' fontWeight={'bold'} >
+              <Box>
+                Keluar
+              </Box>
+            </Flex>
+          </Stack>
         }
       </Stack>
       <Box margin={"32px 20px 16px 20px"}>
