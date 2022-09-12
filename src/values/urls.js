@@ -39,6 +39,7 @@ const urls = {
   DOCTER_CLINIC_SERVICE_HISTORY: (id) => `${config.apiURL}/api/events?filter=Mu6xWeUWtWV:eq:${id}&filter=Sd9Z8lFBuQB:like:Kunjungan`,
   DOCTER_HOMECARE_SERVICE_HISTORY: (id) => `${config.apiURL}/api/events?filter=Mu6xWeUWtWV:eq:${id}&filter=xLeRj3JlXLO:gt:1`,
   // DOCTER_HOMECARE_SERVICE_HISTORY_NOTIF: (id) => `${config.apiURL}/api/events?filter=Mu6xWeUWtWV:eq:${id}&filter=a5xBShlsRo8:eq:Waiting&filter=xLeRj3JlXLO:gt:1&rootJunction=OR`,
+  DIAGNOSIS_SEARCH: `${config.apiURL}/api/diagnosis`
 
 };
 

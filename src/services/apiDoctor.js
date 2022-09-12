@@ -121,7 +121,7 @@ const getClinicServiceHistory = async (date, id) => {
 const getHomeCareServiceHistory = async (date, id, conditions) => {
   const response = await request.get(urls.DOCTER_HOMECARE_SERVICE_HISTORY(id), {
     params: {
-      // filter: `arxuhT0GhPy:${conditions??queryConditions.equal}:${date}`,
+      filter: `arxuhT0GhPy:${conditions??queryConditions.equal}:${date}`,
       fields: '[*]',
       order: 'created:ASC'
     }
@@ -141,6 +141,15 @@ const getServiceNotifications = async (id) => {
   return response.data
 }
 
-const apiDoctor = { list, create, getDetail, logOut, getClinicServiceHistory, getHomeCareServiceHistory, getServiceNotifications };
+const searchDiagnosis = async (search) => {
+  const response = await request.get(urls.DIAGNOSIS_SEARCH, {
+    params: {
+      search: search,
+    }
+  })
+  return response.data
+}
+
+const apiDoctor = { list, create, getDetail, logOut, getClinicServiceHistory, getHomeCareServiceHistory, getServiceNotifications, searchDiagnosis };
 
 export default apiDoctor;

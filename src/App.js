@@ -11,6 +11,7 @@ import {
   BasePage,
   LoginPage,
 } from "views";
+import ForgotPasswordPage from 'views/forgot-password';
 import { RegisterPage } from 'views/register/Register';
 
 const publicPath = [
