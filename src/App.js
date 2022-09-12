@@ -11,6 +11,7 @@ import {
   BasePage,
   LoginPage,
 } from "views";
+import PageNotFound from 'views/404';
 import ForgotPasswordPage from 'views/forgot-password';
 import PaymentSuccessPage from 'views/payment/PaymentSuccess';
 import RecoveryPasswordPage from 'views/recovery-password';
