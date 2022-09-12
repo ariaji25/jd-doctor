@@ -110,7 +110,7 @@ const App = ({ history }) => {
               <Route path="/privacy-policy" component={PrivacyPolicyPage} />
               <Route path="/payment-success" component={PaymentSuccessPage} /> */}
               <Route path="/sign-up" component={RegisterPage} />
-              <Route component={PageNotFound} />
+              {/* <Route component={PageNotFound} /> */}
 
               {/* Routes below only for authenticated users */}
               <PrivateRoute component={BasePage} />
