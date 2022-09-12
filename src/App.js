@@ -1,34 +1,17 @@
 import PrivateRoute from 'common/privateRoutes';
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect } from "react";
 import { connect } from "react-redux";
 import { Route, Router, Switch } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import apiDoctor from 'services/apiDoctor';
-import apiOtp from 'services/apiOtp';
-import { apiPatient } from 'services/apiPatient';
 import { setCurrentUserToStorage } from 'utils';
 import keyStorage from 'values/keyStorage';
 import {
-  AboutPage,
-  ArticlePage,
   BasePage,
-  DoctorPage,
-  LandingPage,
   LoginPage,
-  PrivacyPolicyPage,
-  TermAndConditionPage
 } from "views";
 import PageNotFound from 'views/404';
-import DetailArticle from "views/article/DetailArticle";
-import DashboardPage from 'views/dashboard';
-import ListPatientPage from 'views/dashboard/list-patient';
-import ListPatientClinicPage from 'views/dashboard/list-patient-clinic';
-import MedicalRecordPage from 'views/dashboard/medical-record';
-import MedicalRecordDetailPage from 'views/dashboard/medical-record/medical-record-detail';
-import MedicalRecordManagePage from 'views/dashboard/medical-record/medical-record-manage';
-import ProfilePage from 'views/dashboard/profile';
-import BiodataProfile from 'views/dashboard/profile/components/BiodataProfile';
 import ForgotPasswordPage from 'views/forgot-password';
 import PaymentSuccessPage from 'views/payment/PaymentSuccess';
 import RecoveryPasswordPage from 'views/recovery-password';

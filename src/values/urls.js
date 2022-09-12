@@ -7,7 +7,7 @@ const urls = {
   WA_ME: `https://wa.me/628116562201`,
 
   BOOKING_CREATE: `${config.apiURL}/api/events?strategy=CREATE_AND_UPDATE`,
-  BOOKING_UPDATE: `${config.apiURL}/api/events`,
+  BOOKING_UPDATE: `${config.apiURL}/api/events?strategy=CREATE_AND_UPDATE`,
 
   PATIENT_CREATE: `${config.apiURL}/api/trackedEntityInstances`,
   DOCTOR_CREATE: `${config.apiURL}/api/register`,
@@ -38,6 +38,9 @@ const urls = {
   DOCTER_DETAIL: (email) => `${config.apiURL}/api/trackedEntityInstances?program=wcA7dgdvgt3&ou=FexDOKZlHSx&filter=KNhGfY4ApxB:EQ:${email}`,
   DOCTER_CLINIC_SERVICE_HISTORY: (id) => `${config.apiURL}/api/events?filter=Mu6xWeUWtWV:eq:${id}&filter=Sd9Z8lFBuQB:like:Kunjungan`,
   DOCTER_HOMECARE_SERVICE_HISTORY: (id) => `${config.apiURL}/api/events?filter=Mu6xWeUWtWV:eq:${id}&filter=xLeRj3JlXLO:gt:1`,
+  // DOCTER_HOMECARE_SERVICE_HISTORY_NOTIF: (id) => `${config.apiURL}/api/events?filter=Mu6xWeUWtWV:eq:${id}&filter=a5xBShlsRo8:eq:Waiting&filter=xLeRj3JlXLO:gt:1&rootJunction=OR`,
+  DIAGNOSIS_SEARCH: `${config.apiURL}/api/diagnosis`
+
 };
 
 export default urls;

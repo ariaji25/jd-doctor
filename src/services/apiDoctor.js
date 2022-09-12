@@ -1,4 +1,5 @@
 import { dateFormat } from 'utils';
+import { queryConditions } from 'utils/constant';
 import request from 'utils/request';
 import keyStorage from 'values/keyStorage';
 import urls from 'values/urls';
@@ -117,10 +118,10 @@ const getClinicServiceHistory = async (date, id) => {
   return response.data
 }
 
-const getHomeCareServiceHistory = async (date, id) => {
+const getHomeCareServiceHistory = async (date, id, conditions) => {
   const response = await request.get(urls.DOCTER_HOMECARE_SERVICE_HISTORY(id), {
     params: {
-      filter: `arxuhT0GhPy:eq:${date}`,
+      filter: `arxuhT0GhPy:${conditions??queryConditions.equal}:${date}`,
       fields: '[*]',
       order: 'created:ASC'
     }
@@ -128,6 +129,27 @@ const getHomeCareServiceHistory = async (date, id) => {
   return response.data
 }
 
-const apiDoctor = { list, create, getDetail, logOut, getClinicServiceHistory, getHomeCareServiceHistory };
+const getServiceNotifications = async (id) => {
+  const response = await request.get(urls.DOCTER_HOMECARE_SERVICE_HISTORY(id), {
+    params: {
+      filter: `arxuhT0GhPy:eq:${dateFormat(new Date(), "yyyy-MM-dd")}`,
+      fields: '[*]',
+      pager: false,
+      order: 'created:DESC'
+    }
+  })
+  return response.data
+}
+
+const searchDiagnosis = async (search) => {
+  const response = await request.get(urls.DIAGNOSIS_SEARCH, {
+    params: {
+      search: search,
+    }
+  })
+  return response.data
+}
+
+const apiDoctor = { list, create, getDetail, logOut, getClinicServiceHistory, getHomeCareServiceHistory, getServiceNotifications, searchDiagnosis };
 
 export default apiDoctor;

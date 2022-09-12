@@ -10,6 +10,8 @@ import {
   AutoCompleteList,
 } from "@choc-ui/chakra-autocomplete";
 import colors from "values/colors";
+import { useCallback, useEffect, useState } from "react";
+import apiDoctor from "services/apiDoctor";
 
 const countries = [
   "nigeria",
@@ -19,6 +21,23 @@ const countries = [
   "south korea",
 ];
 const DiagnoseComponent = () => {
+  const [diagnosisSearch, setDiagnosisSearch] = useState([])
+
+  const [selectedDiagnosis, setSelectedDiagnosis] = useState(null)
+
+  const getDiagnosisSearch = (search) => {
+    console.log(search)
+    if (search && search.length >= 3) apiDoctor.searchDiagnosis(search).then(d => {
+      setDiagnosisSearch(d.data)
+    })
+  }
+  // const init = useCallback(() => {
+
+  // }, [])
+
+  // useEffect(() => {
+  //   init();
+  // }, [init])
   return (
     <Stack px={24} py={5} gap={3}>
       <Box fontSize={'24px'} fontWeight={'bold'} color={'#505050'} pb={'12px'}>Diagnosis</Box>
@@ -41,16 +60,17 @@ const DiagnoseComponent = () => {
               fontWeight="bold"
               border="0"
               _hover={{ background: 'transparent' }}
+              onChange={(e) => getDiagnosisSearch(e.target.value)}
               rounded="none"
               h="35px" />
             <AutoCompleteList>
-              {countries.map((country, cid) => (
+              {diagnosisSearch.map((diagnosis, cid) => (
                 <AutoCompleteItem
                   key={`option-${cid}`}
-                  value={country}
+                  value={diagnosis.name}
                   textTransform="capitalize"
                 >
-                  {country}
+                  {diagnosis.name}-{diagnosis.description}
                 </AutoCompleteItem>
               ))}
             </AutoCompleteList>

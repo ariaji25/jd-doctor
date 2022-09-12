@@ -10,7 +10,7 @@ import {
   Button,
 } from '@chakra-ui/react';
 import TextSmall from 'components/text/TextSmall';
-import { forwardRef, useState } from 'react';
+import { forwardRef, useCallback, useState } from 'react';
 import ReactDatePicker from 'react-datepicker';
 import { dateFormat } from 'utils';
 import colors from 'values/colors';
@@ -115,6 +115,16 @@ const InputUnderlined = (
         break
     }
   }
+
+  const init = useCallback(() => {
+    if (props.value) {
+      setValue(props.value)
+    }
+  }, [])
+
+  useState(() => {
+    init()
+  }, [init])
 
   return (
     <Box w={props.w}>

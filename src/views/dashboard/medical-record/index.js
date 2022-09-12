@@ -1,4 +1,4 @@
-import { Box, Flex, Image, TableContainer, Table, Thead, Tr, Tbody, Td, InputGroup, InputLeftElement, Input, Divider, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Menu, MenuList, MenuButton, MenuItem } from '@chakra-ui/react';
+import { Box, Flex, Image, TableContainer, Table, Thead, Tr, Tbody, Td, InputGroup, InputLeftElement, Input, Divider, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Menu, MenuList, MenuButton, MenuItem, Center, CircularProgress } from '@chakra-ui/react';
 import colors from 'values/colors';
 import ButtonMain from 'components/button/ButtonMain';
 import {
@@ -13,6 +13,9 @@ import { useState, useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom';
 import { FiPlusCircle, FiFilter, FiSearch, FiEye, FiEdit, FiTrash } from 'react-icons/fi';
 import EmptyComponent from 'components/EmptyComponent';
+import { apiPatient } from 'services/apiPatient';
+import { dateFormat } from 'utils';
+import { genders } from 'utils/constant';
 
 const MedicalRecordPage = () => {
   const history = useHistory();
@@ -58,6 +61,7 @@ const MedicalRecordPage = () => {
   };
   // effects
   useEffect(() => {
+    getPatientDetail()
     fetchPokemons(pageSize, offset)
       .then((pokemons) => {
         setPokemonsTotal(pokemons.count);
@@ -84,6 +88,27 @@ const MedicalRecordPage = () => {
   const handleDisableClick = () => {
     setIsDisabled((oldState) => !oldState);
   };
+  const [selectedPatient, setSelectedPatient] = useState('')
+
+  const [isLoading, setIsLoading] = useState(false)
+
+  const getPatientDetail = () => {
+    setIsLoading(true)
+    apiPatient.getPatienDetailByID(idPatient).then((p) => {
+      const data = {
+        name: p.attributes.find((a) => a.attribute === "HyfzjNVhlzM") ? p.attributes.find((a) => a.attribute === "HyfzjNVhlzM").value ?? '-' : '-',
+        phone: p.attributes.find((a) => a.attribute === "NCLBUYYxnWU") ? p.attributes.find((a) => a.attribute === "NCLBUYYxnWU").value ?? '-' : '-',
+        address: p.attributes.find((a) => a.attribute === "aRHSGgFeOjr") ? p.attributes.find((a) => a.attribute === "aRHSGgFeOjr").value ?? '-' : '-',
+        gender: p.attributes.find((a) => a.attribute === "TlO4kdMfHqa") ? p.attributes.find((a) => a.attribute === "TlO4kdMfHqa").value ?? '-' : '-',
+        dob: p.attributes.find((a) => a.attribute === "SSsiEz3cVbn") ? p.attributes.find((a) => a.attribute === "SSsiEz3cVbn").value ?? '-' : '-',
+      }
+      setSelectedPatient(data)
+      setIsLoading(false)
+    }).catch(e => {
+      setIsLoading(false)
+    })
+  }
+
   return (
     <Box>
       <Flex alignItems={'center'} padding={'30px'}>
@@ -105,199 +130,203 @@ const MedicalRecordPage = () => {
         </Breadcrumb>
       </Flex>
 
-      <Box padding={'0px 100px 10px'}>
-        <Flex  >
-          <Flex flex={0} minW={'300px'} justifyContent={'end'} flexDirection={'column'}>
-            <Box fontSize={'36px'} color={colors.PRIMARY} fontWeight={'bold'}>
-              Rekam medis
-            </Box>
-            <Box fontSize={'13px'}>
-              Data rekam medis pasien
-            </Box>
-          </Flex>
-          <Flex flex={1} justifyContent={'end'} gap={4} whiteSpace={'pre'} color={colors.PRIMARY} alignItems={'center'} lineHeight={'26px'}>
-            <Box>
-              <Image
-                alt='patient-photo'
-                src='/img/patientPhoto.png'
-                cursor={'pointer'}
-                width={100}
-              />
-            </Box>
-            <Box >
-              <Box fontSize={'13px'}>Nama lengkap pasien</Box>
-              <Box fontWeight={'bold'}>Carissa Amanda</Box>
-              <Box fontSize={'13px'}>Tanggal lahir</Box>
-              <Box fontWeight={'bold'}>22/02/1998 - 23 thn</Box>
-            </Box>
-            <Box >
-              <Box fontSize={'13px'}>Alamat</Box>
-              <Box fontWeight={'bold'}>2972 Westheimer Rd. Santa Ana, Illinois....</Box>
-              <Box fontSize={'13px'}>Jenis kelamin</Box>
-              <Box fontWeight={'bold'}>Jenis kelamin</Box>
-            </Box>
-          </Flex>
-        </Flex>
-        <Box paddingTop={2}>
-          <Divider border={'2px solid #C0C0C0'} />
-        </Box>
-        <Box paddingTop={2} marginBottom={5}>
-          <Box paddingTop={'10px'}>
-            <Flex justifyContent={'space-between'}>
-              <Flex fontSize={'18px'} fontWeight={'bold'} color={colors.PRIMARY} gap={3} alignItems={'center'}>
-                <ButtonMain onClick={() => history.push(`/dashboard/medical-record/${idPatient}/create`)}><FiPlusCircle /><span>Tambah pemeriksaan</span></ButtonMain>
+      {
+        isLoading
+          ? <Center><CircularProgress isIndeterminate size='100px' thickness='4px' /></Center>
+          : <Box padding={'0px 100px 10px'}>
+            <Flex  >
+              <Flex flex={0} minW={'300px'} justifyContent={'end'} flexDirection={'column'}>
+                <Box fontSize={'36px'} color={colors.PRIMARY} fontWeight={'bold'}>
+                  Rekam medis
+                </Box>
+                <Box fontSize={'13px'}>
+                  Data rekam medis pasien
+                </Box>
               </Flex>
-              <Flex>
-                <ButtonMain marginRight={'10px'} bg="white" color={'#505050'} borderColor='#505050'><FiFilter fontSize={'25px'} /> <span style={{ paddingLeft: '5px' }}></span>Filter</ButtonMain>
-                <InputGroup>
-                  <InputLeftElement
-                    pointerEvents='none'
-
-                    children={
-                      <Box>
-                        <FiSearch style={{ color: '#505050' }} />
-                      </Box>
-                    }
+              <Flex flex={1} justifyContent={'end'} gap={4} whiteSpace={'pre'} color={colors.PRIMARY} alignItems={'center'} lineHeight={'26px'}>
+                <Box>
+                  <Image
+                    alt='patient-photo'
+                    src='/img/patientPhoto.png'
+                    cursor={'pointer'}
+                    width={100}
                   />
-                  <Input type='text' placeholder='Search' minWidth={'364px'} borderRadius={'114px'} border={'2px solid #505050 !important'} />
-                </InputGroup>
+                </Box>
+                <Box >
+                  <Box fontSize={'13px'}>Nama lengkap pasien</Box>
+                  <Box fontWeight={'bold'}>{selectedPatient.name}</Box>
+                  <Box fontSize={'13px'}>Tanggal lahir</Box>
+                  <Box fontWeight={'bold'}>{selectedPatient.dob ? selectedPatient.dob.replaceAll("-", "/") : "-"} - 23 thn</Box>
+                </Box>
+                <Box >
+                  <Box fontSize={'13px'}>Alamat</Box>
+                  <Box fontWeight={'bold'}>{selectedPatient.address}</Box>
+                  <Box fontSize={'13px'}>Jenis kelamin</Box>
+                  <Box fontWeight={'bold'}>{genders[selectedPatient.gender]}</Box>
+                </Box>
               </Flex>
             </Flex>
-            <Box maxHeight={'500px'} height={'500px'} paddingTop={'10px'} display={'grid'}>
-              {listPasien.length > 0 ?
-                <TableContainer overflowY={'scroll'} overflowX={'scroll'} height='inherit'>
-                  <Table variant='striped' colorScheme={'gray'}>
-                    <Thead color={'#5670CD'}>
-                      <Tr>
-                        <Td p={0}></Td>
-                        <Td>Tanggal periksa</Td>
-                        <Td>Layanan</Td>
-                        <Td>Keluhan</Td>
-                        <Td>Dokter</Td>
-                        <Td>Diagnosa</Td>
-                        <Td>Tindakan</Td>
-                        <Td>Resep Dokter</Td>
-                      </Tr>
-                    </Thead>
-                    <Tbody>
-                      {listPasien.map((r, i) => (
-                        <Tr key={i}>
-                          <Td p={0}>
-                            <Menu isLazy>
-                              {({ isOpen }) => (
-                                <>
-                                  <MenuButton isActive={isOpen} >
-                                    <Image src={'/icon/vertical-dot.svg'} />
-                                  </MenuButton>
-                                  <MenuList>
-                                    <MenuItem onClick={() => history.push(`/dashboard/medical-record/${idPatient}/detail`)} display={'flex'} gap={3}>
-                                      <Box><FiEye /></Box>
-                                      <Box>Lihat detail</Box>
-                                    </MenuItem>
-                                    <MenuItem onClick={() => history.push(`/dashboard/medical-record/${idPatient}/edit`)} display={'flex'} gap={3}>
-                                      <Box><FiEdit /></Box>
-                                      <Box>Edit</Box>
-                                    </MenuItem>
-                                    <MenuItem onClick={() => alert('delete')} color={'red'} display={'flex'} gap={3}>
-                                      <Box><FiTrash /></Box>
-                                      <Box>Hapus</Box>
-                                    </MenuItem>
-                                  </MenuList>
-                                </>
-                              )}
-                            </Menu>
-
-
-                          </Td>
-                          <Td>{r.time}</Td>
-                          <Td>{r.service}</Td>
-                          <Td>{r.problem}</Td>
-                          <Td>{r.docter}</Td>
-                          <Td>{r.diagnosa}</Td>
-                          <Td>{r.tindakan}</Td>
-                          <Td>{r.receipt}</Td>
-                        </Tr>
-                      ))}
-                    </Tbody>
-                  </Table>
-                </TableContainer>
-                :
-                <EmptyComponent
-                  src={'/img/empty-state-patient.svg'}
-                  caption={'Belum ada rekam medis'}
-                />
-              }
+            <Box paddingTop={2}>
+              <Divider border={'2px solid #C0C0C0'} />
             </Box>
-            {listPasien.length > 0 &&
-              <Box paddingTop={'20px'}>
-                <Pagination
-                  pagesCount={pagesCount}
-                  currentPage={currentPage}
-                  isDisabled={isDisabled}
-                  onPageChange={handlePageChange}
-                >
-                  <PaginationContainer
-                    align="center"
-                    justify="flex-end"
-                    p={4}
-                    w="full"
-                  >
-                    <PaginationPageGroup
-                      isInline
-                      align="center"
-                      separator={
-                        <PaginationSeparator
-                          onClick={() =>
-                            console.log(
-                              "Im executing my own function along with Separator component functionality"
-                            )
-                          }
-                          bg={'white'}
-                          color={colors.PRIMARY}
-                          border={`1px solid ${colors.PRIMARY}`}
-                          borderRadius={'34px'}
-                          fontSize="sm"
-                          padding={'20px'}
-                          w={7}
-                          jumpSize={11}
-                        />
-                      }
+            <Box paddingTop={2} marginBottom={5}>
+              <Box paddingTop={'10px'}>
+                <Flex justifyContent={'space-between'}>
+                  <Flex fontSize={'18px'} fontWeight={'bold'} color={colors.PRIMARY} gap={3} alignItems={'center'}>
+                    <ButtonMain onClick={() => history.push(`/dashboard/medical-record/${idPatient}/create`)}><FiPlusCircle /><span>Tambah pemeriksaan</span></ButtonMain>
+                  </Flex>
+                  <Flex>
+                    <ButtonMain marginRight={'10px'} bg="white" color={'#505050'} borderColor='#505050'><FiFilter fontSize={'25px'} /> <span style={{ paddingLeft: '5px' }}></span>Filter</ButtonMain>
+                    <InputGroup>
+                      <InputLeftElement
+                        pointerEvents='none'
+
+                        children={
+                          <Box>
+                            <FiSearch style={{ color: '#505050' }} />
+                          </Box>
+                        }
+                      />
+                      <Input type='text' placeholder='Search' minWidth={'364px'} borderRadius={'114px'} border={'2px solid #505050 !important'} />
+                    </InputGroup>
+                  </Flex>
+                </Flex>
+                <Box maxHeight={'500px'} height={'500px'} paddingTop={'10px'} display={'grid'}>
+                  {listPasien.length > 0 ?
+                    <TableContainer overflowY={'scroll'} overflowX={'scroll'} height='inherit'>
+                      <Table variant='striped' colorScheme={'gray'}>
+                        <Thead color={'#5670CD'}>
+                          <Tr>
+                            <Td p={0}></Td>
+                            <Td>Tanggal periksa</Td>
+                            <Td>Layanan</Td>
+                            <Td>Keluhan</Td>
+                            <Td>Dokter</Td>
+                            <Td>Diagnosa</Td>
+                            <Td>Tindakan</Td>
+                            <Td>Resep Dokter</Td>
+                          </Tr>
+                        </Thead>
+                        <Tbody>
+                          {listPasien.map((r, i) => (
+                            <Tr key={i}>
+                              <Td p={0}>
+                                <Menu isLazy>
+                                  {({ isOpen }) => (
+                                    <>
+                                      <MenuButton isActive={isOpen} >
+                                        <Image src={'/icon/vertical-dot.svg'} />
+                                      </MenuButton>
+                                      <MenuList>
+                                        <MenuItem onClick={() => history.push(`/dashboard/medical-record/${idPatient}/detail`)} display={'flex'} gap={3}>
+                                          <Box><FiEye /></Box>
+                                          <Box>Lihat detail</Box>
+                                        </MenuItem>
+                                        <MenuItem onClick={() => history.push(`/dashboard/medical-record/${idPatient}/edit`)} display={'flex'} gap={3}>
+                                          <Box><FiEdit /></Box>
+                                          <Box>Edit</Box>
+                                        </MenuItem>
+                                        <MenuItem onClick={() => alert('delete')} color={'red'} display={'flex'} gap={3}>
+                                          <Box><FiTrash /></Box>
+                                          <Box>Hapus</Box>
+                                        </MenuItem>
+                                      </MenuList>
+                                    </>
+                                  )}
+                                </Menu>
+
+
+                              </Td>
+                              <Td>{r.time}</Td>
+                              <Td>{r.service}</Td>
+                              <Td>{r.problem}</Td>
+                              <Td>{r.docter}</Td>
+                              <Td>{r.diagnosa}</Td>
+                              <Td>{r.tindakan}</Td>
+                              <Td>{r.receipt}</Td>
+                            </Tr>
+                          ))}
+                        </Tbody>
+                      </Table>
+                    </TableContainer>
+                    :
+                    <EmptyComponent
+                      src={'/img/empty-state-patient.svg'}
+                      caption={'Belum ada rekam medis'}
+                    />
+                  }
+                </Box>
+                {listPasien.length > 0 &&
+                  <Box paddingTop={'20px'}>
+                    <Pagination
+                      pagesCount={pagesCount}
+                      currentPage={currentPage}
+                      isDisabled={isDisabled}
+                      onPageChange={handlePageChange}
                     >
-                      {pages.map((page) => (
-                        <PaginationPage
-                          w={7}
-                          bg="white"
-                          color={colors.PRIMARY}
-                          border={`1px solid ${colors.PRIMARY}`}
-                          padding={'20px'}
-                          borderRadius={'34px'}
-                          key={`pagination_page_${page}`}
-                          page={page}
-                          onClick={() =>
-                            console.log(
-                              "Im executing my own function along with Page component functionality"
-                            )
+                      <PaginationContainer
+                        align="center"
+                        justify="flex-end"
+                        p={4}
+                        w="full"
+                      >
+                        <PaginationPageGroup
+                          isInline
+                          align="center"
+                          separator={
+                            <PaginationSeparator
+                              onClick={() =>
+                                console.log(
+                                  "Im executing my own function along with Separator component functionality"
+                                )
+                              }
+                              bg={'white'}
+                              color={colors.PRIMARY}
+                              border={`1px solid ${colors.PRIMARY}`}
+                              borderRadius={'34px'}
+                              fontSize="sm"
+                              padding={'20px'}
+                              w={7}
+                              jumpSize={11}
+                            />
                           }
-                          fontSize="sm"
-                          _hover={{
-                            bg: colors.BIRU_TERANG
-                          }}
-                          _current={{
-                            bg: colors.PRIMARY,
-                            color: 'white',
-                            fontSize: "sm",
-                            w: 7
-                          }}
-                        />
-                      ))}
-                    </PaginationPageGroup>
-                  </PaginationContainer>
-                </Pagination>
+                        >
+                          {pages.map((page) => (
+                            <PaginationPage
+                              w={7}
+                              bg="white"
+                              color={colors.PRIMARY}
+                              border={`1px solid ${colors.PRIMARY}`}
+                              padding={'20px'}
+                              borderRadius={'34px'}
+                              key={`pagination_page_${page}`}
+                              page={page}
+                              onClick={() =>
+                                console.log(
+                                  "Im executing my own function along with Page component functionality"
+                                )
+                              }
+                              fontSize="sm"
+                              _hover={{
+                                bg: colors.BIRU_TERANG
+                              }}
+                              _current={{
+                                bg: colors.PRIMARY,
+                                color: 'white',
+                                fontSize: "sm",
+                                w: 7
+                              }}
+                            />
+                          ))}
+                        </PaginationPageGroup>
+                      </PaginationContainer>
+                    </Pagination>
+                  </Box>
+                }
               </Box>
-            }
+            </Box>
           </Box>
-        </Box>
-      </Box>
+      }
     </Box>
   )
 }
