@@ -386,7 +386,7 @@ export const RegisterPage = () => {
           {rightInputModel.map((e) => <InputWithModel key={e.id} inputModel={e} onChange={onInputChange} validator={validator} />)}
         </Box>
         <Box w='md'>
-          {/* <GoogleMapComponent /> */}
+          <GoogleMapComponent />
         </Box>
         <Box h='20px' />
         <Box w='md'>
