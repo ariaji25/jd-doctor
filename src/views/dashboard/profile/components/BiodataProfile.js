@@ -1,4 +1,4 @@
-import { Avatar, Box, Center, Flex, Image, Radio, RadioGroup, Select, Stack, Text } from "@chakra-ui/react"
+import { Avatar, Box, Center, Flex, Image, Radio, RadioGroup, Select, Stack, Text, useMediaQuery } from "@chakra-ui/react"
 import ButtonMain from "components/button/ButtonMain"
 import InputUnderlined from "components/input/InputUnderlined"
 import LogoWithText from "components/LogoWithText"
@@ -6,17 +6,146 @@ import TextSmall from "components/text/TextSmall"
 import { FiArchive, FiBriefcase, FiCalendar, FiCamera, FiFileText, FiMap, FiUpload, FiUser } from "react-icons/fi"
 import { useHistory } from "react-router-dom"
 import colors from "values/colors"
-import GoogleMapReact from 'google-map-react';
+import React, { useState, useEffect, useMemo } from "react";
+import usePlacesAutocomplete, { getGeocode, getLatLng } from "use-places-autocomplete";
+import {
+  AutoComplete,
+  AutoCompleteInput,
+  AutoCompleteItem,
+  AutoCompleteList,
+} from "@choc-ui/chakra-autocomplete";
+import { GoogleMap, useJsApiLoader, Marker, useLoadScript } from '@react-google-maps/api';
 
-const defaultProps = {
-  center: {
-    lat: -8.5907447,
-    lng: 116.1187886
-  },
-  zoom: 20
+const containerStyle = {
+  width: '100%',
+  height: '300px'
 };
 
+const PlacesAutocomplete = ({ setSelected }) => {
+  const {
+    ready,
+    value,
+    suggestions: { status, data },
+    setValue,
+    clearSuggestions
+  } = usePlacesAutocomplete();
+
+  const handleInput = (e) => {
+    console.log(e.target.value, "cariii")
+    setValue(e.target.value);
+  };
+
+  const handleSelect = async (val) => {
+    setValue(val, false);
+    clearSuggestions()
+    const results = await getGeocode(val)
+    const { lat, lng } = await getLatLng(results[0])
+    setSelected({ lat, lng })
+    console.log(val, "valllll", lat, lng, results)
+  };
+  console.log(data, "dataaaa")
+
+  return (
+    <AutoComplete openOnFocus>
+      <AutoCompleteInput
+        variant="filled"
+        placeholder="Cari tempat"
+        borderBottom={'1.5px solid #e0e0e0'}
+        bg={'transparent'}
+        marginStart={0}
+        marginInlineStart={0}
+        marginEnd={0}
+        marginInlineEnd={0}
+        paddingLeft={0}
+        fontSize={{ base: 'sm', sm: 'md' }}
+        color={colors.PRIMARY}
+        fontWeight="bold"
+        border="0"
+        _hover={{ background: 'transparent' }}
+        onChange={handleInput}
+        rounded="none"
+        h="35px" />
+      <AutoCompleteList>
+        {status === "OK" &&
+          data.map(({ place_id, description }) => (
+            <AutoCompleteItem
+              key={place_id}
+              value={description}
+              onClick={() => handleSelect({ placeId: place_id })}
+            >
+              {description}
+            </AutoCompleteItem>
+          ))}
+      </AutoCompleteList>
+    </AutoComplete>
+  );
+};
+
+function GoogleMapComponent({ children }) {
+  const { isLoaded } = useLoadScript({
+    id: 'google-map-script',
+    googleMapsApiKey: "AIzaSyCPSjkk8X9GAigUMdM1aCMD427I-tu3dIk",
+    libraries: ["places"]
+  })
+  const center = useMemo(() => ({ lat: -8.5769951, lng: 116.1004894 }), [])
+  const [selected, setSelected] = useState(null)
+
+  function getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(getCoordinates)
+    }
+  }
+
+  function getCoordinates(position) {
+    setSelected({
+      lat: position.coords.latitude,
+      lng: position.coords.longitude
+    })
+  }
+
+  console.log(selected, 'selected')
+
+  const onDragEnd = (e) => {
+    setSelected({
+      lat: e.latLng.lat(),
+      lng: e.latLng.lng()
+    })
+  }
+
+  useEffect(() => {
+    getLocation()
+  }, [])
+  return isLoaded ? (
+    <Box>
+      <Box>
+        <Flex>
+          <TextSmall fontWeight="thin">Titik Koordinat Praktik</TextSmall>
+          <Text fontSize="xs" color={colors.DANGER}>
+            *
+          </Text>
+        </Flex>
+      </Box>
+      <Box >
+        <PlacesAutocomplete setSelected={setSelected} />
+      </Box>
+      <GoogleMap
+        mapContainerStyle={containerStyle}
+        center={center}
+        zoom={8}
+      >
+        {selected && <Marker position={selected} onDragEnd={onDragEnd} draggable />}
+      </GoogleMap>
+      {selected &&
+        <Box>
+          <TextSmall color={colors.PRIMARY} >{selected.lat},{selected.lng}</TextSmall>
+        </Box>
+      }
+    </Box>
+  ) : <></>
+}
+
 const BiodataProfile = () => {
+  const [isLargerThan1280] = useMediaQuery('(min-width: 1280px)')
   const history = useHistory()
 
   const handleApiLoaded = (map, maps) => {
@@ -199,25 +328,13 @@ const BiodataProfile = () => {
               isRequired
             />
           </Box>
-          <Box style={{ height: '250px', width: '100%' }}>
-            <GoogleMapReact
-              bootstrapURLKeys={{ key: "" }}
-              defaultCenter={defaultProps.center}
-              defaultZoom={defaultProps.zoom}
-              yesIWantToUseGoogleMapApiInternals
-              onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
-            >
-              <Box
-                lat={-8.5907447}
-                lng={116.1187886}
-                bg={'red'}
-                h={5}
-                w={5}
-                borderRadius={5}
-              >
-                A
-              </Box>
-            </GoogleMapReact>
+          <Box>
+            <GoogleMapComponent />
+          </Box>
+          <Box textAlign={'center'}>
+            <ButtonMain minW={isLargerThan1280 ? '400px' : null} onClick={() => history.push('/dashboard/profile')}>
+              Lanjut
+            </ButtonMain>
           </Box>
         </Stack>
       </Flex>

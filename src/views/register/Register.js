@@ -14,11 +14,10 @@ import apiDoctor from "services/apiDoctor";
 import { dateFormat, getBase64 } from "utils";
 import { nikValidator, phoneValidator } from "utils/inputValidator";
 import colors from "values/colors";
-import { GoogleMap, useJsApiLoader, Marker, useLoadScript } from '@react-google-maps/api';
+import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
 import { Step, Stepper } from 'react-form-stepper';
-import { FiCheck, FiCheckCircle, FiFileText, FiLogIn, FiX } from "react-icons/fi";
+import { FiCheck, FiFileText, FiLogIn, FiX } from "react-icons/fi";
 import { useHistory, useParams } from "react-router-dom";
-import { StandaloneSearchBox } from "@react-google-maps/api";
 import usePlacesAutocomplete, { getGeocode, getLatLng } from "use-places-autocomplete";
 import {
   AutoComplete,
