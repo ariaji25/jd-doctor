@@ -27,6 +27,7 @@ import {
   AutoCompleteList,
 } from "@choc-ui/chakra-autocomplete";
 import TextSmall from "components/text/TextSmall";
+import LogoWithText from "components/LogoWithText";
 
 const containerStyle = {
   width: '100%',
@@ -476,7 +477,9 @@ export const RegisterPage = () => {
 
 
 
+  const [isLargerThan1000] = useMediaQuery('(min-width: 1000px)')
   const getOrgUnit = async () => {
+
     const orgUnit = await apiClinicArea.list()
     console.log(orgUnit);
   }
@@ -494,28 +497,27 @@ export const RegisterPage = () => {
     <div>
       <PageContainer bg="unset">
         <Content>
-          <Center marginTop={"50px"} margin="16px">
-            <Box>
-              <Grid alignContent="center" templateColumns={(gContext.sWidth) > 800 ? 'repeat(2, 1fr)' : 'nav'} gap={1}>
-                <GridItem>
-                  <Image src="/img/ic_jd_logo.png" alt="logo" />
-                </GridItem>
-                {/* <Box w="md" /> */}
-                <GridItem>
-                  <Text color={colors.HITAM_PUDAR} fontSize="3xl" fontWeight="bold" >
-                    Registrasi Dokter
-                  </Text>
-                  <Text
-                    fontSize={"14sp"}
-                    textColor={colors.HITAM_PUDAR}>
-                    Hanya dokter dengan SIP  yang bisa registrasi. Lengkapi identitas diri anda
-                  </Text>
-                </GridItem>
-              </Grid>
-              <Box height={"16px"} />
-              <Box w="full">
-                <hr />
-              </Box>
+          <Center marginTop={"50px"} >
+            <Box w={isLargerThan1000 ? '1000px' : null}>
+              <Flex color={'#505050'} justifyContent={'center'} alignItems={'start'} gap={8} borderBottom={'1px solid #EAEAEA'} pb={8}>
+                <Box left={0}>
+                  <Image
+                    onClick={() => history.push('/login')}
+                    cursor={'pointer'}
+                    alt={'arrow-left'}
+                    src='/icon/arrow-left.svg'
+                  />
+                </Box>
+                <Flex flex={2} justifyContent={'end'} >
+                  <LogoWithText />
+                </Flex>
+                <Box flex={3} >
+                  <Box maxW={'530px'}>
+                    <Text fontSize={'36px'} fontWeight='bold'>Registrasi Dokter</Text>
+                    <Text>Hanya dokter dengan SIP  yang bisa registrasi. Lengkapi identitas diri anda</Text>
+                  </Box>
+                </Box>
+              </Flex>
               <Box height={"54px"} />
               {/* Profile picture input */}
 
@@ -535,14 +537,14 @@ export const RegisterPage = () => {
                     </Center>
                   </Box>
                   <Box height={"54px"} />
-                  <Grid justifyContent={'center'} mb={4} templateColumns={(gContext.sWidth) > 800 ? 'repeat(2, 1fr)' : 'nav'} gap={1}>
-                    <GridItem>
+                  <Flex flexWrap={'wrap'} gap={4} justifyContent="center">
+                    <Box flex={1}>
                       <LeftForms />
-                    </GridItem>
-                    <GridItem justifyItems={'right'}>
+                    </Box>
+                    <Box flex={1}>
                       <RightForms />
-                    </GridItem>
-                  </Grid>
+                    </Box>
+                  </Flex>
                 </>
               }
               {step === 1 &&
