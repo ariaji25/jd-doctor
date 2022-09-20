@@ -1,108 +1,123 @@
-import { Box, Flex, Image, TableContainer, Table, Thead, Tr, Tbody, Td, InputGroup, InputLeftElement, Input, Divider, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Menu, MenuList, MenuButton, MenuItem, Center, CircularProgress } from '@chakra-ui/react';
+import { Box, Flex, Image, TableContainer, Table, Thead, Tr, Tbody, Td, InputGroup, InputLeftElement, Input, Divider, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Menu, MenuList, MenuButton, MenuItem, Center, CircularProgress, useQuery } from '@chakra-ui/react';
 import colors from 'values/colors';
 import ButtonMain from 'components/button/ButtonMain';
 import {
   Pagination,
-  usePagination,
   PaginationPage,
   PaginationPageGroup,
   PaginationContainer,
   PaginationSeparator
 } from "@ajna/pagination";
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useHistory, useParams } from 'react-router-dom';
 import { FiPlusCircle, FiFilter, FiSearch, FiEye, FiEdit, FiTrash } from 'react-icons/fi';
 import EmptyComponent from 'components/EmptyComponent';
 import { apiPatient } from 'services/apiPatient';
-import { dateFormat } from 'utils';
-import { genders } from 'utils/constant';
+import { dateFormat, useQueryParams } from 'utils';
+import { genders, medicalRecordProgram } from 'utils/constant';
+import { useSnapshot } from 'valtio';
+import stateInputMR, { clearStateInputMR } from 'states/stateInputMedicalRecord';
+import apiBooking from 'services/apiBooking';
+import apiMedicalrecord from 'services/apiMedicalRecord';
 
 const MedicalRecordPage = () => {
   const history = useHistory();
   let { idPatient } = useParams();
+  let query = useQueryParams();
 
-  // states
-  const [pokemonsTotal, setPokemonsTotal] = useState();
-  const [pokemons, setPokemons] = useState([]);
-  // constants
-  const outerLimit = 2;
-  const innerLimit = 2;
-  const {
-    pages,
-    pagesCount,
-    offset,
-    currentPage,
-    setCurrentPage,
-    setIsDisabled,
-    isDisabled,
-    pageSize,
-    setPageSize
-  } = usePagination({
-    total: pokemonsTotal,
-    limits: {
-      outer: outerLimit,
-      inner: innerLimit
-    },
-    initialState: {
-      pageSize: 5,
-      isDisabled: false,
-      currentPage: 1
-    }
-  });
+  const [serviceHistory, setServiceHistory] = useState([])
+  const [pager, setPager] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
 
-  //test
-  const fetchPokemons = async (
-    pageSize,
-    offset
-  ) => {
-    return await fetch(
-      `https://pokeapi.co/api/v2/pokemon?limit=${pageSize}&offset=${offset}`
-    ).then(async (res) => await res.json());
-  };
-  // effects
-  useEffect(() => {
-    getPatientDetail()
-    fetchPokemons(pageSize, offset)
-      .then((pokemons) => {
-        setPokemonsTotal(pokemons.count);
-        setPokemons(pokemons.results);
+  const { serviceDetail } = useSnapshot(stateInputMR)
+  const getServiceHistory = (page) => {
+    setIsLoading(true)
+    apiPatient.serviceHistory(idPatient, page)
+      .then(r => {
+        console.log("Data", r)
+        var i = 1;
+        var history = r.events.map((ev) => {
+          const data = {
+            id: i,
+            patientId: ev.trackedEntityInstance,
+            name: ev.dataValues.find((e) => e.dataElement === 'FwdxzpQ8w2I') ? ev.dataValues.find((e) => e.dataElement === 'FwdxzpQ8w2I').value ?? '-' : '-',
+            schedule: ev.dataValues.find((e) => e.dataElement === 'arxuhT0GhPy') ? ev.dataValues.find((e) => e.dataElement === 'arxuhT0GhPy').value ?? '-' : '-',
+            problem: ev.dataValues.find((e) => e.dataElement === 'Yh6ylx8D3tO') ? ev.dataValues.find((e) => e.dataElement === 'Yh6ylx8D3tO').value ?? '-' : '-',
+            service: ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6') ? ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6').value ?? '-' : '-',
+            docterName: ev.dataValues.find((e) => e.dataElement === 'WeZLKi92kyq') ? ev.dataValues.find((e) => e.dataElement === 'WeZLKi92kyq').value ?? '-' : '-',
+            diagnosis: ev.dataValues.find((e) => e.dataElement === 'PynURTrdTEs') ? ev.dataValues.find((e) => e.dataElement === 'PynURTrdTEs').value ?? '-' : '-',
+            // service: ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6') ? ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6').value ?? '-' : '-',
+            event: ev.event
+          }
+          i++;
+          return data;
+        })
+        setServiceHistory(history)
+        setPager(r.pager)
+        setIsLoading(false)
       })
-      .catch((error) => console.log("App =>", error));
-  }, [currentPage, pageSize, offset]);
+      .catch(e => {
+        console.log("Err", e)
+        setIsLoading(false)
+        setServiceHistory([])
+      })
+  }
+
+  const init = useCallback(() => {
+    console.log("Service Data", serviceDetail.service)
+    getServiceHistory(1)
+    getPatientDetail()
+  }, [])
+
+  useEffect(() => {
+    init()
+  }, [init])
+
+
 
   // handlers
   const handlePageChange = (nextPage) => {
     // -> request new data using the page number
-    setCurrentPage(nextPage);
+    getServiceHistory(nextPage);
     console.log("request new data with ->", nextPage);
   };
 
-  const handlePageSizeChange = (
-    event
-  ) => {
-    const pageSize = Number(event.target.value);
-
-    setPageSize(pageSize);
-  };
-
-  const handleDisableClick = () => {
-    setIsDisabled((oldState) => !oldState);
-  };
   const [selectedPatient, setSelectedPatient] = useState('')
 
-  const [isLoading, setIsLoading] = useState(false)
-
+  const checkEnrollment = async (patient) => {
+    const _enrollMR1 = patient.enrollments.filter(e => e.program === medicalRecordProgram.pemeriksaanFisik)
+    if (_enrollMR1.length <= 0) {
+      await apiMedicalrecord.createEnrollmentForMR(medicalRecordProgram.pemeriksaanFisik, patient.id)
+    }
+    const _enrollMR2 = patient.enrollments.filter(e => e.program === medicalRecordProgram.diagnosis)
+    if (_enrollMR2.length <= 0) {
+      await apiMedicalrecord.createEnrollmentForMR(medicalRecordProgram.diagnosis, patient.id)
+    }
+    const _enrollMR3 = patient.enrollments.filter(e => e.program === medicalRecordProgram.tindakan)
+    if (_enrollMR3.length <= 0) {
+      await apiMedicalrecord.createEnrollmentForMR(medicalRecordProgram.tindakan, patient.id)
+    }
+    const _enrollMR4 = patient.enrollments.filter(e => e.program === medicalRecordProgram.obat)
+    if (_enrollMR4.length <= 0) {
+      await apiMedicalrecord.createEnrollmentForMR(medicalRecordProgram.obat, patient.id)
+    }
+  }
   const getPatientDetail = () => {
     setIsLoading(true)
     apiPatient.getPatienDetailByID(idPatient).then((p) => {
       const data = {
+        id: p.trackedEntityInstance,
         name: p.attributes.find((a) => a.attribute === "HyfzjNVhlzM") ? p.attributes.find((a) => a.attribute === "HyfzjNVhlzM").value ?? '-' : '-',
         phone: p.attributes.find((a) => a.attribute === "NCLBUYYxnWU") ? p.attributes.find((a) => a.attribute === "NCLBUYYxnWU").value ?? '-' : '-',
         address: p.attributes.find((a) => a.attribute === "aRHSGgFeOjr") ? p.attributes.find((a) => a.attribute === "aRHSGgFeOjr").value ?? '-' : '-',
         gender: p.attributes.find((a) => a.attribute === "TlO4kdMfHqa") ? p.attributes.find((a) => a.attribute === "TlO4kdMfHqa").value ?? '-' : '-',
         dob: p.attributes.find((a) => a.attribute === "SSsiEz3cVbn") ? p.attributes.find((a) => a.attribute === "SSsiEz3cVbn").value ?? '-' : '-',
+        enrollments: p.enrollments
       }
       setSelectedPatient(data)
+      stateInputMR.patient = data
+      console.log("Enrollment", data.enrollments)
+      checkEnrollment(data)
       setIsLoading(false)
     }).catch(e => {
       setIsLoading(false)
@@ -192,7 +207,7 @@ const MedicalRecordPage = () => {
                   </Flex>
                 </Flex>
                 <Box maxHeight={'500px'} height={'500px'} paddingTop={'10px'} display={'grid'}>
-                  {listPasien.length > 0 ?
+                  {serviceHistory.length > 0 ?
                     <TableContainer overflowY={'scroll'} overflowX={'scroll'} height='inherit'>
                       <Table variant='striped' colorScheme={'gray'}>
                         <Thead color={'#5670CD'}>
@@ -203,12 +218,13 @@ const MedicalRecordPage = () => {
                             <Td>Keluhan</Td>
                             <Td>Dokter</Td>
                             <Td>Diagnosa</Td>
+                            {/* 
                             <Td>Tindakan</Td>
-                            <Td>Resep Dokter</Td>
+                            <Td>Resep Dokter</Td> */}
                           </Tr>
                         </Thead>
                         <Tbody>
-                          {listPasien.map((r, i) => (
+                          {serviceHistory.map((r, i) => (
                             <Tr key={i}>
                               <Td p={0}>
                                 <Menu isLazy>
@@ -237,13 +253,14 @@ const MedicalRecordPage = () => {
 
 
                               </Td>
-                              <Td>{r.time}</Td>
+                              <Td>{r.schedule}</Td>
                               <Td>{r.service}</Td>
                               <Td>{r.problem}</Td>
-                              <Td>{r.docter}</Td>
-                              <Td>{r.diagnosa}</Td>
+                              <Td>{r.docterName}</Td>
+                              <Td>{r.diagnosis}</Td>
+                              {/* 
                               <Td>{r.tindakan}</Td>
-                              <Td>{r.receipt}</Td>
+                              <Td>{r.receipt}</Td> */}
                             </Tr>
                           ))}
                         </Tbody>
@@ -256,12 +273,12 @@ const MedicalRecordPage = () => {
                     />
                   }
                 </Box>
-                {listPasien.length > 0 &&
+                {serviceHistory.length > 0 && pager &&
                   <Box paddingTop={'20px'}>
                     <Pagination
-                      pagesCount={pagesCount}
-                      currentPage={currentPage}
-                      isDisabled={isDisabled}
+                      pagesCount={pager.pageCount}
+                      currentPage={pager.page}
+                      isDisabled={false}
                       onPageChange={handlePageChange}
                     >
                       <PaginationContainer
@@ -291,7 +308,7 @@ const MedicalRecordPage = () => {
                             />
                           }
                         >
-                          {pages.map((page) => (
+                          {Array.from({ length: pager.pageCount }, (_, i) => i + 1).map((page) => (
                             <PaginationPage
                               w={7}
                               bg="white"
@@ -332,218 +349,3 @@ const MedicalRecordPage = () => {
 }
 
 export default MedicalRecordPage
-
-const listPasiens = []
-
-const listPasien = [
-  {
-    no: 1,
-    time: '01-01-2022',
-    name: 'Guy Hawkins',
-    gender: 'Laki-laki',
-    birth: '30-07-2020',
-    service: 'Umum',
-    problem: 'Batuk',
-    docter: 'dr. abay',
-    diagnosa: 'Demam berdarah',
-    tindakan: 'Ganti perban',
-    receipt: 'Paracetamol, Amox..',
-    address: '516 Pawling Road'
-  },
-  {
-    no: 1,
-    time: '01-01-2022',
-    name: 'Guy Hawkins',
-    gender: 'Laki-laki',
-    birth: '30-07-2020',
-    service: 'Umum',
-    problem: 'Batuk',
-    docter: 'dr. abay',
-    diagnosa: 'Demam berdarah',
-    tindakan: 'Ganti perban',
-    receipt: 'Paracetamol, Amox..',
-    address: '516 Pawling Road'
-  },
-  {
-    no: 1,
-    time: '01-01-2022',
-    name: 'Guy Hawkins',
-    gender: 'Laki-laki',
-    birth: '30-07-2020',
-    service: 'Umum',
-    problem: 'Batuk',
-    docter: 'dr. abay',
-    diagnosa: 'Demam berdarah',
-    tindakan: 'Ganti perban',
-    receipt: 'Paracetamol, Amox..',
-    address: '516 Pawling Road'
-  },
-  {
-    no: 1,
-    time: '01-01-2022',
-    name: 'Guy Hawkins',
-    gender: 'Laki-laki',
-    birth: '30-07-2020',
-    service: 'Umum',
-    problem: 'Batuk',
-    docter: 'dr. abay',
-    diagnosa: 'Demam berdarah',
-    tindakan: 'Ganti perban',
-    receipt: 'Paracetamol, Amox..',
-    address: '516 Pawling Road'
-  },
-  {
-    no: 1,
-    time: '01-01-2022',
-    name: 'Guy Hawkins',
-    gender: 'Laki-laki',
-    birth: '30-07-2020',
-    service: 'Umum',
-    problem: 'Batuk',
-    docter: 'dr. abay',
-    diagnosa: 'Demam berdarah',
-    tindakan: 'Ganti perban',
-    receipt: 'Paracetamol, Amox..',
-    address: '516 Pawling Road'
-  },
-  {
-    no: 1,
-    time: '01-01-2022',
-    name: 'Guy Hawkins',
-    gender: 'Laki-laki',
-    birth: '30-07-2020',
-    service: 'Umum',
-    problem: 'Batuk',
-    docter: 'dr. abay',
-    diagnosa: 'Demam berdarah',
-    tindakan: 'Ganti perban',
-    receipt: 'Paracetamol, Amox..',
-    address: '516 Pawling Road'
-  },
-  {
-    no: 1,
-    time: '01-01-2022',
-    name: 'Guy Hawkins',
-    gender: 'Laki-laki',
-    birth: '30-07-2020',
-    service: 'Umum',
-    problem: 'Batuk',
-    docter: 'dr. abay',
-    diagnosa: 'Demam berdarah',
-    tindakan: 'Ganti perban',
-    receipt: 'Paracetamol, Amox..',
-    address: '516 Pawling Road'
-  },
-  {
-    no: 1,
-    time: '01-01-2022',
-    name: 'Guy Hawkins',
-    gender: 'Laki-laki',
-    birth: '30-07-2020',
-    service: 'Umum',
-    problem: 'Batuk',
-    docter: 'dr. abay',
-    diagnosa: 'Demam berdarah',
-    tindakan: 'Ganti perban',
-    receipt: 'Paracetamol, Amox..',
-    address: '516 Pawling Road'
-  },
-  {
-    no: 1,
-    time: '01-01-2022',
-    name: 'Guy Hawkins',
-    gender: 'Laki-laki',
-    birth: '30-07-2020',
-    service: 'Umum',
-    problem: 'Batuk',
-    docter: 'dr. abay',
-    diagnosa: 'Demam berdarah',
-    tindakan: 'Ganti perban',
-    receipt: 'Paracetamol, Amox..',
-    address: '516 Pawling Road'
-  },
-  {
-    no: 1,
-    time: '01-01-2022',
-    name: 'Guy Hawkins',
-    gender: 'Laki-laki',
-    birth: '30-07-2020',
-    service: 'Umum',
-    problem: 'Batuk',
-    docter: 'dr. abay',
-    diagnosa: 'Demam berdarah',
-    tindakan: 'Ganti perban',
-    receipt: 'Paracetamol, Amox..',
-    address: '516 Pawling Road'
-  },
-  {
-    no: 1,
-    time: '01-01-2022',
-    name: 'Guy Hawkins',
-    gender: 'Laki-laki',
-    birth: '30-07-2020',
-    service: 'Umum',
-    problem: 'Batuk',
-    docter: 'dr. abay',
-    diagnosa: 'Demam berdarah',
-    tindakan: 'Ganti perban',
-    receipt: 'Paracetamol, Amox..',
-    address: '516 Pawling Road'
-  },
-  {
-    no: 1,
-    time: '01-01-2022',
-    name: 'Guy Hawkins',
-    gender: 'Laki-laki',
-    birth: '30-07-2020',
-    service: 'Umum',
-    problem: 'Batuk',
-    docter: 'dr. abay',
-    diagnosa: 'Demam berdarah',
-    tindakan: 'Ganti perban',
-    receipt: 'Paracetamol, Amox..',
-    address: '516 Pawling Road'
-  },
-  {
-    no: 1,
-    time: '01-01-2022',
-    name: 'Guy Hawkins',
-    gender: 'Laki-laki',
-    birth: '30-07-2020',
-    service: 'Umum',
-    problem: 'Batuk',
-    docter: 'dr. abay',
-    diagnosa: 'Demam berdarah',
-    tindakan: 'Ganti perban',
-    receipt: 'Paracetamol, Amox..',
-    address: '516 Pawling Road'
-  },
-  {
-    no: 1,
-    time: '01-01-2022',
-    name: 'Guy Hawkins',
-    gender: 'Laki-laki',
-    birth: '30-07-2020',
-    service: 'Umum',
-    problem: 'Batuk',
-    docter: 'dr. abay',
-    diagnosa: 'Demam berdarah',
-    tindakan: 'Ganti perban',
-    receipt: 'Paracetamol, Amox..',
-    address: '516 Pawling Road'
-  },
-  {
-    no: 1,
-    time: '01-01-2022',
-    name: 'Guy Hawkins',
-    gender: 'Laki-laki',
-    birth: '30-07-2020',
-    service: 'Umum',
-    problem: 'Batuk',
-    docter: 'dr. abay',
-    diagnosa: 'Demam berdarah',
-    tindakan: 'Ganti perban',
-    receipt: 'Paracetamol, Amox..',
-    address: '516 Pawling Road'
-  },
-]

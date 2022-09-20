@@ -12,18 +12,16 @@ import {
 import colors from "values/colors";
 import { useCallback, useEffect, useState } from "react";
 import apiDoctor from "services/apiDoctor";
+import { s4 } from "utils";
+import stateInputMR from "states/stateInputMedicalRecord";
 
-const countries = [
-  "nigeria",
-  "japan",
-  "india",
-  "united states",
-  "south korea",
-];
 const DiagnoseComponent = () => {
   const [diagnosisSearch, setDiagnosisSearch] = useState([])
 
-  const [selectedDiagnosis, setSelectedDiagnosis] = useState(null)
+  const [selectedDiagnosis, setSelectedDiagnosis] = useState({})
+  const [diagnosisNotes, setDiagnosisNotes] = useState('')
+
+  const [diagnosisList, setDiagnosisList] = useState([])
 
   const getDiagnosisSearch = (search) => {
     console.log(search)
@@ -31,20 +29,35 @@ const DiagnoseComponent = () => {
       setDiagnosisSearch(d.data)
     })
   }
-  // const init = useCallback(() => {
 
-  // }, [])
+  const onItemSelected = (e) => {
+    setSelectedDiagnosis({ ...selectedDiagnosis, diagnosisCode: e })
+  }
 
-  // useEffect(() => {
-  //   init();
-  // }, [init])
+  const onDiagnosisNoteChange = (e) => {
+    setSelectedDiagnosis({ ...selectedDiagnosis, diagnosisNote: e.target.value })
+  }
+
+  const onButtonAddClicked = () => {
+    // Add id needed to remove the item
+    setSelectedDiagnosis({ ...selectedDiagnosis, id: s4() })
+    setDiagnosisList(current => [...diagnosisList, selectedDiagnosis])
+    stateInputMR.diagnosis = [...stateInputMR.diagnosis, selectedDiagnosis]
+  }
+
+  const onDeleteDiagnosis = (id) => {
+    setDiagnosisList(current => current.filter(c => c.id !== id))
+    stateInputMR.diagnosis = stateInputMR.diagnosis.filter(c => c.id !== id)
+  }
+
+  console.log("remove AT", diagnosisList)
   return (
     <Stack px={24} py={5} gap={3}>
       <Box fontSize={'24px'} fontWeight={'bold'} color={'#505050'} pb={'12px'}>Diagnosis</Box>
       <Flex alignItems={'end'}>
         <Box flex={1}>Coding diagnosis</Box>
         <Box flex={1}>
-          <AutoComplete openOnFocus>
+          <AutoComplete openOnFocus onChange={onItemSelected}>
             <AutoCompleteInput
               variant="filled"
               placeholder="Diagnosis"
@@ -83,11 +96,12 @@ const DiagnoseComponent = () => {
           <InputUnderlined
             type='text'
             placeholder='Keterangan'
+            onChange={onDiagnosisNoteChange}
           />
         </Box>
       </Flex>
       <Flex justifyContent={'end'} pt={2}>
-        <ButtonMain><FiPlusCircle /> Tambahkan diagnosis</ButtonMain>
+        <ButtonMain onClick={onButtonAddClicked} ><FiPlusCircle /> Tambahkan diagnosis</ButtonMain>
       </Flex>
       <Box paddingTop={'10px'} display={'grid'}>
         <TableContainer height='inherit'>
@@ -100,11 +114,11 @@ const DiagnoseComponent = () => {
               </Tr>
             </Thead>
             <Tbody w={'100%'}>
-              {listDiagnose.length > 0 ? listDiagnose.map((r, i) => (
+              {diagnosisList.length > 0 ? diagnosisList.map((r, i) => (
                 <Tr key={i} bg={'#F9F9FC'}>
-                  <Td>{r.diagnose}</Td>
-                  <Td>{r.ket}</Td>
-                  <Td><FiTrash color="red" /></Td>
+                  <Td>{r.diagnosisCode}</Td>
+                  <Td>{r.diagnosisNote}</Td>
+                  <Td><FiTrash color="red" onClick={(e) => onDeleteDiagnosis(r.id)} /></Td>
                 </Tr>
               ))
                 :
@@ -128,37 +142,3 @@ const DiagnoseComponent = () => {
 }
 
 export default DiagnoseComponent
-
-const listDiagnoses = []
-const listDiagnose = [
-  {
-    id: 1,
-    diagnose: 'AA12',
-    ket: 'Sakit hati'
-  },
-  {
-    id: 2,
-    diagnose: 'AA12',
-    ket: 'Sakit hati'
-  },
-  {
-    id: 3,
-    diagnose: 'AA12',
-    ket: 'Sakit hati'
-  },
-  {
-    id: 3,
-    diagnose: 'AA12',
-    ket: 'Sakit hati'
-  },
-  {
-    id: 4,
-    diagnose: 'AA12',
-    ket: 'Sakit hati'
-  },
-  {
-    id: 5,
-    diagnose: 'AA12',
-    ket: 'Sakit hati'
-  },
-]

@@ -10,8 +10,9 @@ import DigestiveSystem from "./components/digestive-system";
 import GenitalUroSystem from "./components/genital-uro-system";
 import Integumentary from "./components/integumentary-musculoskeletal-system";
 import ChestAndAxilla from "./components/chest-and-axilla";
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import stateInputMR from "states/stateInputMedicalRecord";
 
 
 const tabss = [
@@ -53,6 +54,7 @@ const MenuInspection = () => {
       }
     }
   };
+  
   return (
     <>
       <Box px={14} >
@@ -93,7 +95,6 @@ const MenuInspection = () => {
         <VisionSystem />
       }
       {state.selectedTabInternal === 3 &&
-
         <RespiratorySystem />
       }
       {state.selectedTabInternal === 4 &&
@@ -111,7 +112,6 @@ const MenuInspection = () => {
       {state.selectedTabInternal === 8 &&
         <ChestAndAxilla />
       }
-
     </>
   )
 }

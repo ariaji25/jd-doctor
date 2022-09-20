@@ -1,8 +1,61 @@
 import { Box, Flex, Radio, RadioGroup, Stack } from "@chakra-ui/react"
 import colors from "values/colors"
 import InputUnderlined from "components/input/InputUnderlined";
+import { medicalRecordID } from "utils/constant";
+import InputRadio, { radioType } from "components/input/InputRadio";
+import { useState } from "react";
+import stateInputMR from "states/stateInputMedicalRecord";
+import { useSnapshot } from "valtio";
+
+export const inputList = [
+  {
+    key: medicalRecordID.polaRutin,
+    label: "Pola rutin",
+    state: "patternRoutine",
+    type: "number",
+    hotfix: "x/hari"
+  },
+  {
+    key: medicalRecordID.polaRutin + "-1",
+    label: "",
+    state: "patternRoutine1",
+    type: "options",
+    options: ["Carries", "Tidak"]
+  },
+  {
+    key: medicalRecordID.jumlahCC,
+    label: "Jumlah",
+    state: "count",
+    type: "number",
+    hotfix: "cc/24jam"
+  },
+  {
+    key: medicalRecordID.warna,
+    label: "Warna",
+    state: "color",
+    type: "options",
+    options: ["Kuning jerni", "Kuning kecoklatan", "Merah", "Putih"]
+  },
+  {
+    key: medicalRecordID.uroLainnya,
+    label: "lainnya",
+    state: "other",
+    type: "text",
+    hotfix: ""
+  },
+]
 
 const GenitalUroSystem = () => {
+  const [mrData, setMRData] = useState({})
+  const { generalAssesment } = useSnapshot(stateInputMR)
+
+  const onChange = (e) => {
+    var _mrData = mrData
+    _mrData[e.target.id] = e.target.value
+    stateInputMR.generalAssesment.uroGenitalSystem[e.target.attributes[0].value] = e.target.value
+    console.log(generalAssesment.uroGenitalSystem)
+    setMRData(_mrData);
+  }
   return (
     <Stack px={40} py={5}>
       <Box fontSize={'24px'} fontWeight={'bold'} color={'#505050'} >Sistem uro genital</Box>
@@ -11,68 +64,46 @@ const GenitalUroSystem = () => {
           <li>BAK</li>
         </ul>
       </Box>
-      <Flex >
-        <Box flex={1} pt={2}>Pola rutin</Box>
-        <Box flex={1} flexWrap={'wrap'}>
-          <Box >
-            <Flex>
-              <InputUnderlined
-                type='text'
-                w={'100%'}
-              />
-              <Flex whiteSpace={'pre'} borderBottom={'1px solid #ccc'} color={colors.PRIMARY} alignItems={'center'}>
-                <Box>
-                  X/Hari
-                </Box>
-              </Flex>
-            </Flex>
-          </Box>
-          <RadioGroup pt={2}>
-            <Flex gap={4} flexWrap={'wrap'}>
-              <Radio>Carries</Radio>
-              <Radio>Tidak</Radio>
-            </Flex>
-          </RadioGroup>
-        </Box>
-      </Flex>
-      <Flex alignItems={'end'}>
-        <Box flex={1}>Jumlah</Box>
-        <Box flex={1}>
-          <Flex>
-            <InputUnderlined
-              type='text'
-              w={'100%'}
-            />
-            <Flex whiteSpace={'pre'} borderBottom={'1px solid #ccc'} color={colors.PRIMARY} alignItems={'center'}>
-              <Box>
-                cc/24 Jam
-              </Box>
-            </Flex>
-          </Flex>
-        </Box>
-      </Flex>
-      <Flex>
-        <Box flex={1}>Warna</Box>
-        <Box flex={1}>
-          <RadioGroup>
-            <Flex gap={4} flexWrap={'wrap'}>
-              <Radio>Kuning jernih</Radio>
-              <Radio>Kuning kecoklatan</Radio>
-              <Radio>Merah</Radio>
-              <Radio>Putih</Radio>
-            </Flex>
-          </RadioGroup>
-        </Box>
-      </Flex>
-      <Flex alignItems={'end'}>
-        <Box flex={1}>Lainnya</Box>
-        <Box flex={1}>
-          <InputUnderlined
-            type='text'
-            placeholder={'Isi jika ada'}
-          />
-        </Box>
-      </Flex>
+      {
+        inputList.map(input => {
+          return <>
+            {
+              input.type === "options"
+                ?
+                <InputRadio
+                  radioStyle={radioType.horizontal}
+                  id={input.key}
+                  label={input.label}
+                  name={input.label}
+                  uid={input.state}
+                  onChange={onChange}
+                  value={stateInputMR.generalAssesment.uroGenitalSystem[input.state]}
+                  options={input.options}
+                />
+                : <Flex alignItems={'end'}>
+                  <Box flex={1}>{input.label}</Box>
+                  <Box flex={1}>
+                    <Flex>
+                      <InputUnderlined
+                        id={input.key}
+                        uid={input.state}
+                        value={stateInputMR.generalAssesment.uroGenitalSystem[input.state]}
+                        onChange={onChange}
+                        type={input.type}
+                        w={'100%'}
+                      />
+                      <Flex whiteSpace={'pre'} borderBottom={'1px solid #ccc'} color={colors.PRIMARY} alignItems={'center'}>
+                        <Box>
+                          {input.hotfix ?? ""}
+                        </Box>
+                      </Flex>
+                    </Flex>
+                  </Box>
+                </Flex>
+            }
+          </>
+        })
+      }
     </Stack>
   )
 }

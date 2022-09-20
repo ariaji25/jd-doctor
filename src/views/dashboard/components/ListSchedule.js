@@ -26,7 +26,8 @@ const ListSchedule = ({ state, selectedTab, tabs, isLoading, serviceHistory, tot
         address: p.attributes.find((a) => a.attribute === "aRHSGgFeOjr") ? p.attributes.find((a) => a.attribute === "aRHSGgFeOjr").value ?? '-' : '-',
         photo: '/img/doctorSidebar.png',
         service: ev.service,
-        problem: ev.problem
+        problem: ev.problem,
+        serviceID: ev.event
       }
       setSelectedPatient(data)
       setModalLoading(false)

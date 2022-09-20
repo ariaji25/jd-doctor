@@ -121,9 +121,9 @@ const getClinicServiceHistory = async (date, id) => {
 const getHomeCareServiceHistory = async (date, id, conditions) => {
   const response = await request.get(urls.DOCTER_HOMECARE_SERVICE_HISTORY(id), {
     params: {
-      filter: `arxuhT0GhPy:${conditions??queryConditions.equal}:${date}`,
+      // filter: `arxuhT0GhPy:${conditions??queryConditions.equal}:${date}`,
       fields: '[*]',
-      order: 'created:ASC'
+      order: 'created:DESC'
     }
   })
   return response.data
