@@ -1,4 +1,4 @@
-import { Box, Divider, Flex, Modal, ModalBody, ModalContent, ModalOverlay, Text, useDisclosure, } from "@chakra-ui/react"
+import { Box, Center, CircularProgress, Divider, Flex, Modal, ModalBody, ModalContent, ModalOverlay, Text, useDisclosure, } from "@chakra-ui/react"
 import colors from "values/colors"
 import { useSnapshot } from 'valtio';
 import stateMedicalRecord from "states/stateMedicalRecord";
@@ -14,7 +14,7 @@ import { useParams } from "react-router-dom/cjs/react-router-dom";
 import { useQueryParams } from "utils";
 import apiBooking from "services/apiBooking";
 import { useCallback, useEffect, useState } from "react";
-import { keySelectedService, medicalRecordID, medicalRecordProgram } from "utils/constant";
+import { keySelectedService, medicalRecordID, medicalRecordProgram, siteMode } from "utils/constant";
 import { apiPatient } from "services/apiPatient";
 import stateInputMR from "states/stateInputMedicalRecord";
 import apiMedicalrecord from "services/apiMedicalRecord";
@@ -48,25 +48,155 @@ const NotificationStatus = ({ isOpen, onClose }) => {
 
 const MedicalRecordManagePage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const { mrMethod, serviceId } = useParams()
 
   const state = useSnapshot(stateMedicalRecord);
+
+  const [isLoading, setIsLoading] = useState(false)
 
   const { patient, serviceDetail } = useSnapshot(stateInputMR)
   const StateInputMR = useSnapshot(stateInputMR)
 
   const [mrEnrollments, setMREnrollments] = useState([])
 
-  const getMedicalRecordEnrollments = useCallback(() => {
-    apiMedicalrecord.getPatientMedicalRecordEnrollment(patient.id)
-      .then(response => {
-        console.log("Enrollment", response)
-        setMREnrollments(response.enrollments)
+  const [_savedgeneralAssesment, setGeneralAssesment] = useState(null)
+  const [_savedDiagnosis, setDiagnosis] = useState([])
+  const [_savedTreatment, setTreatment] = useState([])
+
+  const initGeneralAssesmentFromSaved = (savedAssesment) => {
+    generalAssesment.forEach(ga => {
+      ga.forEach(element => {
+        const elementdata = savedAssesment.dataValues.filter(e => e.dataElement === element.key)
+        if (elementdata && elementdata.length > 0) {
+          stateInputMR.generalAssesment.generalCondition[element.state] = elementdata[0].value === "true"
+            || elementdata[0].value === "false" ? (elementdata[0].value === "true" ? "Ya" : "Tidak") : elementdata[0].value
+        }
       })
+    })
+    visionSystem.forEach(element => {
+      const elementdata = savedAssesment.dataValues.filter(e => e.dataElement === element.key)
+      if (elementdata && elementdata.length > 0) {
+        stateInputMR.generalAssesment.visualSystem[element.state] = elementdata[0].value === "true"
+          || elementdata[0].value === "false" ? (elementdata[0].value === "true" ? "Ya" : "Tidak") : elementdata[0].value
+      }
+    })
+    respirationSystem.forEach(element => {
+      const elementdata = savedAssesment.dataValues.filter(e => e.dataElement === element.key)
+      if (elementdata && elementdata.length > 0) {
+        stateInputMR.generalAssesment.respirationSystem[element.state] = elementdata[0].value === "true"
+          || elementdata[0].value === "false" ? (elementdata[0].value === "true" ? "Ya" : "Tidak") : elementdata[0].value
+      }
+    })
+    hearthCirculation.forEach(element => {
+      const elementdata = savedAssesment.dataValues.filter(e => e.dataElement === element.key)
+      if (elementdata && elementdata.length > 0) {
+        stateInputMR.generalAssesment.hearthCirculation[element.state] = elementdata[0].value === "true"
+          || elementdata[0].value === "false" ? (elementdata[0].value === "true" ? "Ya" : "Tidak") : elementdata[0].value
+      }
+    })
+    digestionSystem.forEach(element => {
+      const elementdata = savedAssesment.dataValues.filter(e => e.dataElement === element.key)
+      if (elementdata && elementdata.length > 0) {
+        stateInputMR.generalAssesment.digestionSystem[element.state] = elementdata[0].value === "true"
+          || elementdata[0].value === "false" ? (elementdata[0].value === "true" ? "Ya" : "Tidak") : elementdata[0].value
+      }
+    })
+    uroGenitalSystem.forEach(element => {
+      const elementdata = savedAssesment.dataValues.filter(e => e.dataElement === element.key)
+      if (elementdata && elementdata.length > 0) {
+        if (element.state === "patternRoutine") {
+          var _elementsData = elementdata[0].value.split(" ")
+          if (_elementsData && _elementsData.length > 1) {
+            stateInputMR.generalAssesment.uroGenitalSystem[`${element.state}`] = _elementsData[0]
+            stateInputMR.generalAssesment.uroGenitalSystem[`${element.state}1`] = _elementsData[1]
+          } else {
+            stateInputMR.generalAssesment.uroGenitalSystem[`${element.state}`] = elementdata[0].value
+          }
+        } else
+          stateInputMR.generalAssesment.uroGenitalSystem[element.state] = elementdata[0].value === "true"
+            || elementdata[0].value === "false" ? (elementdata[0].value === "true" ? "Ya" : "Tidak") : elementdata[0].value
+      }
+    })
+    intugmenSystem.forEach(element => {
+      const elementdata = savedAssesment.dataValues.filter(e => e.dataElement === element.key)
+      if (elementdata && elementdata.length > 0) {
+        stateInputMR.generalAssesment.intugmenSystem[element.state] = elementdata[0].value === "true"
+          || elementdata[0].value === "false" ? (elementdata[0].value === "true" ? "Ya" : "Tidak") : elementdata[0].value
+      }
+    })
+    chestAndAxila.forEach(element => {
+      const elementdata = savedAssesment.dataValues.filter(e => e.dataElement === element.key)
+      if (elementdata && elementdata.length > 0) {
+        stateInputMR.generalAssesment.chestAndAxila[element.state] = elementdata[0].value === "true"
+          || elementdata[0].value === "false" ? (elementdata[0].value === "true" ? "Ya" : "Tidak") : elementdata[0].value
+      }
+    })
+    console.log("Assesment", stateInputMR.generalAssesment.generalCondition)
+  }
+  const initDiagnosisFromSaved = (savedDiagnosis) => {
+    var _diagnosis = savedDiagnosis.map(d => {
+      return {
+        id: d.event,
+        saved: true,
+        diagnosisCode: d.dataValues.filter(e => e.dataElement === medicalRecordID.codingDiagnosis)
+          && d.dataValues.filter(e => e.dataElement === medicalRecordID.codingDiagnosis).length > 0
+          ? d.dataValues.filter(e => e.dataElement === medicalRecordID.codingDiagnosis)[0].value : '',
+        diagnosisNote: d.dataValues.filter(e => e.dataElement === medicalRecordID.codingDiagnosis)
+          && d.dataValues.filter(e => e.dataElement === medicalRecordID.codingDiagnosis).length > 0
+          ? d.dataValues.filter(e => e.dataElement === medicalRecordID.keteranganDiagnosis)[0].value : ''
+      }
+    })
+    stateInputMR.diagnosis = [..._diagnosis]
+  }
+
+  const initTreatmentFromSaved = (savedTreatment) => {
+    var _treatment = savedTreatment.map(d => {
+      return {
+        id: d.event,
+        saved: true,
+        treatment: d.dataValues.filter(e => e.dataElement === medicalRecordID.namaObat)
+          && d.dataValues.filter(e => e.dataElement === medicalRecordID.namaObat).length > 0
+          ? d.dataValues.filter(e => e.dataElement === medicalRecordID.namaObat)[0].value : '',
+        treatmentDosis: d.dataValues.filter(e => e.dataElement === medicalRecordID.dosis)
+          && d.dataValues.filter(e => e.dataElement === medicalRecordID.dosis).length > 0
+          ? d.dataValues.filter(e => e.dataElement === medicalRecordID.dosis)[0].value : ''
+      }
+    })
+    stateInputMR.treatment = [..._treatment]
+  }
+
+  const getMedicalRecordData = async () => {
+    setIsLoading(true)
+    const enroll = await apiMedicalrecord.getPatientMedicalRecordEnrollment(patient.id)
+    if (enroll.enrollments && enroll.enrollments.length > 0) {
+      setMREnrollments(enroll.enrollments)
+    }
+    const _generalAssesment = await apiMedicalrecord.getMedicalRecord(serviceId ?? StateInputMR.serviceDetail.serviceID, medicalRecordProgram.pemeriksaanFisik)
+    if (_generalAssesment.events && _generalAssesment.events.length > 0) {
+      setGeneralAssesment(_generalAssesment.events[0])
+      initGeneralAssesmentFromSaved(_generalAssesment.events[0])
+    }
+    const _diagnosis = await apiMedicalrecord.getMedicalRecord(serviceId ?? StateInputMR.serviceDetail.serviceID, medicalRecordProgram.diagnosis)
+    if (_diagnosis.events && _diagnosis.events.length > 0) {
+      setDiagnosis([..._diagnosis.events])
+      initDiagnosisFromSaved(_diagnosis.events)
+    }
+    const _treatments = await apiMedicalrecord.getMedicalRecord(serviceId ?? StateInputMR.serviceDetail.serviceID, medicalRecordProgram.obat)
+    if (_treatments.events && _treatments.events.length > 0) {
+      setTreatment([..._treatments.events])
+      initTreatmentFromSaved(_treatments.events)
+    }
+    setIsLoading(false)
+    return true
+  }
+
+  const init = useCallback(() => {
+    getMedicalRecordData()
   }, [])
 
   useEffect(() => {
-    if (mrEnrollments.length <= 0) getMedicalRecordEnrollments()
-  }, [mrEnrollments, getMedicalRecordEnrollments])
+    init()
+  }, [init])
 
 
 
@@ -156,17 +286,30 @@ const MedicalRecordManagePage = () => {
         })
         dataValues.push({
           dataElement: medicalRecordID.referensiPelayanan,
-          value: stateInputMR.serviceDetail.serviceID
+          value: serviceId ?? stateInputMR.serviceDetail.serviceID
         })
         console.log("data values", dataValues)
-        apiMedicalrecord.createNewMedicalRecord(
+        if (_savedgeneralAssesment && _savedgeneralAssesment.event) {
+          var _event = _savedgeneralAssesment;
+          _event.dataValues = dataValues
+          if (dataValues.length > 0) apiMedicalrecord.updateMedicalRecord(_event).then(r => {
+            getMedicalRecordData().then(r => {
+              onOpen()
+            })
+          })
+        }
+        else apiMedicalrecord.createNewMedicalRecord(
           medicalRecordProgram.pemeriksaanFisik,
           medicalRecordProgram.pemeriksaanFisikStage,
           _enrollmentID[0].enrollment,
           dataValues,
-          stateInputMR.serviceDetail.serviceID,
+          serviceId ?? stateInputMR.serviceDetail.serviceID,
           stateInputMR.patient.id
-        ).then(r => onOpen())
+        ).then(r => {
+          getMedicalRecordData().then(r => {
+            onOpen()
+          })
+        })
         break
       }
       // Diagnosis
@@ -187,23 +330,65 @@ const MedicalRecordManagePage = () => {
             })
             dataValues.push({
               dataElement: medicalRecordID.referensiPelayanan,
-              value: stateInputMR.serviceDetail.serviceID
+              value: serviceId ?? stateInputMR.serviceDetail.serviceID
             })
-            apiMedicalrecord.createNewMedicalRecord(
+            if (!e.saved) apiMedicalrecord.createNewMedicalRecord(
               medicalRecordProgram.diagnosis,
               medicalRecordProgram.diagnosisStage,
               _enrollmentID[0].enrollment,
               dataValues,
-              stateInputMR.serviceDetail.serviceID,
+              serviceId ?? stateInputMR.serviceDetail.serviceID,
               stateInputMR.patient.id
             ).then(r => {
               counterSuccess++
               if (counterSuccess === stateInputMR.diagnosis.length) {
-                apiMedicalrecord.addMedicalRecordReference(stateInputMR.serviceDetail.serviceID, `${stateInputMR.diagnosis[0].diagnosisCode}-${stateInputMR.diagnosis[0].diagnosisNote}`, medicalRecordID.referensiDiagnosis).then(e => onOpen())
+                apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.diagnosis[0].diagnosisCode}-${stateInputMR.diagnosis[0].diagnosisNote}`, medicalRecordID.referensiDiagnosis)
+                  .then(e => {
+                    onOpen()
+                  })
               }
             })
+            else counterSuccess++
           })
-
+        }
+        break
+      }
+      case 4: {
+        const _enrollmentID = mrEnrollments.filter(e => e.program === medicalRecordProgram.obat)
+        var counterSuccess = 0
+        if (stateInputMR.treatment && stateInputMR.treatment.length > 0) {
+          stateInputMR.treatment.forEach(e => {
+            console.log(e.treatment, e.treatmentDosis)
+            const dataValues = []
+            dataValues.push({
+              dataElement: medicalRecordID.namaObat,
+              value: e.treatment
+            })
+            if (e.treatmentDosis && e.treatmentDosis.length > 0) dataValues.push({
+              dataElement: medicalRecordID.dosis,
+              value: e.treatmentDosis
+            })
+            dataValues.push({
+              dataElement: medicalRecordID.referensiPelayanan,
+              value: serviceId ?? stateInputMR.serviceDetail.serviceID
+            })
+            if (!e.saved) apiMedicalrecord.createNewMedicalRecord(
+              medicalRecordProgram.obat,
+              medicalRecordProgram.obatStage,
+              _enrollmentID[0].enrollment,
+              dataValues,
+              serviceId ?? stateInputMR.serviceDetail.serviceID,
+              stateInputMR.patient.id
+            ).then(r => {
+              counterSuccess++
+              if (counterSuccess === stateInputMR.treatment.length) {
+                apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.treatment[0].treatment}`, medicalRecordID.refernsiPengobatan).then(e => {
+                  onOpen()
+                })
+              }
+            })
+            else counterSuccess++
+          })
         }
         break
       }
@@ -212,8 +397,6 @@ const MedicalRecordManagePage = () => {
       }
     }
   }
-
-
 
   return (
     <>
@@ -234,32 +417,44 @@ const MedicalRecordManagePage = () => {
                 </Box>
                 <Box flex={3}>
                   <Box color={'#505050'} fontSize={'13px'}>Keluhan yang dirasakan</Box>
-                  <Box fontWeight={'bold'}>{serviceDetail.problem}</Box>
+                  <Box fontWeight={'bold'}>{stateInputMR.problemForServiceDetail ?? serviceDetail.problem}</Box>
                 </Box>
               </Flex>
             </Flex>
             <Box px={14} pt={10} pb={5} >
               <Box ><Divider border={'1px solid #C0C0C0'} /></Box>
             </Box>
-            {state.selectedTab === 1 &&
-              <MenuInspection />
+            {state.selectedTab === 1
+              ? !isLoading
+                ? <MenuInspection mode={mrMethod} />
+                : <Center><CircularProgress isIndeterminate size='100px' thickness='4px' /></Center>
+              : <></>
             }
-            {state.selectedTab === 2 &&
-              <MenuDiagnose />
+            {state.selectedTab === 2
+              ? !isLoading
+                ? <MenuDiagnose mode={mrMethod} />
+                : <Center><CircularProgress isIndeterminate size='100px' thickness='4px' /></Center>
+              : <></>
             }
-            {state.selectedTab === 3 &&
+            {state.selectedTab === 3 && !isLoading &&
               <MenuAction />
             }
-            {state.selectedTab === 4 &&
-              <MenuTreatment />
+            {state.selectedTab === 4
+              ? !isLoading
+                ? <MenuTreatment mode={mrMethod} />
+                : <Center><CircularProgress isIndeterminate size='100px' thickness='4px' /></Center>
+              : <></>
             }
           </Flex>
-          <Box px={40} py={5} textAlign={'center'}>
-            <ButtonMain width={'100%'} maxW={'700px'} onClick={(e) => {
-              onClickButtonSave()
-
-            }}>Simpan</ButtonMain>
-          </Box>
+          {
+            mrMethod === siteMode.detail
+              ? <></>
+              : <Box px={40} py={5} textAlign={'center'}>
+                <ButtonMain width={'100%'} maxW={'700px'} onClick={(e) => {
+                  onClickButtonSave()
+                }}>Simpan</ButtonMain>
+              </Box>
+          }
         </Box>
       </Flex>
       <NotificationStatus isOpen={isOpen} onClose={onClose} />

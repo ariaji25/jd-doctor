@@ -1,7 +1,7 @@
 import { Box, Flex, Radio, RadioGroup, Stack } from "@chakra-ui/react"
 import colors from "values/colors"
 import InputUnderlined from "components/input/InputUnderlined";
-import { medicalRecordID } from "utils/constant";
+import { medicalRecordID, siteMode } from "utils/constant";
 import InputRadio, { radioType } from "components/input/InputRadio";
 import { useState } from "react";
 import stateInputMR from "states/stateInputMedicalRecord";
@@ -45,7 +45,7 @@ export const inputList = [
   },
 ]
 
-const GenitalUroSystem = () => {
+const GenitalUroSystem = ({mode}) => {
   const [mrData, setMRData] = useState({})
   const { generalAssesment } = useSnapshot(stateInputMR)
 
@@ -79,6 +79,7 @@ const GenitalUroSystem = () => {
                   onChange={onChange}
                   value={stateInputMR.generalAssesment.uroGenitalSystem[input.state]}
                   options={input.options}
+                  readOnly={mode === siteMode.detail}
                 />
                 : <Flex alignItems={'end'}>
                   <Box flex={1}>{input.label}</Box>
@@ -91,6 +92,7 @@ const GenitalUroSystem = () => {
                         onChange={onChange}
                         type={input.type}
                         w={'100%'}
+                        readOnly={mode === siteMode.detail}
                       />
                       <Flex whiteSpace={'pre'} borderBottom={'1px solid #ccc'} color={colors.PRIMARY} alignItems={'center'}>
                         <Box>

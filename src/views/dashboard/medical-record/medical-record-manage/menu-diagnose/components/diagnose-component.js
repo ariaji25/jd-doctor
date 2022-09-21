@@ -14,12 +14,17 @@ import { useCallback, useEffect, useState } from "react";
 import apiDoctor from "services/apiDoctor";
 import { s4 } from "utils";
 import stateInputMR from "states/stateInputMedicalRecord";
+import { useSnapshot } from "valtio";
+import apiMedicalrecord from "services/apiMedicalRecord";
+import { siteMode } from "utils/constant";
 
-const DiagnoseComponent = () => {
+const DiagnoseComponent = ({ mode }) => {
+
   const [diagnosisSearch, setDiagnosisSearch] = useState([])
 
+  const { diagnosis } = useSnapshot(stateInputMR)
+
   const [selectedDiagnosis, setSelectedDiagnosis] = useState({})
-  const [diagnosisNotes, setDiagnosisNotes] = useState('')
 
   const [diagnosisList, setDiagnosisList] = useState([])
 
@@ -40,69 +45,95 @@ const DiagnoseComponent = () => {
 
   const onButtonAddClicked = () => {
     // Add id needed to remove the item
-    setSelectedDiagnosis({ ...selectedDiagnosis, id: s4() })
+    setSelectedDiagnosis({ ...selectedDiagnosis, id: s4(), saved: false })
     setDiagnosisList(current => [...diagnosisList, selectedDiagnosis])
     stateInputMR.diagnosis = [...stateInputMR.diagnosis, selectedDiagnosis]
   }
 
-  const onDeleteDiagnosis = (id) => {
-    setDiagnosisList(current => current.filter(c => c.id !== id))
-    stateInputMR.diagnosis = stateInputMR.diagnosis.filter(c => c.id !== id)
-  }
+  const onDeleteDiagnosis = (id, isSaved) => {
+    console.log("DELETE", isSaved)
+    if (isSaved) {
+      console.log("DELETE", id)
+      apiMedicalrecord.deleteMedicalRecord(id).then(r => {
+        setDiagnosisList(current => current.filter(c => c.id !== id))
+        stateInputMR.diagnosis = stateInputMR.diagnosis.filter(c => c.id !== id)
+      })
+    } else {
+      setDiagnosisList(current => current.filter(c => c.id !== id))
+      stateInputMR.diagnosis = stateInputMR.diagnosis.filter(c => c.id !== id)
+    }
 
-  console.log("remove AT", diagnosisList)
+  }
+  useEffect(() => {
+    console.log("INIT DIagnosis 1", diagnosis)
+    console.log("INIT is ", (diagnosis.length))
+    if (diagnosis && diagnosis.length > 0) setDiagnosisList(current => [...diagnosis])
+  }, [])
+
   return (
     <Stack px={24} py={5} gap={3}>
       <Box fontSize={'24px'} fontWeight={'bold'} color={'#505050'} pb={'12px'}>Diagnosis</Box>
-      <Flex alignItems={'end'}>
-        <Box flex={1}>Coding diagnosis</Box>
-        <Box flex={1}>
-          <AutoComplete openOnFocus onChange={onItemSelected}>
-            <AutoCompleteInput
-              variant="filled"
-              placeholder="Diagnosis"
-              borderBottom={'1.5px solid #e0e0e0'}
-              bg={'transparent'}
-              marginStart={0}
-              marginInlineStart={0}
-              marginEnd={0}
-              marginInlineEnd={0}
-              paddingLeft={0}
-              fontSize={{ base: 'sm', sm: 'md' }}
-              color={colors.PRIMARY}
-              fontWeight="bold"
-              border="0"
-              _hover={{ background: 'transparent' }}
-              onChange={(e) => getDiagnosisSearch(e.target.value)}
-              rounded="none"
-              h="35px" />
-            <AutoCompleteList>
-              {diagnosisSearch.map((diagnosis, cid) => (
-                <AutoCompleteItem
-                  key={`option-${cid}`}
-                  value={diagnosis.name}
-                  textTransform="capitalize"
-                >
-                  {diagnosis.name}-{diagnosis.description}
-                </AutoCompleteItem>
-              ))}
-            </AutoCompleteList>
-          </AutoComplete>
-        </Box>
-      </Flex>
-      <Flex alignItems={'end'}>
-        <Box flex={1}>Keterangan</Box>
-        <Box flex={1}>
-          <InputUnderlined
-            type='text'
-            placeholder='Keterangan'
-            onChange={onDiagnosisNoteChange}
-          />
-        </Box>
-      </Flex>
-      <Flex justifyContent={'end'} pt={2}>
-        <ButtonMain onClick={onButtonAddClicked} ><FiPlusCircle /> Tambahkan diagnosis</ButtonMain>
-      </Flex>
+      {
+        mode === siteMode.detail
+          ? <></>
+          : <Flex alignItems={'end'}>
+            <Box flex={1}>Coding diagnosis</Box>
+            <Box flex={1}>
+              <AutoComplete openOnFocus onChange={onItemSelected}>
+                <AutoCompleteInput
+                  variant="filled"
+                  placeholder="Diagnosis"
+                  borderBottom={'1.5px solid #e0e0e0'}
+                  bg={'transparent'}
+                  marginStart={0}
+                  marginInlineStart={0}
+                  marginEnd={0}
+                  marginInlineEnd={0}
+                  paddingLeft={0}
+                  fontSize={{ base: 'sm', sm: 'md' }}
+                  color={colors.PRIMARY}
+                  fontWeight="bold"
+                  border="0"
+                  _hover={{ background: 'transparent' }}
+                  onChange={(e) => getDiagnosisSearch(e.target.value)}
+                  rounded="none"
+                  h="35px" />
+                <AutoCompleteList>
+                  {diagnosisSearch.map((diagnosis, cid) => (
+                    <AutoCompleteItem
+                      key={`option-${cid}`}
+                      value={diagnosis.name}
+                      textTransform="capitalize"
+                    >
+                      {diagnosis.name}-{diagnosis.description}
+                    </AutoCompleteItem>
+                  ))}
+                </AutoCompleteList>
+              </AutoComplete>
+            </Box>
+          </Flex>
+      }
+      {
+        mode === siteMode.detail
+          ? <></>
+          : <Flex alignItems={'end'}>
+            <Box flex={1}>Keterangan</Box>
+            <Box flex={1}>
+              <InputUnderlined
+                type='text'
+                placeholder='Keterangan'
+                onChange={onDiagnosisNoteChange}
+              />
+            </Box>
+          </Flex>
+      }
+      {
+        mode === siteMode.detail
+          ? <></>
+          : <Flex justifyContent={'end'} pt={2}>
+            <ButtonMain onClick={onButtonAddClicked} ><FiPlusCircle /> Tambahkan diagnosis</ButtonMain>
+          </Flex>
+      }
       <Box paddingTop={'10px'} display={'grid'}>
         <TableContainer height='inherit'>
           <Table colorScheme={'gray'}>
@@ -118,7 +149,11 @@ const DiagnoseComponent = () => {
                 <Tr key={i} bg={'#F9F9FC'}>
                   <Td>{r.diagnosisCode}</Td>
                   <Td>{r.diagnosisNote}</Td>
-                  <Td><FiTrash color="red" onClick={(e) => onDeleteDiagnosis(r.id)} /></Td>
+                  {
+                    mode === siteMode.detail
+                      ? <></>
+                      : <Td><FiTrash color="red" onClick={(e) => onDeleteDiagnosis(r.id, r.saved)} /></Td>
+                  }
                 </Tr>
               ))
                 :

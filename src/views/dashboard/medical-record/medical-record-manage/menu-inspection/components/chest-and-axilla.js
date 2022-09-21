@@ -3,7 +3,7 @@ import InputRadio, { radioType } from "components/input/InputRadio";
 import InputUnderlined from "components/input/InputUnderlined";
 import { useState } from "react";
 import stateInputMR from "states/stateInputMedicalRecord";
-import { medicalRecordID } from "utils/constant";
+import { medicalRecordID, siteMode } from "utils/constant";
 import { useSnapshot } from "valtio";
 import colors from "values/colors";
 
@@ -38,7 +38,7 @@ export const inputList = [
   },
 ]
 
-const ChestAndAxilla = () => {
+const ChestAndAxilla = ({ mode }) => {
   const [mrData, setMRData] = useState({})
   const { generalAssesment } = useSnapshot(stateInputMR)
 
@@ -67,6 +67,7 @@ const ChestAndAxilla = () => {
                   uid={input.state}
                   onChange={onChange}
                   options={input.options}
+                  readOnly={mode === siteMode.detail}
                 />
                 : <Flex alignItems={'end'}>
                   <Box flex={1}>{input.label}</Box>
@@ -79,6 +80,7 @@ const ChestAndAxilla = () => {
                         onChange={onChange}
                         type={input.type}
                         w={'100%'}
+                        readOnly={mode === siteMode.detail}
                       />
                       <Flex whiteSpace={'pre'} borderBottom={'1px solid #ccc'} color={colors.PRIMARY} alignItems={'center'}>
                         <Box>

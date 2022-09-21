@@ -3,7 +3,7 @@ import InputRadio, { radioType } from "components/input/InputRadio";
 import InputUnderlined from "components/input/InputUnderlined";
 import { useState } from "react";
 import stateInputMR from "states/stateInputMedicalRecord";
-import { medicalRecordID } from "utils/constant";
+import { medicalRecordID, siteMode } from "utils/constant";
 import { useSnapshot } from "valtio";
 
 export const inputList = [
@@ -37,7 +37,7 @@ export const inputList = [
   }
 ]
 
-const RespiratorySystem = () => {
+const RespiratorySystem = ({mode}) => {
 
   const [respirationData, setrespirationData] = useState({})
   const { generalAssesment } = useSnapshot(stateInputMR)
@@ -65,6 +65,7 @@ const RespiratorySystem = () => {
               onChange={onChange}
               value={stateInputMR.generalAssesment.respirationSystem[input.state]}
               options={input.options}
+              readOnly={mode === siteMode.detail}
             />
           </>
         })

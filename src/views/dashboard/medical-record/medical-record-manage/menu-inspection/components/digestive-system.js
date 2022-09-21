@@ -3,7 +3,7 @@ import InputRadio, { radioType } from "components/input/InputRadio";
 import InputUnderlined from "components/input/InputUnderlined";
 import { useState } from "react";
 import stateInputMR from "states/stateInputMedicalRecord";
-import { medicalRecordID } from "utils/constant";
+import { medicalRecordID, siteMode } from "utils/constant";
 import { useSnapshot } from "valtio";
 
 export const inputList = [
@@ -36,7 +36,7 @@ export const inputList = [
   }
 ]
 
-const DigestiveSystem = () => {
+const DigestiveSystem = ({ mode }) => {
   const [mrData, setMRData] = useState({})
   const { generalAssesment } = useSnapshot(stateInputMR)
 
@@ -66,6 +66,7 @@ const DigestiveSystem = () => {
                   onChange={onChange}
                   value={stateInputMR.generalAssesment.digestionSystem[input.state]}
                   options={input.options}
+                  readOnly={mode === siteMode.detail}
                 />
                 : <Flex alignItems={'end'}>
                   <Box flex={1}>{input.label}</Box>
@@ -78,6 +79,7 @@ const DigestiveSystem = () => {
                         value={stateInputMR.generalAssesment.digestionSystem[input.state]}
                         type={input.type}
                         w={'100%'}
+                        readOnly={mode === siteMode.detail}
                       />
                     </Flex>
                   </Box>

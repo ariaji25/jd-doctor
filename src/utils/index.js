@@ -157,16 +157,17 @@ const addZeroPad = (num, totalLength) => {
   return `${num}`.padStart(totalLength, '0')
 }
 
-const useQueryParams = () => {
+const useQueryParams = (key) => {
   const { search } = useLocation();
 
-  return React.useMemo(() => new URLSearchParams(search), [search]);
+  const queryparams = React.useMemo(() => new URLSearchParams(search), [search]);
+  return queryparams[key]
 }
 
 const s4 = () => {
   return Math.floor((1 + Math.random()) * 0x10000)
-      .toString(16)
-      .substring(1);
+    .toString(16)
+    .substring(1);
 }
 
 

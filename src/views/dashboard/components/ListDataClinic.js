@@ -6,6 +6,7 @@ import EmptyComponent from 'components/EmptyComponent';
 import { useCallback, useEffect, useState } from 'react';
 import { addZeroPad, dateFormat, getCurrentUserFromStorage } from 'utils';
 import apiDoctor from 'services/apiDoctor';
+import stateInputMR, { clearStateInputMR } from 'states/stateInputMedicalRecord';
 
 const ListDataClinic = () => {
   const history = useHistory();
@@ -29,10 +30,14 @@ const ListDataClinic = () => {
       }
       var history = r.events.map((ev) => {
         const data = {
-          no: i,
+          id: i,
+          patientId: ev.trackedEntityInstance,
+          img: '/img/doctorSidebar.png',
           name: ev.dataValues.find((e) => e.dataElement === 'FwdxzpQ8w2I') ? ev.dataValues.find((e) => e.dataElement === 'FwdxzpQ8w2I').value ?? '-' : '-',
+          schedule: ev.dataValues.find((e) => e.dataElement === 'X7GUfsOErZh') ? ev.dataValues.find((e) => e.dataElement === 'X7GUfsOErZh').value ?? '-' : '-',
+          problem: ev.dataValues.find((e) => e.dataElement === 'Yh6ylx8D3tO') ? ev.dataValues.find((e) => e.dataElement === 'Yh6ylx8D3tO').value ?? '-' : '-',
           service: ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6') ? ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6').value ?? '-' : '-',
-          time: ev.dataValues.find((e) => e.dataElement === 'X7GUfsOErZh') ? ev.dataValues.find((e) => e.dataElement === 'X7GUfsOErZh').value ?? '-' : '-',
+          serviceID: ev.event
         }
         i++;
         return data;
@@ -103,11 +108,15 @@ const ListDataClinic = () => {
                     </Thead>
                     <Tbody>
                       {serviceHistory.map((r, i) => (
-                        <Tr key={i}>
-                          <Td>{addZeroPad(r.no, 4)}</Td>
+                        <Tr onClick={(e) => {
+                          clearStateInputMR()
+                          stateInputMR.serviceDetail = r
+                          history.push(`/dashboard/medical-record/${r.patientId}`)
+                        }} key={i}>
+                          <Td>{addZeroPad(r.id, 4)}</Td>
                           <Td fontWeight={'bold'}>{r.name}</Td>
                           <Td>{r.service}</Td>
-                          <Td fontWeight={'bold'}>{r.time}</Td>
+                          <Td fontWeight={'bold'}>{r.schedule}</Td>
                         </Tr>
                       ))}
                     </Tbody>

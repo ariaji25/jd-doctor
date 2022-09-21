@@ -2,7 +2,7 @@ import { Box, Flex, Radio, RadioGroup, Stack } from "@chakra-ui/react"
 import InputRadio, { radioType } from "components/input/InputRadio"
 import { useState } from "react"
 import stateInputMR from "states/stateInputMedicalRecord"
-import { medicalRecordID } from "utils/constant"
+import { medicalRecordID, siteMode } from "utils/constant"
 import { useSnapshot } from "valtio"
 
 export const inputList = [
@@ -57,7 +57,7 @@ export const inputList = [
   }
 ]
 
-const VisionSystem = () => {
+const VisionSystem = ({ mode }) => {
   const [visionSystem, setVisionSystem] = useState({})
   const { generalAssesment } = useSnapshot(stateInputMR)
 
@@ -83,6 +83,7 @@ const VisionSystem = () => {
               onChange={onChange}
               value={stateInputMR.generalAssesment.visualSystem[input.state]}
               options={input.options}
+              readOnly={mode === siteMode.detail}
             />
           </>
         })

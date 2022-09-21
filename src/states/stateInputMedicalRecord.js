@@ -70,6 +70,7 @@ export const initStateInputMR = {
   treatment: [],
   diagnosisEnrollmentID: '',
   generalAssesmentEnrollmentID: '',
+  problemForServiceDetail: null
 }
 
 const stateInputMR = proxy({ ...initStateInputMR })

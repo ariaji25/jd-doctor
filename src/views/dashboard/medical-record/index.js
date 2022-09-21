@@ -14,7 +14,7 @@ import { FiPlusCircle, FiFilter, FiSearch, FiEye, FiEdit, FiTrash } from 'react-
 import EmptyComponent from 'components/EmptyComponent';
 import { apiPatient } from 'services/apiPatient';
 import { dateFormat, useQueryParams } from 'utils';
-import { genders, medicalRecordProgram } from 'utils/constant';
+import { genders, medicalRecordProgram, siteMode } from 'utils/constant';
 import { useSnapshot } from 'valtio';
 import stateInputMR, { clearStateInputMR } from 'states/stateInputMedicalRecord';
 import apiBooking from 'services/apiBooking';
@@ -26,10 +26,11 @@ const MedicalRecordPage = () => {
   let query = useQueryParams();
 
   const [serviceHistory, setServiceHistory] = useState([])
+  const [currentService, setCurrentService] = useState(null)
   const [pager, setPager] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+  const { patient, serviceDetail } = useSnapshot(stateInputMR)
 
-  const { serviceDetail } = useSnapshot(stateInputMR)
   const getServiceHistory = (page) => {
     setIsLoading(true)
     apiPatient.serviceHistory(idPatient, page)
@@ -46,8 +47,9 @@ const MedicalRecordPage = () => {
             service: ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6') ? ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6').value ?? '-' : '-',
             docterName: ev.dataValues.find((e) => e.dataElement === 'WeZLKi92kyq') ? ev.dataValues.find((e) => e.dataElement === 'WeZLKi92kyq').value ?? '-' : '-',
             diagnosis: ev.dataValues.find((e) => e.dataElement === 'PynURTrdTEs') ? ev.dataValues.find((e) => e.dataElement === 'PynURTrdTEs').value ?? '-' : '-',
+            treatment: ev.dataValues.find((e) => e.dataElement === 'uQrOU6N2FfL') ? ev.dataValues.find((e) => e.dataElement === 'uQrOU6N2FfL').value ?? '-' : '-',
             // service: ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6') ? ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6').value ?? '-' : '-',
-            event: ev.event
+            serviceID: ev.event
           }
           i++;
           return data;
@@ -67,6 +69,7 @@ const MedicalRecordPage = () => {
     console.log("Service Data", serviceDetail.service)
     getServiceHistory(1)
     getPatientDetail()
+    if (!currentService) setCurrentService(serviceDetail)
   }, [])
 
   useEffect(() => {
@@ -188,7 +191,10 @@ const MedicalRecordPage = () => {
               <Box paddingTop={'10px'}>
                 <Flex justifyContent={'space-between'}>
                   <Flex fontSize={'18px'} fontWeight={'bold'} color={colors.PRIMARY} gap={3} alignItems={'center'}>
-                    <ButtonMain onClick={() => history.push(`/dashboard/medical-record/${idPatient}/create`)}><FiPlusCircle /><span>Tambah pemeriksaan</span></ButtonMain>
+                    <ButtonMain onClick={() => {
+                      stateInputMR.serviceDetail = currentService
+                      history.push(`/dashboard/medical-record/${idPatient}/${siteMode.create}`)
+                    }}><FiPlusCircle /><span>Tambah pemeriksaan</span></ButtonMain>
                   </Flex>
                   <Flex>
                     <ButtonMain marginRight={'10px'} bg="white" color={'#505050'} borderColor='#505050'><FiFilter fontSize={'25px'} /> <span style={{ paddingLeft: '5px' }}></span>Filter</ButtonMain>
@@ -218,8 +224,8 @@ const MedicalRecordPage = () => {
                             <Td>Keluhan</Td>
                             <Td>Dokter</Td>
                             <Td>Diagnosa</Td>
+                            <Td>Resep Obat</Td>
                             {/* 
-                            <Td>Tindakan</Td>
                             <Td>Resep Dokter</Td> */}
                           </Tr>
                         </Thead>
@@ -234,11 +240,25 @@ const MedicalRecordPage = () => {
                                         <Image src={'/icon/vertical-dot.svg'} />
                                       </MenuButton>
                                       <MenuList>
-                                        <MenuItem onClick={() => history.push(`/dashboard/medical-record/${idPatient}/detail`)} display={'flex'} gap={3}>
+                                        <MenuItem onClick={() => {
+                                          var _patient = patient
+                                          clearStateInputMR()
+                                          stateInputMR.serviceDetail = currentService
+                                          stateInputMR.patient = _patient
+                                          stateInputMR.problemForServiceDetail = r.problem
+                                          history.push(`/dashboard/medical-record/${idPatient}/${siteMode.detail}/${r.serviceID}`)
+                                        }} display={'flex'} gap={3}>
                                           <Box><FiEye /></Box>
                                           <Box>Lihat detail</Box>
                                         </MenuItem>
-                                        <MenuItem onClick={() => history.push(`/dashboard/medical-record/${idPatient}/edit`)} display={'flex'} gap={3}>
+                                        <MenuItem onClick={() => {
+                                          var _patient = patient
+                                          clearStateInputMR()
+                                          stateInputMR.serviceDetail = currentService
+                                          stateInputMR.patient = _patient
+                                          stateInputMR.problemForServiceDetail = r.problem
+                                          history.push(`/dashboard/medical-record/${idPatient}/${siteMode.edit}/${r.serviceID}`)
+                                        }} display={'flex'} gap={3}>
                                           <Box><FiEdit /></Box>
                                           <Box>Edit</Box>
                                         </MenuItem>
@@ -258,8 +278,8 @@ const MedicalRecordPage = () => {
                               <Td>{r.problem}</Td>
                               <Td>{r.docterName}</Td>
                               <Td>{r.diagnosis}</Td>
+                              <Td>{r.treatment}</Td>
                               {/* 
-                              <Td>{r.tindakan}</Td>
                               <Td>{r.receipt}</Td> */}
                             </Tr>
                           ))}

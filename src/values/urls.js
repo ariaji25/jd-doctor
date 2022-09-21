@@ -50,7 +50,8 @@ const urls = {
   // NEROLLMENTS
   ENROLLMENTS: `${config.apiURL}/api/enrollments`,
   //EVENTS
-  EVENTS: `${config.apiURL}/api/events`
+  EVENTS: `${config.apiURL}/api/events`,
+  EVENTS_ID: id => `${config.apiURL}/api/events/${id}`
 
 };
 

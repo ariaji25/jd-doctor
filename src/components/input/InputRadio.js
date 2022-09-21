@@ -21,7 +21,7 @@ export const radioType = {
   2. ["Options1","Option2"]
 */
 const InputRadio = (
-  { name, w, isRequired, options, label, value, onChange, radioStyle = radioType.vertical, ...props },
+  { name, w, isRequired, options, label, value, onChange, radioStyle = radioType.vertical, readOnly, ...props },
   ref
 ) => {
   const [isValid, setIsValid] = useState(false)
@@ -55,10 +55,10 @@ const InputRadio = (
                     )}
                   </Flex>
                 )}
-              <RadioGroup name={name} ref={ref} value={value} onChange={onStateChange}>
+              <RadioGroup name={name} ref={ref} value={value} isDisabled={readOnly ?? false} onChange={onStateChange}>
                 <Stack direction="row">
                   {options.map((o) => (
-                    <Radio key={`radio-option-${o.value ?? o}`} value={o.value ?? o}>
+                    <Radio readOnly={readOnly ?? false} key={`radio-option-${o.value ?? o}`} value={o.value ?? o}>
                       {o.label ?? o}
                     </Radio>
                   ))}
@@ -76,10 +76,10 @@ const InputRadio = (
                 </Text>
               )}
               <Box flex={4}>
-                <RadioGroup name={name} ref={ref} value={value} onChange={onStateChange}>
+                <RadioGroup name={name} ref={ref} value={value} isDisabled={readOnly ?? false} onChange={onStateChange}>
                   <Grid templateColumns={`repeat(${options.length > 2 ? 3 : 2}, 1fr)`} gap={2}>
                     {options.map((o) => (
-                      <Radio marginLeft={'16px'} key={`radio-option-${o.value ?? o}`} value={o.value ?? o}>
+                      <Radio readOnly={readOnly ?? false} marginLeft={'16px'} key={`radio-option-${o.value ?? o}`} value={o.value ?? o}>
                         {o.label ?? o}
                       </Radio>
                     ))}

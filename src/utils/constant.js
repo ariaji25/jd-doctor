@@ -118,7 +118,7 @@ export const medicalRecordID = {
   turgorKulit: "wWeeeyla48T",
   warnaKulit: "NF47nhmSb4z",
   kontraktur: "wKo1i4VUNyU",
-  kesulitanDalamPergerakan : "BJKBKwt7e5K",
+  kesulitanDalamPergerakan: "BJKBKwt7e5K",
   intugmentLainnya: "eSliypMl5Tn",
   // Dada dan axilla
   mammae: "RiYk9GbwY6q",
@@ -135,7 +135,7 @@ export const medicalRecordID = {
   refernsiTindakan: "RTCWjUiK6Wj",
   // Obat:
   namaObat: "adfqVxQYDGH",
-  dosisi: "SgF9qnmQLaU",
+  dosis: "SgF9qnmQLaU",
   refernsiPengobatan: "uQrOU6N2FfL",
 
   // Refensi
@@ -174,6 +174,12 @@ export const medicalRecordProgram = {
   tindakanStage: "NSW1zi1H9D3",
   obat: "VVN4LncUJRl",
   obatStage: "M6aIIfUDGT4"
+}
+
+export const siteMode = {
+  create: "create",
+  detail: "detail",
+  edit: "edit"
 }
 
 

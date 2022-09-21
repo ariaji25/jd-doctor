@@ -2,7 +2,7 @@ import { Box, Flex } from "@chakra-ui/react"
 import InputUnderlined from "components/input/InputUnderlined";
 import { useCallback, useState } from "react";
 import stateInputMR from "states/stateInputMedicalRecord";
-import { layananList, medicalRecordID } from "utils/constant";
+import { layananList, medicalRecordID, siteMode } from "utils/constant";
 import { useSnapshot } from "valtio";
 
 export const inputList = [
@@ -65,7 +65,7 @@ export const inputList = [
   ]
 ]
 
-const GeneralCondition = () => {
+const GeneralCondition = ({ mode }) => {
   const [conditions, setConditions] = useState({})
   const { generalAssesment } = useSnapshot(stateInputMR)
 
@@ -83,8 +83,9 @@ const GeneralCondition = () => {
       {inputList.map(inputs => {
         return <Flex gap={8} py={2}>
           {
-            inputs.map(input =>
-              <Box flex={1}>
+            inputs.map(input => {
+              console.log("Ass condition", generalAssesment.generalCondition[input.state])
+              return <Box flex={1}>
                 <InputUnderlined
                   label={input.label}
                   type={input.type}
@@ -93,9 +94,12 @@ const GeneralCondition = () => {
                   onChange={onChange}
                   validator={(e) => { }}
                   value={generalAssesment.generalCondition[input.state]}
+                  readOnly={mode === siteMode.detail ? true : false}
                 // value={username}
                 />
-              </Box>)
+              </Box>
+            }
+            )
           }
         </Flex>
       })

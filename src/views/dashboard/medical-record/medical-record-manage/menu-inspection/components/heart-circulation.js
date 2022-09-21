@@ -2,7 +2,7 @@ import { Box, Flex, Radio, RadioGroup, Stack } from "@chakra-ui/react"
 import colors from "values/colors"
 import InputUnderlined from "components/input/InputUnderlined";
 import InputRadio, { radioType } from "components/input/InputRadio";
-import { medicalRecordID } from "utils/constant";
+import { medicalRecordID, siteMode } from "utils/constant";
 import { useState } from "react";
 import { useSnapshot } from "valtio";
 import stateInputMR from "states/stateInputMedicalRecord";
@@ -52,7 +52,7 @@ export const inputList = [
   }
 ]
 
-const HeartCirculation = () => {
+const HeartCirculation = ({ mode }) => {
   const [mrData, setMRData] = useState({})
   const { generalAssesment } = useSnapshot(stateInputMR)
 
@@ -81,6 +81,7 @@ const HeartCirculation = () => {
                   onChange={onChange}
                   value={stateInputMR.generalAssesment.hearthCirculation[input.state]}
                   options={input.options}
+                  readOnly={mode === siteMode.detail}
                 />
                 : <Flex alignItems={'end'}>
                   <Box flex={1}>{input.label}</Box>
@@ -93,6 +94,7 @@ const HeartCirculation = () => {
                         value={stateInputMR.generalAssesment.hearthCirculation[input.state]}
                         type={input.type}
                         w={'100%'}
+                        readOnly={mode === siteMode.detail}
                       />
                       <Flex whiteSpace={'pre'} borderBottom={'1px solid #ccc'} color={colors.PRIMARY} alignItems={'center'}>
                         <Box>

@@ -46,7 +46,7 @@ const getPatientMedicalRecordEnrollment = async (patientId) => {
   return response.data
 }
 
-const createNewMedicalRecord = async (programId, programStage, enrollmentId, dataValues, serviceID, patientId) => {
+const createNewMedicalRecord = async (programId, programStage, enrollmentId, dataValues, serviceID, patientId, willUpdateEvent) => {
   const eventDate = moment().format('YYYY-MM-DD')
   const eventData = {
     program: programId,
@@ -67,6 +67,19 @@ const createNewMedicalRecord = async (programId, programStage, enrollmentId, dat
         strategy: "CREATE_AND_UPDATE"
       }
     })
+  return response.data
+}
+
+const updateMedicalRecord = async (event) => {
+  const response = await request.post(
+    urls.EVENTS,
+    event,
+    {
+      params: {
+        strategy: "CREATE_AND_UPDATE"
+      }
+    }
+  )
   return response.data
 }
 
@@ -95,10 +108,17 @@ const getMedicalRecord = async (serviceID, programId) => {
     {
       params: {
         filter: `FipmUjYUujm:eq:${serviceID}`,
-        program: programId
+        program: programId,
+        fields: ':all',
+        deleted: false
       }
     }
   )
+  return response.data
+}
+
+const deleteMedicalRecord = async (id) => {
+  const response = await request.delete(urls.EVENTS_ID(id))
   return response.data
 }
 
@@ -107,7 +127,10 @@ const apiMedicalrecord = {
   createEnrollmentForMR,
   getPatientMedicalRecordEnrollment,
   createNewMedicalRecord,
-  addMedicalRecordReference
+  addMedicalRecordReference,
+  getMedicalRecord,
+  deleteMedicalRecord,
+  updateMedicalRecord
 }
 
 export default apiMedicalrecord

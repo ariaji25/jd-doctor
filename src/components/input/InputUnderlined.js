@@ -42,7 +42,7 @@ customDateInput.displayName = "DateInput";
 const CustomInput = forwardRef(customDateInput);
 
 const InputUnderlined = (
-  { typeIcon, icon, onClear, label, maxLength, onChange, validator, ...props },
+  { typeIcon, icon, onClear, label, maxLength, onChange, validator, readOnly, disabled, ...props },
   ref
 ) => {
   const [isValid, setIsValid] = useState(false)
@@ -98,7 +98,7 @@ const InputUnderlined = (
             }]
           }
         });
-        if (validator)setIsValid(validator(e))
+        if (validator) setIsValid(validator(e))
         break
       default:
         setValue(e.target.value)
@@ -111,7 +111,7 @@ const InputUnderlined = (
             }]
           }
         });
-        if (validator)setIsValid(validator(e))
+        if (validator) setIsValid(validator(e))
         break
     }
   }
@@ -220,6 +220,7 @@ const InputUnderlined = (
               maxLength={maxLength}
               value={value}
               onChange={handleOnChange}
+              readOnly={readOnly ?? false}
             />
         }
         {onClear && (
