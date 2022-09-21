@@ -27,7 +27,10 @@ const DashboardPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [todayService, setTodayService] = useState([])
   const [inComingService, setIncomingService] = useState([])
-  const [totals, setTotals] = useState([0, 0])
+  const [totals, setTotals] = useState({
+    0: 0,
+    1: 0
+  })
 
   const getServiceHistory = (query, onComplete) => {
     console.log("DoctorId", getCurrentUserFromStorage().id)
@@ -48,6 +51,7 @@ const DashboardPage = () => {
           schedule: ev.dataValues.find((e) => e.dataElement === 'X7GUfsOErZh') ? ev.dataValues.find((e) => e.dataElement === 'X7GUfsOErZh').value ?? '-' : '-',
           problem: ev.dataValues.find((e) => e.dataElement === 'Yh6ylx8D3tO') ? ev.dataValues.find((e) => e.dataElement === 'Yh6ylx8D3tO').value ?? '-' : '-',
           service: ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6') ? ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6').value ?? '-' : '-',
+          event: ev.event
         }
 
         data.img = layananList.find(a => a.label === data.service).icon
@@ -65,11 +69,11 @@ const DashboardPage = () => {
   const init = useCallback(() => {
     setIsLoading(true)
     getServiceHistory(queryConditions.equal, (h) => {
-      setTotals([h.length], totals[1])
+      setTotals({ ...totals, 0: h.length })
       setTodayService(h)
     })
     getServiceHistory(queryConditions.greaterThen, (h) => {
-      setTotals([totals[0], h.length])
+      setTotals({ ...totals, 1: h.length })
       setTodayService(h)
     })
   }, [])

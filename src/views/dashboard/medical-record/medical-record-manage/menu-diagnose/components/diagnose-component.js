@@ -12,18 +12,21 @@ import {
 import colors from "values/colors";
 import { useCallback, useEffect, useState } from "react";
 import apiDoctor from "services/apiDoctor";
+import { s4 } from "utils";
+import stateInputMR from "states/stateInputMedicalRecord";
+import { useSnapshot } from "valtio";
+import apiMedicalrecord from "services/apiMedicalRecord";
+import { siteMode } from "utils/constant";
 
-const countries = [
-  "nigeria",
-  "japan",
-  "india",
-  "united states",
-  "south korea",
-];
-const DiagnoseComponent = () => {
+const DiagnoseComponent = ({ mode }) => {
+
   const [diagnosisSearch, setDiagnosisSearch] = useState([])
 
-  const [selectedDiagnosis, setSelectedDiagnosis] = useState(null)
+  const { diagnosis } = useSnapshot(stateInputMR)
+
+  const [selectedDiagnosis, setSelectedDiagnosis] = useState({})
+
+  const [diagnosisList, setDiagnosisList] = useState([])
 
   const getDiagnosisSearch = (search) => {
     console.log(search)
@@ -31,64 +34,106 @@ const DiagnoseComponent = () => {
       setDiagnosisSearch(d.data)
     })
   }
-  // const init = useCallback(() => {
 
-  // }, [])
+  const onItemSelected = (e) => {
+    setSelectedDiagnosis({ ...selectedDiagnosis, diagnosisCode: e })
+  }
 
-  // useEffect(() => {
-  //   init();
-  // }, [init])
+  const onDiagnosisNoteChange = (e) => {
+    setSelectedDiagnosis({ ...selectedDiagnosis, diagnosisNote: e.target.value })
+  }
+
+  const onButtonAddClicked = () => {
+    // Add id needed to remove the item
+    setSelectedDiagnosis({ ...selectedDiagnosis, id: s4(), saved: false })
+    setDiagnosisList(current => [...diagnosisList, selectedDiagnosis])
+    stateInputMR.diagnosis = [...stateInputMR.diagnosis, selectedDiagnosis]
+  }
+
+  const onDeleteDiagnosis = (id, isSaved) => {
+    console.log("DELETE", isSaved)
+    if (isSaved) {
+      console.log("DELETE", id)
+      apiMedicalrecord.deleteMedicalRecord(id).then(r => {
+        setDiagnosisList(current => current.filter(c => c.id !== id))
+        stateInputMR.diagnosis = stateInputMR.diagnosis.filter(c => c.id !== id)
+      })
+    } else {
+      setDiagnosisList(current => current.filter(c => c.id !== id))
+      stateInputMR.diagnosis = stateInputMR.diagnosis.filter(c => c.id !== id)
+    }
+
+  }
+  useEffect(() => {
+    console.log("INIT DIagnosis 1", diagnosis)
+    console.log("INIT is ", (diagnosis.length))
+    if (diagnosis && diagnosis.length > 0) setDiagnosisList(current => [...diagnosis])
+  }, [])
+
   return (
     <Stack px={24} py={5} gap={3}>
       <Box fontSize={'24px'} fontWeight={'bold'} color={'#505050'} pb={'12px'}>Diagnosis</Box>
-      <Flex alignItems={'end'}>
-        <Box flex={1}>Coding diagnosis</Box>
-        <Box flex={1}>
-          <AutoComplete openOnFocus>
-            <AutoCompleteInput
-              variant="filled"
-              placeholder="Diagnosis"
-              borderBottom={'1.5px solid #e0e0e0'}
-              bg={'transparent'}
-              marginStart={0}
-              marginInlineStart={0}
-              marginEnd={0}
-              marginInlineEnd={0}
-              paddingLeft={0}
-              fontSize={{ base: 'sm', sm: 'md' }}
-              color={colors.PRIMARY}
-              fontWeight="bold"
-              border="0"
-              _hover={{ background: 'transparent' }}
-              onChange={(e) => getDiagnosisSearch(e.target.value)}
-              rounded="none"
-              h="35px" />
-            <AutoCompleteList>
-              {diagnosisSearch.map((diagnosis, cid) => (
-                <AutoCompleteItem
-                  key={`option-${cid}`}
-                  value={diagnosis.name}
-                  textTransform="capitalize"
-                >
-                  {diagnosis.name}-{diagnosis.description}
-                </AutoCompleteItem>
-              ))}
-            </AutoCompleteList>
-          </AutoComplete>
-        </Box>
-      </Flex>
-      <Flex alignItems={'end'}>
-        <Box flex={1}>Keterangan</Box>
-        <Box flex={1}>
-          <InputUnderlined
-            type='text'
-            placeholder='Keterangan'
-          />
-        </Box>
-      </Flex>
-      <Flex justifyContent={'end'} pt={2}>
-        <ButtonMain><FiPlusCircle /> Tambahkan diagnosis</ButtonMain>
-      </Flex>
+      {
+        mode === siteMode.detail
+          ? <></>
+          : <Flex alignItems={'end'}>
+            <Box flex={1}>Coding diagnosis</Box>
+            <Box flex={1}>
+              <AutoComplete openOnFocus onChange={onItemSelected}>
+                <AutoCompleteInput
+                  variant="filled"
+                  placeholder="Diagnosis"
+                  borderBottom={'1.5px solid #e0e0e0'}
+                  bg={'transparent'}
+                  marginStart={0}
+                  marginInlineStart={0}
+                  marginEnd={0}
+                  marginInlineEnd={0}
+                  paddingLeft={0}
+                  fontSize={{ base: 'sm', sm: 'md' }}
+                  color={colors.PRIMARY}
+                  fontWeight="bold"
+                  border="0"
+                  _hover={{ background: 'transparent' }}
+                  onChange={(e) => getDiagnosisSearch(e.target.value)}
+                  rounded="none"
+                  h="35px" />
+                <AutoCompleteList>
+                  {diagnosisSearch.map((diagnosis, cid) => (
+                    <AutoCompleteItem
+                      key={`option-${cid}`}
+                      value={diagnosis.name}
+                      textTransform="capitalize"
+                    >
+                      {diagnosis.name}-{diagnosis.description}
+                    </AutoCompleteItem>
+                  ))}
+                </AutoCompleteList>
+              </AutoComplete>
+            </Box>
+          </Flex>
+      }
+      {
+        mode === siteMode.detail
+          ? <></>
+          : <Flex alignItems={'end'}>
+            <Box flex={1}>Keterangan</Box>
+            <Box flex={1}>
+              <InputUnderlined
+                type='text'
+                placeholder='Keterangan'
+                onChange={onDiagnosisNoteChange}
+              />
+            </Box>
+          </Flex>
+      }
+      {
+        mode === siteMode.detail
+          ? <></>
+          : <Flex justifyContent={'end'} pt={2}>
+            <ButtonMain onClick={onButtonAddClicked} ><FiPlusCircle /> Tambahkan diagnosis</ButtonMain>
+          </Flex>
+      }
       <Box paddingTop={'10px'} display={'grid'}>
         <TableContainer height='inherit'>
           <Table colorScheme={'gray'}>
@@ -100,11 +145,15 @@ const DiagnoseComponent = () => {
               </Tr>
             </Thead>
             <Tbody w={'100%'}>
-              {listDiagnose.length > 0 ? listDiagnose.map((r, i) => (
+              {diagnosisList.length > 0 ? diagnosisList.map((r, i) => (
                 <Tr key={i} bg={'#F9F9FC'}>
-                  <Td>{r.diagnose}</Td>
-                  <Td>{r.ket}</Td>
-                  <Td><FiTrash color="red" /></Td>
+                  <Td>{r.diagnosisCode}</Td>
+                  <Td>{r.diagnosisNote}</Td>
+                  {
+                    mode === siteMode.detail
+                      ? <></>
+                      : <Td><FiTrash color="red" onClick={(e) => onDeleteDiagnosis(r.id, r.saved)} /></Td>
+                  }
                 </Tr>
               ))
                 :
@@ -128,37 +177,3 @@ const DiagnoseComponent = () => {
 }
 
 export default DiagnoseComponent
-
-const listDiagnoses = []
-const listDiagnose = [
-  {
-    id: 1,
-    diagnose: 'AA12',
-    ket: 'Sakit hati'
-  },
-  {
-    id: 2,
-    diagnose: 'AA12',
-    ket: 'Sakit hati'
-  },
-  {
-    id: 3,
-    diagnose: 'AA12',
-    ket: 'Sakit hati'
-  },
-  {
-    id: 3,
-    diagnose: 'AA12',
-    ket: 'Sakit hati'
-  },
-  {
-    id: 4,
-    diagnose: 'AA12',
-    ket: 'Sakit hati'
-  },
-  {
-    id: 5,
-    diagnose: 'AA12',
-    ket: 'Sakit hati'
-  },
-]

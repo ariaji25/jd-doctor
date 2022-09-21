@@ -1,10 +1,10 @@
 import { Box } from "@chakra-ui/react"
 import DiagnoseComponent from "./components/diagnose-component"
 
-const MenuDiagnose = () => {
+const MenuDiagnose = ({ mode }) => {
   return (
     <Box px={14}>
-      <DiagnoseComponent />
+      <DiagnoseComponent mode={mode} />
     </Box>
   )
 }

@@ -42,7 +42,7 @@ customDateInput.displayName = "DateInput";
 const CustomInput = forwardRef(customDateInput);
 
 const InputUnderlined = (
-  { typeIcon, icon, onClear, label, maxLength, onChange, validator, ...props },
+  { typeIcon, icon, onClear, label, maxLength, onChange, validator, readOnly, disabled, ...props },
   ref
 ) => {
   const [isValid, setIsValid] = useState(false)
@@ -73,7 +73,7 @@ const InputUnderlined = (
         break
       case 'number':
         const re = /^[0-9\b]+$/;
-        if (re.test(e.target.value) && e.target.value.length <= maxLength) {
+        if (re.test(e.target.value) && e.target.value.length <= (maxLength ?? 100)) {
           setValue(e.target.value)
           onChange({
             target: {
@@ -84,7 +84,7 @@ const InputUnderlined = (
               }]
             }
           });
-          setIsValid(validator(e))
+          if (validator) setIsValid(validator(e))
         }
         break
       case 'password':
@@ -98,7 +98,7 @@ const InputUnderlined = (
             }]
           }
         });
-        setIsValid(validator(e))
+        if (validator) setIsValid(validator(e))
         break
       default:
         setValue(e.target.value)
@@ -111,7 +111,7 @@ const InputUnderlined = (
             }]
           }
         });
-        setIsValid(validator(e))
+        if (validator) setIsValid(validator(e))
         break
     }
   }
@@ -220,6 +220,7 @@ const InputUnderlined = (
               maxLength={maxLength}
               value={value}
               onChange={handleOnChange}
+              readOnly={readOnly ?? false}
             />
         }
         {onClear && (

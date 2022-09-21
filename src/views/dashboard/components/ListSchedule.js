@@ -26,7 +26,8 @@ const ListSchedule = ({ state, selectedTab, tabs, isLoading, serviceHistory, tot
         address: p.attributes.find((a) => a.attribute === "aRHSGgFeOjr") ? p.attributes.find((a) => a.attribute === "aRHSGgFeOjr").value ?? '-' : '-',
         photo: '/img/doctorSidebar.png',
         service: ev.service,
-        problem: ev.problem
+        problem: ev.problem,
+        serviceID: ev.event
       }
       setSelectedPatient(data)
       setModalLoading(false)
@@ -108,52 +109,3 @@ const ListSchedule = ({ state, selectedTab, tabs, isLoading, serviceHistory, tot
 }
 
 export default ListSchedule
-
-const listRawat = [
-  {
-    id: 1,
-    img: '/img/doctorSidebar.png',
-    name: 'Andrew',
-    problem: 'Perawatan luka',
-    time: '15.00',
-    schedule: '01:00 Wib',
-    address: 'Jl. Anugrah No.12 - Medan',
-  },
-  {
-    id: 1,
-    img: '/img/doctorSidebar.png',
-    name: 'Andrew',
-    problem: 'Perawatan luka',
-    time: '15.00',
-    schedule: '01:00 Wib',
-    address: 'Jl. Anugrah No.12 - Medan',
-  },
-  {
-    id: 1,
-    img: '/img/doctorSidebar.png',
-    name: 'Andrew',
-    problem: 'Perawatan luka',
-    time: '15.00',
-    schedule: '01:00 Wib',
-    address: 'Jl. Anugrah No.12 - Medan',
-  },
-  {
-    id: 1,
-    img: '/img/doctorSidebar.png',
-    name: 'Andrew',
-    problem: 'Perawatan luka',
-    time: '15.00',
-    schedule: '01:00 Wib',
-    address: 'Jl. Anugrah No.12 - Medan',
-  },
-  {
-    id: 1,
-    img: '/img/doctorSidebar.png',
-    name: 'Andrew',
-    problem: 'Perawatan luka',
-    time: '15.00',
-    schedule: '01:00 Wib',
-    address: 'Jl. Anugrah No.12 - Medan',
-  },
-]
-

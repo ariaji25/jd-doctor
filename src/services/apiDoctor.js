@@ -123,7 +123,7 @@ const getHomeCareServiceHistory = async (date, id, conditions) => {
     params: {
       filter: `arxuhT0GhPy:${conditions??queryConditions.equal}:${date}`,
       fields: '[*]',
-      order: 'created:ASC'
+      order: 'created:DESC'
     }
   })
   return response.data

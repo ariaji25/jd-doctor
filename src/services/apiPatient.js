@@ -248,7 +248,27 @@ const checkTeiAvailable = async (tei) => {
 };
 
 const getPatienDetailByID = async (id) => {
-  const response = await request.get(urls.PATIENT_UPDATE(id))
+  const response = await request.get(urls.PATIENT_UPDATE(id),
+    {
+      params: {
+        fields: '[*]'
+      }
+    })
+  return response.data;
+}
+
+const serviceHistory = async (id, page) => {
+  const response = await request.get(urls.PATIENT_SERVICE_HISTORY(id), {
+    params: {
+      order: "created:DESC",
+      totalPages: "true",
+      page: page ?? 1,
+      pageSize: 10,
+      fields: '[*]',
+      filter: "PynURTrdTEs:gt:1"
+      // page:
+    }
+  })
   return response.data;
 }
 
@@ -258,5 +278,6 @@ export const apiPatient = {
   getDetail,
   checkTeiAvailable,
   getPatientByNIK,
-  getPatienDetailByID
+  getPatienDetailByID,
+  serviceHistory
 };

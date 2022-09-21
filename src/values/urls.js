@@ -8,6 +8,7 @@ const urls = {
 
   BOOKING_CREATE: `${config.apiURL}/api/events?strategy=CREATE_AND_UPDATE`,
   BOOKING_UPDATE: `${config.apiURL}/api/events?strategy=CREATE_AND_UPDATE`,
+  BOOKING_DETAIL: (id) => `${config.apiURL}/api/events/${id}?strategy=CREATE_AND_UPDATE`,
 
   PATIENT_CREATE: `${config.apiURL}/api/trackedEntityInstances`,
   DOCTOR_CREATE: `${config.apiURL}/api/register`,
@@ -37,9 +38,20 @@ const urls = {
   LOGIN_URL: `${config.apiURL}/api/login`,
   DOCTER_DETAIL: (email) => `${config.apiURL}/api/trackedEntityInstances?program=wcA7dgdvgt3&ou=FexDOKZlHSx&filter=KNhGfY4ApxB:EQ:${email}`,
   DOCTER_CLINIC_SERVICE_HISTORY: (id) => `${config.apiURL}/api/events?filter=Mu6xWeUWtWV:eq:${id}&filter=Sd9Z8lFBuQB:like:Kunjungan`,
-  DOCTER_HOMECARE_SERVICE_HISTORY: (id) => `${config.apiURL}/api/events?filter=Mu6xWeUWtWV:eq:${id}&filter=xLeRj3JlXLO:gt:1`,
+  DOCTER_HOMECARE_SERVICE_HISTORY: (id) => `${config.apiURL}/api/events?filter=Mu6xWeUWtWV:eq:${id}&status=COMPLETED&filter=Sd9Z8lFBuQB:like:Pelayanan&programStage=dbtQvmcQvp3`,
   // DOCTER_HOMECARE_SERVICE_HISTORY_NOTIF: (id) => `${config.apiURL}/api/events?filter=Mu6xWeUWtWV:eq:${id}&filter=a5xBShlsRo8:eq:Waiting&filter=xLeRj3JlXLO:gt:1&rootJunction=OR`,
-  DIAGNOSIS_SEARCH: `${config.apiURL}/api/diagnosis`
+  DIAGNOSIS_SEARCH: `${config.apiURL}/api/diagnosis`,
+
+  // HISTORY
+  PATIENT_SERVICE_HISTORY: (id) => `${config.apiURL}/api/events?=trackedEntityInstance=${id}&programStage=dbtQvmcQvp3`,
+  //OPTIONS
+  OPTION_SET_API_URL: `${config.apiURL}/api/options?fields=[id,code,name]`,
+
+  // NEROLLMENTS
+  ENROLLMENTS: `${config.apiURL}/api/enrollments`,
+  //EVENTS
+  EVENTS: `${config.apiURL}/api/events`,
+  EVENTS_ID: id => `${config.apiURL}/api/events/${id}`
 
 };
 

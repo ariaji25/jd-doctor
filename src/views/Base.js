@@ -25,6 +25,7 @@ const BasePage = () => {
       <Route exact path="/dashboard/list-patient" component={ListPatientPage} />
       <Route exact path="/dashboard/list-patient-clinic" component={ListPatientClinicPage} />
       <Route exact path="/dashboard/medical-record/:idPatient" component={MedicalRecordPage} />
+      <Route exact path="/dashboard/medical-record/:idPatient/:mrMethod/:serviceId" component={MedicalRecordManagePage} />
       <Route exact path="/dashboard/medical-record/:idPatient/:mrMethod" component={MedicalRecordManagePage} />
     </>
   );

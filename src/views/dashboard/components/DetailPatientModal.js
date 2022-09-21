@@ -3,7 +3,10 @@ import colors from 'values/colors';
 import ButtonMain from 'components/button/ButtonMain';
 import { FaPhone } from 'react-icons/fa';
 import { useHistory } from 'react-router-dom';
-import { monthNames } from 'utils/constant';
+import { keySelectedService, layananList, monthNames } from 'utils/constant';
+import { useSnapshot } from 'valtio';
+import stateInputMR, { clearStateInputMR } from 'states/stateInputMedicalRecord';
+import stateBooking from 'states/stateBooking';
 
 const DetailPatientModal = ({ data, loading }) => {
   const history = useHistory();
@@ -13,7 +16,7 @@ const DetailPatientModal = ({ data, loading }) => {
     <>
       {loading
         ? <Center><CircularProgress isIndeterminate size='100px' thickness='4px' /></Center>
-      : <Flex mx="12" gap={2} flexDir={'column'} width={'100%'}>
+        : <Flex mx="12" gap={2} flexDir={'column'} width={'100%'}>
           <Flex alignItems={'center'} flexDir='column'>
             <Box>
               <Image
@@ -33,7 +36,11 @@ const DetailPatientModal = ({ data, loading }) => {
             </ButtonMain>
           </Box>
           <Box>
-            <ButtonMain width={'100%'} onClick={() => history.push(`/dashboard/medical-record/${data.id}`)}>
+            <ButtonMain width={'100%'} onClick={() => {
+              clearStateInputMR()
+              stateInputMR.serviceDetail = data
+              history.push(`/dashboard/medical-record/${data.id}`)
+            }}>
               Periksa
             </ButtonMain>
           </Box>
@@ -54,7 +61,7 @@ const DetailPatientModal = ({ data, loading }) => {
                 <Box>
                   <Image
                     alt='patient-photo'
-                    src='/img/asam-urat-sidebar.png'
+                    src={layananList.find(e => e.label === data.service) ? layananList.find(e => e.label === data.service).icon ?? layananList[0].icon : layananList[0].icon}
                     cursor={'pointer'}
                     width={50}
                   />

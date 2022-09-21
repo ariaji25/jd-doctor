@@ -10,8 +10,9 @@ import DigestiveSystem from "./components/digestive-system";
 import GenitalUroSystem from "./components/genital-uro-system";
 import Integumentary from "./components/integumentary-musculoskeletal-system";
 import ChestAndAxilla from "./components/chest-and-axilla";
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import stateInputMR from "states/stateInputMedicalRecord";
 
 
 const tabss = [
@@ -26,7 +27,7 @@ const tabss = [
 ]
 
 
-const MenuInspection = () => {
+const MenuInspection = ({ mode }) => {
   const scrollable = useRef(null);
   const state = useSnapshot(stateMedicalRecord);
   const [showButtonScroll, setButtonScroll] = useState({
@@ -53,6 +54,7 @@ const MenuInspection = () => {
       }
     }
   };
+
   return (
     <>
       <Box px={14} >
@@ -87,31 +89,29 @@ const MenuInspection = () => {
         </Flex>
       </Box>
       {state.selectedTabInternal === 1 &&
-        <GeneralCondition />
+        <GeneralCondition mode={mode} />
       }
       {state.selectedTabInternal === 2 &&
-        <VisionSystem />
+        <VisionSystem mode={mode} />
       }
       {state.selectedTabInternal === 3 &&
-
-        <RespiratorySystem />
+        <RespiratorySystem mode={mode} />
       }
       {state.selectedTabInternal === 4 &&
-        <HeartCirculation />
+        <HeartCirculation mode={mode} />
       }
       {state.selectedTabInternal === 5 &&
-        <DigestiveSystem />
+        <DigestiveSystem mode={mode} />
       }
       {state.selectedTabInternal === 6 &&
-        <GenitalUroSystem />
+        <GenitalUroSystem mode={mode} />
       }
       {state.selectedTabInternal === 7 &&
-        <Integumentary />
+        <Integumentary mode={mode} />
       }
       {state.selectedTabInternal === 8 &&
-        <ChestAndAxilla />
+        <ChestAndAxilla mode={mode} />
       }
-
     </>
   )
 }

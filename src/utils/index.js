@@ -1,6 +1,8 @@
 import dateFns from "date-fns/format";
 import id from "date-fns/locale/id";
 import jwtDecode from 'jwt-decode';
+import React from "react";
+import { useLocation } from "react-router-dom/cjs/react-router-dom";
 import keyStorage from "values/keyStorage";
 import { CURRENT_USER_KEY, TOKEN_KEY } from "./constant";
 
@@ -155,6 +157,19 @@ const addZeroPad = (num, totalLength) => {
   return `${num}`.padStart(totalLength, '0')
 }
 
+const useQueryParams = (key) => {
+  const { search } = useLocation();
+
+  const queryparams = React.useMemo(() => new URLSearchParams(search), [search]);
+  return queryparams[key]
+}
+
+const s4 = () => {
+  return Math.floor((1 + Math.random()) * 0x10000)
+    .toString(16)
+    .substring(1);
+}
+
 
 export {
   addZeroPad,
@@ -174,6 +189,8 @@ export {
   getCurrentUserFromStorage,
   removeCurrentUserFromStorage,
   getBase64,
-  readArrayBuffer
+  readArrayBuffer,
+  useQueryParams,
+  s4
 };
 
