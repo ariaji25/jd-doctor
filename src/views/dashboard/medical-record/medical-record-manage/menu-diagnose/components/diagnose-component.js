@@ -102,7 +102,7 @@ const DiagnoseComponent = ({ mode }) => {
                   {diagnosisSearch.map((diagnosis, cid) => (
                     <AutoCompleteItem
                       key={`option-${cid}`}
-                      value={diagnosis.name}
+                      value={`${diagnosis.name}-${diagnosis.description}`}
                       textTransform="capitalize"
                     >
                       {diagnosis.name}-{diagnosis.description}

@@ -51,6 +51,7 @@ const LoginForm = ({ onClikWaHelp }) => {
       if (loginResponse.code === 200) {
         setTokenToStorage(loginResponse.data.token)
         localStorage.setItem("email", username.target.value)
+        localStorage.setItem("ou", loginResponse.data.ou)
         const currentUser = await apiDoctor.getDetail();
         setCurrentUserToStorage(currentUser);
         window.browserHistory.push("/dashboard")

@@ -1,4 +1,4 @@
-import { dateFormat } from 'utils';
+import { dateFormat, getCurrentUserFromStorage, getOU } from 'utils';
 import { queryConditions } from 'utils/constant';
 import request from 'utils/request';
 import keyStorage from 'values/keyStorage';
@@ -32,13 +32,13 @@ const create = async (attributes) => {
 
   const payload = {
     trackedEntityType: 'NvPl8j4DzNA',
-    orgUnit: 'FexDOKZlHSx',
+    orgUnit: getOU(),
     attributes: attributes,
     enrollments: [
       {
         program: 'wcA7dgdvgt3',
         status: 'ACTIVE',
-        orgUnit: 'FexDOKZlHSx',
+        orgUnit: getOU(),
         trackedEntityType: "NvPl8j4DzNA",
         enrollmentDate: `${dateFormat(Date(), 'yyyy-MM-dd')}`,
         incidentDate: `${dateFormat(Date(), 'yyyy-MM-dd')}`,
@@ -46,7 +46,7 @@ const create = async (attributes) => {
           {
             program: 'wcA7dgdvgt3',
             programStage: 'JOsX8D90CIM',
-            orgUnit: 'FexDOKZlHSx',
+            orgUnit: getOU(),
             dueDate: `${dateFormat(Date(), 'yyyy-MM-dd')}`,
             eventDate: `${dateFormat(Date(), 'yyyy-MM-dd')}`,
             status: 'ACTIVE',
@@ -73,7 +73,11 @@ const create = async (attributes) => {
 const getDetail = async () => {
   if (localStorage) {
     const email = (localStorage.getItem(keyStorage.EMAIL) ?? '');
-    const { data } = await request.get(urls.DOCTER_DETAIL(email));
+    const { data } = await request.get(urls.DOCTER_DETAIL(email), {
+      params: {
+        ou: localStorage.getItem("ou")
+      }
+    });
 
     const { trackedEntityInstances } = data;
     let instance = trackedEntityInstances.length
@@ -84,7 +88,7 @@ const getDetail = async () => {
       return;
     }
 
-    const { attributes: attr, trackedEntityInstance: tei } = instance;
+    const { attributes: attr, trackedEntityInstance: tei, ou: orgUnit } = instance;
     localStorage.setItem(keyStorage.TEI, tei);
 
     const biodata = {
@@ -96,6 +100,7 @@ const getDetail = async () => {
       tanggalLahir: attr.find((a) => a.attribute === ATTR.tanggalLahir).value,
       jenisKelamin: attr.find((a) => a.attribute === ATTR.jenisKelamin).value,
       email: attr.find((a) => a.attribute === ATTR.jenisKelamin).value,
+      ou: orgUnit
     };
 
     return biodata;
@@ -118,10 +123,23 @@ const getClinicServiceHistory = async (date, id) => {
   return response.data
 }
 
+const getAllClinicServiceHistory = async (id, page) => {
+  const response = await request.get(urls.DOCTER_CLINIC_SERVICE_HISTORY(id), {
+    params: {
+      fields: '[*]',
+      order: 'created:DESC',
+      totalPages: true,
+      page: page,
+      pageSize: 10
+    }
+  })
+  return response.data
+}
+
 const getHomeCareServiceHistory = async (date, id, conditions) => {
   const response = await request.get(urls.DOCTER_HOMECARE_SERVICE_HISTORY(id), {
     params: {
-      filter: `arxuhT0GhPy:${conditions??queryConditions.equal}:${date}`,
+      filter: `arxuhT0GhPy:${conditions ?? queryConditions.equal}:${date}`,
       fields: '[*]',
       order: 'created:DESC'
     }
@@ -150,6 +168,27 @@ const searchDiagnosis = async (search) => {
   return response.data
 }
 
-const apiDoctor = { list, create, getDetail, logOut, getClinicServiceHistory, getHomeCareServiceHistory, getServiceNotifications, searchDiagnosis };
+
+const searchICD9CODE = async (search) => {
+  const response = await request.get("https://clinicaltables.nlm.nih.gov/api/icd9cm_sg/v3/search", {
+    params: {
+      terms: search,
+    }
+  })
+  return response.data
+}
+
+const apiDoctor = {
+  list,
+  create,
+  getDetail,
+  logOut,
+  getClinicServiceHistory,
+  getHomeCareServiceHistory,
+  getServiceNotifications,
+  searchDiagnosis,
+  getAllClinicServiceHistory,
+  searchICD9CODE
+};
 
 export default apiDoctor;

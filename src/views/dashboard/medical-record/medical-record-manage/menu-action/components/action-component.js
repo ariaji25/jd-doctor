@@ -3,32 +3,136 @@ import InputUnderlined from "components/input/InputUnderlined";
 import ButtonMain from "components/button/ButtonMain";
 import { FiPlusCircle, FiTrash } from "react-icons/fi";
 import EmptyComponent from "components/EmptyComponent";
+import { useEffect, useState } from "react";
+import stateInputMR from "states/stateInputMedicalRecord";
+import { useSnapshot } from "valtio";
+import apiDoctor from "services/apiDoctor";
+import { s4 } from "utils";
+import apiMedicalrecord from "services/apiMedicalRecord";
+import { siteMode } from "utils/constant";
+import { AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList } from "@choc-ui/chakra-autocomplete";
+import colors from "values/colors";
 
-const ActionComponent = () => {
+const ActionComponent = ({ mode }) => {
+
+  const [actionSearch, setactionSearch] = useState([])
+
+  const { action } = useSnapshot(stateInputMR)
+
+  const [selectedaction, setSelectedaction] = useState({})
+
+  const [actionList, setactionList] = useState([])
+
+  const getactionSearch = (search) => {
+    console.log(search)
+    if (search && search.length >= 3) apiDoctor.searchICD9CODE(search).then(d => {
+      if (d[3] && d[3].length > 0) {
+        const list = d[3].map(e => {
+          return { code: e[0], desc: e[1] }
+        })
+        setactionSearch(c => [...list])
+      }
+    })
+  }
+
+  const onItemSelected = (e) => {
+    setSelectedaction({ ...selectedaction, actionCode: e })
+  }
+
+  const onactionNoteChange = (e) => {
+    setSelectedaction({ ...selectedaction, actionNote: e.target.value })
+  }
+
+  const onButtonAddClicked = () => {
+    // Add id needed to remove the item
+    setSelectedaction({ ...selectedaction, id: s4(), saved: false })
+    setactionList(current => [...actionList, selectedaction])
+    stateInputMR.action = [...stateInputMR.action, selectedaction]
+  }
+
+  const onDeleteaction = (id, isSaved) => {
+    console.log("DELETE", isSaved)
+    if (isSaved) {
+      console.log("DELETE", id)
+      apiMedicalrecord.deleteMedicalRecord(id).then(r => {
+        setactionList(current => current.filter(c => c.id !== id))
+        stateInputMR.action = stateInputMR.action.filter(c => c.id !== id)
+      })
+    } else {
+      setactionList(current => current.filter(c => c.id !== id))
+      stateInputMR.action = stateInputMR.action.filter(c => c.id !== id)
+    }
+
+  }
+  useEffect(() => {
+    console.log("INIT action 1", action)
+    console.log("INIT is ", (action.length))
+    if (action && action.length > 0) setactionList(current => [...action])
+  }, [])
   return (
     <Stack px={24} py={5} gap={3}>
       <Box fontSize={'24px'} fontWeight={'bold'} color={'#505050'} pb={'12px'}>Tindakan</Box>
-      <Flex alignItems={'end'}>
-        <Box flex={1}>Tindakan</Box>
-        <Box flex={1}>
-          <InputUnderlined
-            type='text'
-            placeholder='Tindakan'
-          />
-        </Box>
-      </Flex>
-      <Flex alignItems={'end'}>
-        <Box flex={1}>Waktu</Box>
-        <Box flex={1}>
-          <InputUnderlined
-            type='date'
-            placeholder='Waktu'
-          />
-        </Box>
-      </Flex>
-      <Flex justifyContent={'end'} pt={2}>
-        <ButtonMain><FiPlusCircle /> Tambahkan tindakan</ButtonMain>
-      </Flex>
+      {
+        mode === siteMode.detail
+          ? <></>
+          : <Flex alignItems={'end'}>
+            <Box flex={1}>Tindakan</Box>
+            <Box flex={1}>
+              <AutoComplete openOnFocus onChange={onItemSelected}>
+                <AutoCompleteInput
+                  variant="filled"
+                  placeholder="Tindakan"
+                  borderBottom={'1.5px solid #e0e0e0'}
+                  bg={'transparent'}
+                  marginStart={0}
+                  marginInlineStart={0}
+                  marginEnd={0}
+                  marginInlineEnd={0}
+                  paddingLeft={0}
+                  fontSize={{ base: 'sm', sm: 'md' }}
+                  color={colors.PRIMARY}
+                  fontWeight="bold"
+                  border="0"
+                  _hover={{ background: 'transparent' }}
+                  onChange={(e) => getactionSearch(e.target.value)}
+                  rounded="none"
+                  h="35px" />
+                <AutoCompleteList>
+                  {actionSearch.map((action, cid) => (
+                    <AutoCompleteItem
+                      key={`option-${cid}`}
+                      value={`${action.code}-${action.desc}`}
+                      textTransform="capitalize"
+                    >
+                      {action.code}-{action.desc}
+                    </AutoCompleteItem>
+                  ))}
+                </AutoCompleteList>
+              </AutoComplete>
+            </Box>
+          </Flex>
+      }
+      {
+        mode === siteMode.detail
+          ? <></>
+          : <Flex alignItems={'end'}>
+            <Box flex={1}>Waktu</Box>
+            <Box flex={1}>
+              <InputUnderlined
+                type='text'
+                placeholder='Waktu'
+                onChange={onactionNoteChange}
+              />
+            </Box>
+          </Flex>
+      }
+      {
+        mode === siteMode.detail
+          ? <></>
+          : <Flex justifyContent={'end'} pt={2}>
+            <ButtonMain onClick={onButtonAddClicked} ><FiPlusCircle /> Tambahkan Tindakan</ButtonMain>
+          </Flex>
+      }
       <Box paddingTop={'10px'} display={'grid'}>
         <TableContainer height='inherit'>
           <Table colorScheme={'gray'}>
@@ -40,11 +144,15 @@ const ActionComponent = () => {
               </Tr>
             </Thead>
             <Tbody w={'100%'}>
-              {listAction.length > 0 ? listAction.map((r, i) => (
+              {actionList.length > 0 ? actionList.map((r, i) => (
                 <Tr key={i} bg={'#F9F9FC'}>
-                  <Td>{r.action}</Td>
-                  <Td>{r.time}</Td>
-                  <Td><FiTrash color="red" /></Td>
+                  <Td>{r.actionCode}</Td>
+                  <Td>{r.actionNote}</Td>
+                  {
+                    mode === siteMode.detail
+                      ? <></>
+                      : <Td><FiTrash color="red" onClick={(e) => onDeleteaction(r.id, r.saved)} /></Td>
+                  }
                 </Tr>
               ))
                 :
@@ -68,37 +176,3 @@ const ActionComponent = () => {
 }
 
 export default ActionComponent
-
-const listActions = []
-const listAction = [
-  {
-    id: 1,
-    action: 'Move on',
-    time: '22-07-2022'
-  },
-  {
-    id: 2,
-    action: 'Move on',
-    time: '22-07-2022'
-  },
-  {
-    id: 3,
-    action: 'Move on',
-    time: '22-07-2022'
-  },
-  {
-    id: 3,
-    action: 'Move on',
-    time: '22-07-2022'
-  },
-  {
-    id: 4,
-    action: 'Move on',
-    time: '22-07-2022'
-  },
-  {
-    id: 5,
-    action: 'Move on',
-    time: '22-07-2022'
-  },
-]

@@ -11,7 +11,7 @@ import MedicalNavigation from "./components/MedicalNavigation";
 import MedicalHeader from "./components/MedicalHeader";
 import { FiClipboard } from "react-icons/fi";
 import { useParams } from "react-router-dom/cjs/react-router-dom";
-import { useQueryParams } from "utils";
+import { getAge, useQueryParams } from "utils";
 import apiBooking from "services/apiBooking";
 import { useCallback, useEffect, useState } from "react";
 import { keySelectedService, medicalRecordID, medicalRecordProgram, siteMode } from "utils/constant";
@@ -62,6 +62,7 @@ const MedicalRecordManagePage = () => {
   const [_savedgeneralAssesment, setGeneralAssesment] = useState(null)
   const [_savedDiagnosis, setDiagnosis] = useState([])
   const [_savedTreatment, setTreatment] = useState([])
+  const [_savedAction, setAction] = useState([])
 
   const initGeneralAssesmentFromSaved = (savedAssesment) => {
     generalAssesment.forEach(ga => {
@@ -141,12 +142,29 @@ const MedicalRecordManagePage = () => {
         diagnosisCode: d.dataValues.filter(e => e.dataElement === medicalRecordID.codingDiagnosis)
           && d.dataValues.filter(e => e.dataElement === medicalRecordID.codingDiagnosis).length > 0
           ? d.dataValues.filter(e => e.dataElement === medicalRecordID.codingDiagnosis)[0].value : '',
-        diagnosisNote: d.dataValues.filter(e => e.dataElement === medicalRecordID.codingDiagnosis)
-          && d.dataValues.filter(e => e.dataElement === medicalRecordID.codingDiagnosis).length > 0
-          ? d.dataValues.filter(e => e.dataElement === medicalRecordID.keteranganDiagnosis)[0].value : ''
+        diagnosisNote: d.dataValues.filter(e => e.dataElement === medicalRecordID.keteranganDiagnosis)
+          && d.dataValues.filter(e => e.dataElement === medicalRecordID.keteranganDiagnosis).length > 0
+          ? d.dataValues.filter(e => e.dataElement === medicalRecordID.keteranganDiagnosis)[0].value : '-'
       }
     })
     stateInputMR.diagnosis = [..._diagnosis]
+  }
+
+  const initActionFromSaved = (savedAction) => {
+    var _action = savedAction.map(d => {
+      return {
+        id: d.event,
+        saved: true,
+        actionCode: d.dataValues.filter(e => e.dataElement === medicalRecordID.tindakan)
+          && d.dataValues.filter(e => e.dataElement === medicalRecordID.tindakan).length > 0
+          ? d.dataValues.filter(e => e.dataElement === medicalRecordID.tindakan)[0].value : '',
+        actionNote: d.dataValues.filter(e => e.dataElement === medicalRecordID.waktuTindakan)
+          && d.dataValues.filter(e => e.dataElement === medicalRecordID.waktuTindakan).length > 0
+          ? d.dataValues.filter(e => e.dataElement === medicalRecordID.waktuTindakan)[0].value : '-'
+      }
+    })
+    console.log("TINDAKAN+++", _action)
+    stateInputMR.action = [..._action]
   }
 
   const initTreatmentFromSaved = (savedTreatment) => {
@@ -185,6 +203,11 @@ const MedicalRecordManagePage = () => {
     if (_treatments.events && _treatments.events.length > 0) {
       setTreatment([..._treatments.events])
       initTreatmentFromSaved(_treatments.events)
+    }
+    const _action = await apiMedicalrecord.getMedicalRecord(serviceId ?? StateInputMR.serviceDetail.serviceID, medicalRecordProgram.tindakan)
+    if (_action.events && _action.events.length > 0) {
+      setAction([..._action.events])
+      initActionFromSaved(_action.events)
     }
     setIsLoading(false)
     return true
@@ -353,6 +376,47 @@ const MedicalRecordManagePage = () => {
         }
         break
       }
+      case 3:{
+        const _enrollmentID = mrEnrollments.filter(e => e.program === medicalRecordProgram.tindakan)
+        if (stateInputMR.action && stateInputMR.action.length > 0) {
+          var counterSuccess = 0
+          stateInputMR.action.forEach(e => {
+            console.log(e.actionCode, e.actionNote)
+            const dataValues = []
+            dataValues.push({
+              dataElement: medicalRecordID.tindakan,
+              value: e.actionCode
+            })
+            if (e.actionNote && e.actionNote.length > 0) dataValues.push({
+              dataElement: medicalRecordID.waktuTindakan,
+              value: e.actionNote
+            })
+            dataValues.push({
+              dataElement: medicalRecordID.referensiPelayanan,
+              value: serviceId ?? stateInputMR.serviceDetail.serviceID
+            })
+            if (!e.saved) apiMedicalrecord.createNewMedicalRecord(
+              medicalRecordProgram.tindakan,
+              medicalRecordProgram.tindakanStage,
+              _enrollmentID[0].enrollment,
+              dataValues,
+              serviceId ?? stateInputMR.serviceDetail.serviceID,
+              stateInputMR.patient.id
+            ).then(r => {
+              counterSuccess++
+              if (counterSuccess === stateInputMR.action.length) {
+                apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.action[0].actionCode}-${stateInputMR.action[0].actionNote}`, medicalRecordID.refernsiTindakan)
+                  .then(e => {
+                    onOpen()
+                  })
+              }
+            })
+            else counterSuccess++
+          })
+        }
+        break
+      }
+      // Treatment
       case 4: {
         const _enrollmentID = mrEnrollments.filter(e => e.program === medicalRecordProgram.obat)
         var counterSuccess = 0
@@ -413,7 +477,7 @@ const MedicalRecordManagePage = () => {
                 </Box>
                 <Box flex={1}>
                   <Box color={'#505050'} fontSize={'13px'}>Tanggal lahir</Box>
-                  <Box fontWeight={'bold'}>{`${patient.dob}`.replaceAll("-", "/")} - 23 thn</Box>
+                  <Box fontWeight={'bold'}>{`${patient.dob}`.replaceAll("-", "/")} - {getAge(patient.dob)} thn</Box>
                 </Box>
                 <Box flex={3}>
                   <Box color={'#505050'} fontSize={'13px'}>Keluhan yang dirasakan</Box>
@@ -437,7 +501,7 @@ const MedicalRecordManagePage = () => {
               : <></>
             }
             {state.selectedTab === 3 && !isLoading &&
-              <MenuAction />
+              <MenuAction mode={mrMethod} />
             }
             {state.selectedTab === 4
               ? !isLoading
