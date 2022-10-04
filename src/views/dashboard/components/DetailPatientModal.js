@@ -48,7 +48,7 @@ const DetailPatientModal = ({ data, loading }) => {
             <Box fontSize={'13px'}>Jadwal janji temu</Box>
             <Flex color={colors.PRIMARY} justifyContent={'space-between'} borderBottom={'1px solid #C0C0C0'} paddingBottom={2}>
               <Flex alignItems={'center'}>
-                <Box fontSize={'38px'} paddingRight={1} fontWeight='bold'>21</Box>
+                <Box fontSize={'38px'} paddingRight={1} fontWeight='bold'>{new Date().getDay()}</Box>
                 <Box fontSize={'13px'}>
                   <Box fontWeight='bold'>{monthNames[new Date().getMonth()]}</Box>
                   <Box>{new Date().getFullYear()} - Hari ini</Box>

@@ -132,6 +132,7 @@ export const medicalRecordID = {
   referensiDiagnosis: "PynURTrdTEs",
   // Tindakan
   tindakan: "AFxA2KxhvkQ",
+  waktuTindakan: "vl8BakJFE5y",
   refernsiTindakan: "RTCWjUiK6Wj",
   // Obat:
   namaObat: "adfqVxQYDGH",

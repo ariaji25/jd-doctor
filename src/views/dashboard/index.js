@@ -74,7 +74,7 @@ const DashboardPage = () => {
     })
     getServiceHistory(queryConditions.greaterThen, (h) => {
       setTotals({ ...totals, 1: h.length })
-      setTodayService(h)
+      setIncomingService(h)
     })
   }, [])
 

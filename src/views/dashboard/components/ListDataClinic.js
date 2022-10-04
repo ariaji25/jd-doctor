@@ -82,16 +82,16 @@ const ListDataClinic = () => {
       </Flex>
       <Box borderRight={'1px solid #C0C0C0'} maxHeight={'430px'} height={'430px'}>
         <Box padding={'20px 20px 0 0'}>
-          {serviceHistory.length > 0 &&
-            <Flex justifyContent={'space-between'}>
-              <Box fontSize={'18px'} fontWeight={'bold'} color={colors.PRIMARY}>
-                Klinik
-              </Box>
-              <Box>
-                <ButtonMain onClick={() => history.push('/dashboard/list-patient-clinic')}>Lihat Semua</ButtonMain>
-              </Box>
-            </Flex>
-          }
+
+          <Flex justifyContent={'space-between'}>
+            <Box fontSize={'18px'} fontWeight={'bold'} color={colors.PRIMARY}>
+              Klinik
+            </Box>
+            <Box>
+              <ButtonMain onClick={() => history.push('/dashboard/list-patient-clinic')}>Lihat Semua</ButtonMain>
+            </Box>
+          </Flex>
+
           <Box maxHeight={'347px'} height={'347px'} paddingTop={'20px'} display={'grid'}>
             {isLoading
               ? <Center><CircularProgress isIndeterminate size='100px' thickness='4px' /></Center>

@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-const { dateFormat } = require("utils")
+const { dateFormat, getCurrentUserFromStorage, getOU } = require("utils")
 const { default: request } = require("utils/request")
 const { default: urls } = require("values/urls")
 
@@ -19,8 +19,7 @@ const getOption = async (optionSetID) => {
 
 const createEnrollmentForMR = async (mrId, patientId) => {
   const enrollment = {
-    orgUnit: "FexDOKZlHSx",
-    orgUnitName: "Praktek JumpaDokter",
+    orgUnit: getOU(),
     program: mrId,
     trackedEntityInstance: patientId,
     trackedEntityType: "NvPl8j4DzNA"
@@ -54,8 +53,7 @@ const createNewMedicalRecord = async (programId, programStage, enrollmentId, dat
     programStage: programStage,
     enrollment: enrollmentId,
     enrollmentStatus: "ACTIVE",
-    orgUnit: "FexDOKZlHSx",
-    orgUnitName: "Praktek JumpaDokter",
+    orgUnit: getOU(),
     trackedEntityInstance: patientId,
     dataValues: dataValues
   }

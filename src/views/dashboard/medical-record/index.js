@@ -13,7 +13,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { FiPlusCircle, FiFilter, FiSearch, FiEye, FiEdit, FiTrash } from 'react-icons/fi';
 import EmptyComponent from 'components/EmptyComponent';
 import { apiPatient } from 'services/apiPatient';
-import { dateFormat, useQueryParams } from 'utils';
+import { dateFormat, getAge, getCurrentUserFromStorage, useQueryParams } from 'utils';
 import { genders, medicalRecordProgram, siteMode } from 'utils/constant';
 import { useSnapshot } from 'valtio';
 import stateInputMR, { clearStateInputMR } from 'states/stateInputMedicalRecord';
@@ -37,7 +37,7 @@ const MedicalRecordPage = () => {
       .then(r => {
         console.log("Data", r)
         var i = 1;
-        var history = r.events.map((ev) => {
+        var history = r.events.filter(e => e.dataValues.length > 0).map((ev) => {
           const data = {
             id: i,
             patientId: ev.trackedEntityInstance,
@@ -46,6 +46,7 @@ const MedicalRecordPage = () => {
             problem: ev.dataValues.find((e) => e.dataElement === 'Yh6ylx8D3tO') ? ev.dataValues.find((e) => e.dataElement === 'Yh6ylx8D3tO').value ?? '-' : '-',
             service: ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6') ? ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6').value ?? '-' : '-',
             docterName: ev.dataValues.find((e) => e.dataElement === 'WeZLKi92kyq') ? ev.dataValues.find((e) => e.dataElement === 'WeZLKi92kyq').value ?? '-' : '-',
+            docterID: ev.dataValues.find((e) => e.dataElement === 'Mu6xWeUWtWV') ? ev.dataValues.find((e) => e.dataElement === 'Mu6xWeUWtWV').value ?? '-' : '-',
             diagnosis: ev.dataValues.find((e) => e.dataElement === 'PynURTrdTEs') ? ev.dataValues.find((e) => e.dataElement === 'PynURTrdTEs').value ?? '-' : '-',
             treatment: ev.dataValues.find((e) => e.dataElement === 'uQrOU6N2FfL') ? ev.dataValues.find((e) => e.dataElement === 'uQrOU6N2FfL').value ?? '-' : '-',
             // service: ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6') ? ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6').value ?? '-' : '-',
@@ -174,7 +175,7 @@ const MedicalRecordPage = () => {
                   <Box fontSize={'13px'}>Nama lengkap pasien</Box>
                   <Box fontWeight={'bold'}>{selectedPatient.name}</Box>
                   <Box fontSize={'13px'}>Tanggal lahir</Box>
-                  <Box fontWeight={'bold'}>{selectedPatient.dob ? selectedPatient.dob.replaceAll("-", "/") : "-"} - 23 thn</Box>
+                  <Box fontWeight={'bold'}>{selectedPatient.dob ? selectedPatient.dob.replaceAll("-", "/") : "-"} - {selectedPatient.dob ? getAge(selectedPatient.dob) : ''} thn</Box>
                 </Box>
                 <Box >
                   <Box fontSize={'13px'}>Alamat</Box>
@@ -236,7 +237,7 @@ const MedicalRecordPage = () => {
                                 <Menu isLazy>
                                   {({ isOpen }) => (
                                     <>
-                                      <MenuButton isActive={isOpen} >
+                                      <MenuButton isActive={isOpen} disabled={getCurrentUserFromStorage().id !== r.docterID}>
                                         <Image src={'/icon/vertical-dot.svg'} />
                                       </MenuButton>
                                       <MenuList>

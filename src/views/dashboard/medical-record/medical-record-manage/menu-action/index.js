@@ -1,10 +1,10 @@
 import { Box } from "@chakra-ui/react"
 import ActionComponent from "./components/action-component"
 
-const MenuAction = () => {
+const MenuAction = ({mode}) => {
   return (
     <Box px={14}>
-      <ActionComponent />
+      <ActionComponent mode={mode}/>
     </Box>
   )
 }

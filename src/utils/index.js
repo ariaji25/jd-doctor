@@ -62,6 +62,8 @@ const getCurrentUserFromStorage = () => {
   return user;
 };
 
+const getOU = () => localStorage.getItem("ou") ?? '';
+
 const removeCurrentUserFromStorage = () => {
   removeFromLocalStorage([CURRENT_USER_KEY, TOKEN_KEY]);
 };
@@ -170,6 +172,12 @@ const s4 = () => {
     .substring(1);
 }
 
+const getAge = (date) => {
+  const dob = new Date(date)
+  const current = new Date()
+  return (dob.getFullYear() - current.getFullYear()).toString().replace("-", "")
+}
+
 
 export {
   addZeroPad,
@@ -191,6 +199,8 @@ export {
   getBase64,
   readArrayBuffer,
   useQueryParams,
-  s4
+  s4,
+  getOU,
+  getAge
 };
 
