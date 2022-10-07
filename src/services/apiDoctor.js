@@ -13,7 +13,12 @@ const ATTR = {
   alamatDomisili: 'aRHSGgFeOjr',
   nohp: 'x9tchw0swEu',
   nik: 'xGjeKnsJobT',
-  email: 'KNhGfY4ApxB'
+  email: 'KNhGfY4ApxB',
+  strNumber: 'x4sNePtpkmR',
+  strUrl: 'iVFHvAdkYL3',
+  sipNumber: 'h7tG7kb6qzi',
+  sipUrl: 'GFwYsmRCGsu',
+  profileUrl: 'Y1sUdrYBs4W'
 };
 
 const list = async (clinic) => {
@@ -75,7 +80,8 @@ const getDetail = async () => {
     const email = (localStorage.getItem(keyStorage.EMAIL) ?? '');
     const { data } = await request.get(urls.DOCTER_DETAIL(email), {
       params: {
-        ou: localStorage.getItem("ou")
+        ou: localStorage.getItem("ou"),
+        fields: '[*]'
       }
     });
 
@@ -89,6 +95,7 @@ const getDetail = async () => {
     }
 
     const { attributes: attr, trackedEntityInstance: tei, ou: orgUnit } = instance;
+    const { enrollments } = instance
     localStorage.setItem(keyStorage.TEI, tei);
 
     const biodata = {
@@ -99,8 +106,15 @@ const getDetail = async () => {
       nohp: attr.find((a) => a.attribute === ATTR.nohp).value,
       tanggalLahir: attr.find((a) => a.attribute === ATTR.tanggalLahir).value,
       jenisKelamin: attr.find((a) => a.attribute === ATTR.jenisKelamin).value,
-      email: attr.find((a) => a.attribute === ATTR.jenisKelamin).value,
-      ou: orgUnit
+      email: attr.find((a) => a.attribute === ATTR.email).value,
+      ou: orgUnit,
+      ouName: enrollments[0].orgUnitName,
+      strNumber: attr.find((a) => a.attribute === ATTR.strNumber).value,
+      strUrl: attr.find((a) => a.attribute === ATTR.strUrl).value,
+      sipNumber: attr.find((a) => a.attribute === ATTR.sipNumber).value,
+      sipUrl: attr.find((a) => a.attribute === ATTR.sipUrl).value,
+
+
     };
 
     return biodata;
