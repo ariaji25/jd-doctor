@@ -26,6 +26,7 @@ const ListSchedule = ({ state, selectedTab, tabs, isLoading, serviceHistory, tot
         address: p.attributes.find((a) => a.attribute === "aRHSGgFeOjr") ? p.attributes.find((a) => a.attribute === "aRHSGgFeOjr").value ?? '-' : '-',
         photo: '/img/doctorSidebar.png',
         service: ev.service,
+        serviceDate: ev.serviceDate,
         problem: ev.problem,
         serviceID: ev.event
       }
@@ -60,7 +61,7 @@ const ListSchedule = ({ state, selectedTab, tabs, isLoading, serviceHistory, tot
             : serviceHistory.length > 0 ? serviceHistory.map((r, i) => (
               <Flex key={i} flex={1} justifyContent={'center'} gap={2} border={'1px solid #C4C4C4'} borderRadius={'5px'} margin={'14px 0px 0px 20px'}>
                 <Box flex={1} padding={'13px 0 13px 13px'}>
-                  <Avatar icon={<Image src={r.img} w='25px' />} color={'black'} bg={'transparent'} border={'1px solid #C0C0C0'}/>
+                  <Avatar icon={<Image src={r.img} w='25px' />} color={'black'} bg={'transparent'} border={'1px solid #C0C0C0'} />
                 </Box>
                 <Flex flex={5} flexDirection={'column'} padding={'13px 13px 13px 0'}>
                   <Flex gap={1} justifyContent='end'>

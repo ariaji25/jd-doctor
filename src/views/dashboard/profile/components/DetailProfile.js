@@ -27,7 +27,7 @@ function nFormatter(num, digits) {
   return (num / si[i].value).toFixed(digits).replace(rx, "$1") + ' ' + si[i].symbol;
 }
 
-const DetailProfile = () => {
+const DetailProfile = ({profileDetail}) => {
   return (
     <Flex pt={4} borderBottom={'1px solid #C4C4C4'} pb={8} gap={8}>
       <Flex flex={2.5} justifyContent={'center'} gap={4}>
@@ -43,12 +43,12 @@ const DetailProfile = () => {
           </Text>
           <Flex alignItems={'center'}>
             <Box><FiMapPin color="red" /></Box>
-            <Text pl={2}>Klinik antasari - RS Antasari</Text>
+            <Text pl={2}>{profileDetail.ouName}</Text>
           </Flex>
         </Stack>
       </Flex>
       <Flex flex={3}>
-        <Stack flex={1}>
+        {/* <Stack flex={1}>
           <Flex alignItems={'center'}>
             <Box>
               <Image
@@ -62,7 +62,7 @@ const DetailProfile = () => {
           </Flex>
           <Box>Orang yang menyukai anda</Box>
         </Stack>
-        <Box><ButtonMain><FiEdit />Edit biodata</ButtonMain></Box>
+        <Box><ButtonMain><FiEdit />Edit biodata</ButtonMain></Box> */}
       </Flex>
     </Flex>
   )

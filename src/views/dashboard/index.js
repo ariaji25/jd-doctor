@@ -51,6 +51,7 @@ const DashboardPage = () => {
           schedule: ev.dataValues.find((e) => e.dataElement === 'X7GUfsOErZh') ? ev.dataValues.find((e) => e.dataElement === 'X7GUfsOErZh').value ?? '-' : '-',
           problem: ev.dataValues.find((e) => e.dataElement === 'Yh6ylx8D3tO') ? ev.dataValues.find((e) => e.dataElement === 'Yh6ylx8D3tO').value ?? '-' : '-',
           service: ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6') ? ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6').value ?? '-' : '-',
+          serviceDate: ev.dataValues.find((e) => e.dataElement === 'arxuhT0GhPy') ? ev.dataValues.find((e) => e.dataElement === 'arxuhT0GhPy').value ?? '-' : '-',
           event: ev.event
         }
 
