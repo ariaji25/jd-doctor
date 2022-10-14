@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { Route, Router, Switch } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import 'react-datepicker/dist/react-datepicker.css';
 import apiDoctor from 'services/apiDoctor';
 import { setCurrentUserToStorage } from 'utils';
 import keyStorage from 'values/keyStorage';
