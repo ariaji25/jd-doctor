@@ -22,10 +22,12 @@ const ListDataClinic = () => {
     ).then((r) => {
       console.log("ResponseHistory", r);
       var i = 1;
-      const filter = (a) => {
-        const aTime = new Date(`${dateFormat(new Date(), "yyyy-MM-dd")}T${a.time}:00`)
+      const filter = (a,b) => {
+        const aTime = new Date(`${dateFormat(new Date(), "yyyy-MM-dd")}T${a.schedule}:00`)
         const timenow = new Date()
         console.log(aTime.getTime() < timenow.getTime())
+        console.log(aTime.getTime())
+        console.log( timenow.getTime())
         return aTime.getTime() >= timenow.getTime();
       }
       var history = r.events.map((ev) => {
