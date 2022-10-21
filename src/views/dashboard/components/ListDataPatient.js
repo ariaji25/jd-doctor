@@ -36,8 +36,38 @@ const ListDataPatient = () => {
 
   const [patients, setPatients] = useState([])
   const [isLoading, setIsLoading] = useState(false)
-  const [pager, setPager] = useState(null)
-
+  const [pager, setPager] = useState({
+    page: 1,
+    pageCount: 0,
+    pageSize: 5,
+    total: 0
+  })
+  // constants
+  const outerLimit = 2;
+  const innerLimit = 2;
+  // pagination hook
+  const {
+    pages,
+    pagesCount,
+    offset,
+    currentPage,
+    setCurrentPage,
+    setIsDisabled,
+    isDisabled,
+    pageSize,
+    setPageSize,
+  } = usePagination({
+    total: pager.pageCount ? pager.pageCount : undefined,
+    limits: {
+      outer: outerLimit,
+      inner: innerLimit,
+    },
+    initialState: {
+      pageSize: pager.pageSize,
+      isDisabled: false,
+      currentPage: 1,
+    },
+  });
   const getPatients = (page) => {
     setIsLoading(true)
     apiPatient.getAllPatients(
@@ -63,7 +93,6 @@ const ListDataPatient = () => {
       setIsLoading(false)
     })
   }
-
   const init = useCallback(() => {
     getPatients(1);
   }, [])
@@ -73,6 +102,7 @@ const ListDataPatient = () => {
   }, [init])
 
   const handlePageChange = (page) => {
+    setCurrentPage(page);
     getPatients(page)
   }
 
@@ -136,14 +166,14 @@ const ListDataPatient = () => {
           {patients.length > 0 && pager &&
             <Box paddingTop={'20px'}>
               <Pagination
-                pagesCount={pager.pagesCount}
-                currentPage={pager.page}
-                isDisabled={false}
+                pagesCount={pagesCount}
+                currentPage={currentPage}
+                isDisabled={isDisabled}
                 onPageChange={handlePageChange}
               >
                 <PaginationContainer
                   align="center"
-                  justify="flex-end"
+                  justify="space-between"
                   p={4}
                   w="full"
                 >
@@ -157,18 +187,14 @@ const ListDataPatient = () => {
                             "Im executing my own function along with Separator component functionality"
                           )
                         }
-                        bg={'white'}
-                        color={colors.PRIMARY}
-                        border={`1px solid ${colors.PRIMARY}`}
-                        borderRadius={'34px'}
+                        bg="blue.300"
                         fontSize="sm"
-                        padding={'20px'}
                         w={7}
                         jumpSize={11}
                       />
                     }
                   >
-                    {Array.from({ length: pager.pageCount }, (_, i) => i + 1).map((page) => (
+                    {pages.map((page) => (
                       <PaginationPage
                         w={7}
                         bg="white"
@@ -196,24 +222,6 @@ const ListDataPatient = () => {
                       />
                     ))}
                   </PaginationPageGroup>
-                  {/* <PaginationNext
-                    _hover={{
-                      bg: colors.BIRU_TERANG
-                    }}
-                    bg={colors.PRIMARY}
-                    color='white'
-                    borderRadius={'42px'}
-                    marginLeft={4}
-                    onClick={() => {
-                      history.push('/dashboard/list-patient')
-                      console.log(
-                        "Im executing my own function along with Next component functionality"
-                      )
-                    }
-                    }
-                  >
-                    <Text>Lihat semua</Text>
-                  </PaginationNext> */}
                 </PaginationContainer>
               </Pagination>
             </Box>

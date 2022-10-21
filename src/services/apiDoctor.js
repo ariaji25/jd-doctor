@@ -100,20 +100,19 @@ const getDetail = async () => {
 
     const biodata = {
       id: tei,
-      nama: attr.find((a) => a.attribute === ATTR.nama).value,
-      alamatDomisili: attr.find((a) => a.attribute === ATTR.alamatDomisili).value,
-      nik: attr.find((a) => a.attribute === ATTR.nik).value,
-      nohp: attr.find((a) => a.attribute === ATTR.nohp).value,
-      tanggalLahir: attr.find((a) => a.attribute === ATTR.tanggalLahir).value,
-      jenisKelamin: attr.find((a) => a.attribute === ATTR.jenisKelamin).value,
-      email: attr.find((a) => a.attribute === ATTR.email).value,
+      nama: (attr.find((a) => a.attribute === ATTR.nama) ? attr.find((a) => a.attribute === ATTR.nama).value : "-"),
+      alamatDomisili: (attr.find((a) => a.attribute === ATTR.alamatDomisili) ? attr.find((a) => a.attribute === ATTR.alamatDomisili).value : "-"),
+      nik: (attr.find((a) => a.attribute === ATTR.nik) ? attr.find((a) => a.attribute === ATTR.nik).value : "-"),
+      nohp: (attr.find((a) => a.attribute === ATTR.nohp) ? attr.find((a) => a.attribute === ATTR.nohp).value : "-"),
+      tanggalLahir: (attr.find((a) => a.attribute === ATTR.tanggalLahir) ? attr.find((a) => a.attribute === ATTR.tanggalLahir).value : "-"),
+      jenisKelamin: (attr.find((a) => a.attribute === ATTR.jenisKelamin) ? attr.find((a) => a.attribute === ATTR.jenisKelamin).value : "-"),
+      email: (attr.find((a) => a.attribute === ATTR.email) ? attr.find((a) => a.attribute === ATTR.email).value : "-"),
       ou: orgUnit,
       ouName: enrollments[0].orgUnitName,
-      strNumber: attr.find((a) => a.attribute === ATTR.strNumber).value,
-      strUrl: attr.find((a) => a.attribute === ATTR.strUrl).value,
-      sipNumber: attr.find((a) => a.attribute === ATTR.sipNumber).value,
-      sipUrl: attr.find((a) => a.attribute === ATTR.sipUrl).value,
-
+      strNumber: (attr.find((a) => a.attribute === ATTR.strNumber) ? attr.find((a) => a.attribute === ATTR.strNumber).value : "-"),
+      strUrl: (attr.find((a) => a.attribute === ATTR.strUrl) ? attr.find((a) => a.attribute === ATTR.strUlr).value : "-"),
+      sipNumber: (attr.find((a) => a.attribute === ATTR.sipNumber) ? attr.find((a) => a.attribute === ATTR.nohipNumbersp).value : "-"),
+      sipUrl: (attr.find((a) => a.attribute === ATTR.sipUrl) ? attr.find((a) => a.attribute === ATTR.sipUrl).value : "-"),
 
     };
 

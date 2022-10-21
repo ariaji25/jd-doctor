@@ -61,7 +61,7 @@ const LoginForm = ({ onClikWaHelp }) => {
         })
       }
     } catch (error) {
-      console.error('❌ onSubmit:', e);
+      console.error('❌ onSubmit:', error);
     } finally {
       stateLogin.processing = false;
     }
