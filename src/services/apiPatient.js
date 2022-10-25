@@ -273,14 +273,14 @@ const serviceHistory = async (id, page) => {
   return response.data;
 }
 
-const getAllPatients = async (page) => {
+const getAllPatients = async (page, pageSize) => {
   const response = await request.get(
     urls.PATIENTS(),
     {
       params: {
         totalPages: true,
         order: "created:desc",
-        pageSize: 5,
+        pageSize: pageSize || 5,
         page: page
       }
     }

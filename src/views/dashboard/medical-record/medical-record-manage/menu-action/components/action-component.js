@@ -25,7 +25,7 @@ const ActionComponent = ({ mode }) => {
 
   const getactionSearch = (search) => {
     console.log(search)
-    if (search && search.length >= 3) apiDoctor.searchICD9CODE(search).then(d => {
+    if (search && search.length >= 2) apiDoctor.searchICD9CODE(search).then(d => {
       if (d[3] && d[3].length > 0) {
         const list = d[3].map(e => {
           return { code: e[0], desc: e[1] }

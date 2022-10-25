@@ -175,7 +175,7 @@ const getServiceNotifications = async (id) => {
 const searchDiagnosis = async (search) => {
   const response = await request.get(urls.DIAGNOSIS_SEARCH, {
     params: {
-      search: search,
+      search: `${search}`.toUpperCase(),
     }
   })
   return response.data
