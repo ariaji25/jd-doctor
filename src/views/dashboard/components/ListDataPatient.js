@@ -14,6 +14,7 @@ import { FiSearch } from 'react-icons/fi';
 import { useHistory } from 'react-router-dom';
 import EmptyComponent from 'components/EmptyComponent';
 import { apiPatient } from 'services/apiPatient';
+import ButtonMain from 'components/button/ButtonMain';
 
 
 const ATTR = {
@@ -164,8 +165,8 @@ const ListDataPatient = () => {
             }
           </Box>
           {patients.length > 0 && pager &&
-            <Box paddingTop={'20px'}>
-              <Pagination
+            <Box padding={'20px 0px'} display={'flex'} alignItems="center" justifyContent={'right'}>
+              {/* <Pagination
                 pagesCount={pagesCount}
                 currentPage={currentPage}
                 isDisabled={isDisabled}
@@ -175,7 +176,7 @@ const ListDataPatient = () => {
                   align="center"
                   justify="space-between"
                   p={4}
-                  w="full"
+                  w="auto"
                 >
                   <PaginationPageGroup
                     isInline
@@ -223,7 +224,10 @@ const ListDataPatient = () => {
                     ))}
                   </PaginationPageGroup>
                 </PaginationContainer>
-              </Pagination>
+              </Pagination> */}
+              <Box>
+                <ButtonMain onClick={() => history.push('/dashboard/list-patient')}>Lihat Semua</ButtonMain>
+              </Box>
             </Box>
           }
         </Box>}

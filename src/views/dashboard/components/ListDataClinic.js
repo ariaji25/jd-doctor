@@ -22,12 +22,12 @@ const ListDataClinic = () => {
     ).then((r) => {
       console.log("ResponseHistory", r);
       var i = 1;
-      const filter = (a,b) => {
+      const filter = (a, b) => {
         const aTime = new Date(`${dateFormat(new Date(), "yyyy-MM-dd")}T${a.schedule}:00`)
         const timenow = new Date()
         console.log(aTime.getTime() < timenow.getTime())
         console.log(aTime.getTime())
-        console.log( timenow.getTime())
+        console.log(timenow.getTime())
         return aTime.getTime() >= timenow.getTime();
       }
       var history = r.events.map((ev) => {
@@ -88,9 +88,6 @@ const ListDataClinic = () => {
           <Flex justifyContent={'space-between'}>
             <Box fontSize={'18px'} fontWeight={'bold'} color={colors.PRIMARY}>
               Klinik
-            </Box>
-            <Box>
-              <ButtonMain onClick={() => history.push('/dashboard/list-patient-clinic')}>Lihat Semua</ButtonMain>
             </Box>
           </Flex>
 
