@@ -110,7 +110,7 @@ const getDetail = async () => {
       ou: orgUnit,
       ouName: enrollments[0].orgUnitName,
       strNumber: (attr.find((a) => a.attribute === ATTR.strNumber) ? attr.find((a) => a.attribute === ATTR.strNumber).value : "-"),
-      strUrl: (attr.find((a) => a.attribute === ATTR.strUrl) ? attr.find((a) => a.attribute === ATTR.strUlr).value : "-"),
+      strUrl: (attr.find((a) => a.attribute === ATTR.strUrl) ? attr.find((a) => a.attribute === ATTR.strUrl).value : "-"),
       sipNumber: (attr.find((a) => a.attribute === ATTR.sipNumber) ? attr.find((a) => a.attribute === ATTR.sipNumber).value : "-"),
       sipUrl: (attr.find((a) => a.attribute === ATTR.sipUrl) ? attr.find((a) => a.attribute === ATTR.sipUrl).value : "-"),
 
