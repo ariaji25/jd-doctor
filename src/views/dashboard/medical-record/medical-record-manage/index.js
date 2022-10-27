@@ -466,7 +466,7 @@ const MedicalRecordManagePage = () => {
   return (
     <>
       <Flex minH={'100vh'}>
-        <MedicalNavigation />
+        <MedicalNavigation savedStates={[_savedgeneralAssesment, _savedDiagnosis, _savedAction, _savedTreatment]} />
         <Box minW={0} flex={'auto'}>
           <MedicalHeader />
           <Flex flexDir={'column'} flex={4} justifyContent={'center'}>

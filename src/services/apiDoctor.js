@@ -113,7 +113,6 @@ const getDetail = async () => {
       strUrl: (attr.find((a) => a.attribute === ATTR.strUrl) ? attr.find((a) => a.attribute === ATTR.strUrl).value : "-"),
       sipNumber: (attr.find((a) => a.attribute === ATTR.sipNumber) ? attr.find((a) => a.attribute === ATTR.sipNumber).value : "-"),
       sipUrl: (attr.find((a) => a.attribute === ATTR.sipUrl) ? attr.find((a) => a.attribute === ATTR.sipUrl).value : "-"),
-
     };
 
     return biodata;

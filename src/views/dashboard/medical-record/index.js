@@ -23,7 +23,6 @@ import apiMedicalrecord from 'services/apiMedicalRecord';
 const MedicalRecordPage = () => {
   const history = useHistory();
   let { idPatient } = useParams();
-  let query = useQueryParams();
 
   const [serviceHistory, setServiceHistory] = useState([])
   const [currentService, setCurrentService] = useState(null)
@@ -67,10 +66,10 @@ const MedicalRecordPage = () => {
   }
 
   const init = useCallback(() => {
-    console.log("Service Data", serviceDetail.service)
+    // console.log("Service Data", serviceDetail.service)
     getServiceHistory(1)
     getPatientDetail()
-    if (!currentService) setCurrentService(serviceDetail)
+    if (!currentService && serviceDetail) setCurrentService(serviceDetail)
   }, [])
 
   useEffect(() => {
@@ -191,12 +190,14 @@ const MedicalRecordPage = () => {
             <Box paddingTop={2} marginBottom={5}>
               <Box paddingTop={'10px'}>
                 <Flex justifyContent={'space-between'}>
-                  <Flex fontSize={'18px'} fontWeight={'bold'} color={colors.PRIMARY} gap={3} alignItems={'center'}>
-                    <ButtonMain onClick={() => {
-                      stateInputMR.serviceDetail = currentService
-                      history.push(`/dashboard/medical-record/${idPatient}/${siteMode.create}`)
-                    }}><FiPlusCircle /><span>Tambah pemeriksaan</span></ButtonMain>
-                  </Flex>
+                  {serviceDetail
+                    ? <Flex fontSize={'18px'} fontWeight={'bold'} color={colors.PRIMARY} gap={3} alignItems={'center'}>
+                      <ButtonMain onClick={() => {
+                        stateInputMR.serviceDetail = currentService
+                        history.push(`/dashboard/medical-record/${idPatient}/${siteMode.create}`)
+                      }}><FiPlusCircle /><span>Tambah pemeriksaan</span></ButtonMain>
+                    </Flex>
+                    : <></>}
                   <Flex>
                     <ButtonMain marginRight={'10px'} bg="white" color={'#505050'} borderColor='#505050'><FiFilter fontSize={'25px'} /> <span style={{ paddingLeft: '5px' }}></span>Filter</ButtonMain>
                     <InputGroup>
@@ -237,7 +238,7 @@ const MedicalRecordPage = () => {
                                 <Menu isLazy>
                                   {({ isOpen }) => (
                                     <>
-                                      <MenuButton isActive={isOpen} disabled={getCurrentUserFromStorage().id !== r.docterID}>
+                                      <MenuButton isActive={isOpen}>
                                         <Image src={'/icon/vertical-dot.svg'} />
                                       </MenuButton>
                                       <MenuList>
@@ -252,21 +253,23 @@ const MedicalRecordPage = () => {
                                           <Box><FiEye /></Box>
                                           <Box>Lihat detail</Box>
                                         </MenuItem>
-                                        <MenuItem onClick={() => {
-                                          var _patient = patient
-                                          clearStateInputMR()
-                                          stateInputMR.serviceDetail = currentService
-                                          stateInputMR.patient = _patient
-                                          stateInputMR.problemForServiceDetail = r.problem
-                                          history.push(`/dashboard/medical-record/${idPatient}/${siteMode.edit}/${r.serviceID}`)
-                                        }} display={'flex'} gap={3}>
-                                          <Box><FiEdit /></Box>
-                                          <Box>Edit</Box>
-                                        </MenuItem>
-                                        <MenuItem onClick={() => alert('delete')} color={'red'} display={'flex'} gap={3}>
+                                        {(getCurrentUserFromStorage().id === r.docterID)
+                                          ? <MenuItem onClick={() => {
+                                            var _patient = patient
+                                            clearStateInputMR()
+                                            stateInputMR.serviceDetail = currentService
+                                            stateInputMR.patient = _patient
+                                            stateInputMR.problemForServiceDetail = r.problem
+                                            history.push(`/dashboard/medical-record/${idPatient}/${siteMode.edit}/${r.serviceID}`)
+                                          }} display={'flex'} gap={3}>
+                                            <Box><FiEdit /></Box>
+                                            <Box>Edit</Box>
+                                          </MenuItem>
+                                          : <></>}
+                                        {/* <MenuItem onClick={() => alert('delete')} color={'red'} display={'flex'} gap={3}>
                                           <Box><FiTrash /></Box>
                                           <Box>Hapus</Box>
-                                        </MenuItem>
+                                        </MenuItem> */}
                                       </MenuList>
                                     </>
                                   )}
