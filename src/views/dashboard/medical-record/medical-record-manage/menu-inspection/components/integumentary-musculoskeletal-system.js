@@ -41,10 +41,11 @@ export const inputList = [
     label: "lainnya",
     state: "other",
     type: "text",
+    placeholder: 'Isi jika ada'
   },
 ]
 
-const Integumentary = ({mode}) => {
+const Integumentary = ({ mode }) => {
   const [mrData, setMRData] = useState({})
   const { generalAssesment } = useSnapshot(stateInputMR)
 
@@ -87,6 +88,7 @@ const Integumentary = ({mode}) => {
                         type={input.type}
                         w={'100%'}
                         readOnly={mode === siteMode.detail}
+                        placeholder={input.placeholder}
                       />
                       <Flex whiteSpace={'pre'} borderBottom={'1px solid #ccc'} color={colors.PRIMARY} alignItems={'center'}>
                         <Box>

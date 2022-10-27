@@ -13,7 +13,8 @@ export const inputList = [
     label: "Pola rutin",
     state: "patternRoutine",
     type: "number",
-    hotfix: "x/hari"
+    hotfix: "x/hari",
+    placeholder: 'Pola'
   },
   {
     key: medicalRecordID.polaRutin + "-1",
@@ -41,11 +42,12 @@ export const inputList = [
     label: "lainnya",
     state: "other",
     type: "text",
-    hotfix: ""
+    hotfix: "",
+    placeholder: 'Isi jika ada'
   },
 ]
 
-const GenitalUroSystem = ({mode}) => {
+const GenitalUroSystem = ({ mode }) => {
   const [mrData, setMRData] = useState({})
   const { generalAssesment } = useSnapshot(stateInputMR)
 
@@ -93,6 +95,7 @@ const GenitalUroSystem = ({mode}) => {
                         type={input.type}
                         w={'100%'}
                         readOnly={mode === siteMode.detail}
+                        placeholder={input.placeholder}
                       />
                       <Flex whiteSpace={'pre'} borderBottom={'1px solid #ccc'} color={colors.PRIMARY} alignItems={'center'}>
                         <Box>

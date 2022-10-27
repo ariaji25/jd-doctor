@@ -376,7 +376,7 @@ const MedicalRecordManagePage = () => {
         }
         break
       }
-      case 3:{
+      case 3: {
         const _enrollmentID = mrEnrollments.filter(e => e.program === medicalRecordProgram.tindakan)
         if (stateInputMR.action && stateInputMR.action.length > 0) {
           var counterSuccess = 0
@@ -461,6 +461,7 @@ const MedicalRecordManagePage = () => {
       }
     }
   }
+  let titleSave = state.selectedTab === 1 ? 'Pemeriksaan' : state.selectedTab === 2 ? 'Diagnosis' : state.selectedTab === 3 ? 'Tindakan' : 'Pengobatan'
 
   return (
     <>
@@ -513,10 +514,10 @@ const MedicalRecordManagePage = () => {
           {
             mrMethod === siteMode.detail
               ? <></>
-              : <Box px={40} py={5} textAlign={'center'}>
-                <ButtonMain width={'100%'} maxW={'700px'} onClick={(e) => {
+              : <Box px={40} py={5} textAlign={state.selectedTab === 1 ? 'right' : 'center'}>
+                <ButtonMain width={state.selectedTab === 1 ? '47%' : '100%'} maxW={'700px'} onClick={(e) => {
                   onClickButtonSave()
-                }}>Simpan</ButtonMain>
+                }}>Simpan {titleSave}</ButtonMain>
               </Box>
           }
         </Box>

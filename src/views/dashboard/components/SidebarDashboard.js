@@ -75,10 +75,10 @@ const SidebarDashboard = () => {
       {/* <Hide breakpoint='(max-width: 1100px)'> */}
       <Stack margin={"32px 20px 0 20px"} gap={0}>
         <Flex onClick={() => setOpenLogout(!isOpenLogout)} cursor={'pointer'} background='white' justifyContent={'center'} gap={5} border={'1px solid #C4C4C4'} borderRadius={'5px'}>
-          <Box padding={"15px 0"} onClick={() => history.push('/dashboard/profile')}>
+          <Box padding={"15px 0"}>
             <Avatar size='lg' name='dr. Jane Doe' src={'/img/doctorSidebar.png'} color={'black'} bg={'transparent'} border={'1px solid #C0C0C0'} />
           </Box>
-          <Flex flexDirection={'column'} padding={"15px 0"} justifyContent={'center'} lineHeight={1} onClick={() => history.push('/dashboard/profile')}>
+          <Flex flexDirection={'column'} padding={"15px 0"} justifyContent={'center'} lineHeight={1}>
             <Box>Halo dokter,</Box>
             <Box fontSize={'20px'} fontWeight={'bold'}>{getCurrentUserFromStorage() ? getCurrentUserFromStorage().nama ?? "-" : "-"}</Box>
           </Flex>
