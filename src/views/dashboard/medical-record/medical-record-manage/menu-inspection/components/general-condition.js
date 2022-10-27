@@ -11,13 +11,15 @@ export const inputList = [
       key: medicalRecordID.keadaanUmum,
       label: "Keadaan Umum",
       state: "condition",
-      type: "text"
+      type: "text",
+      placeholder: "Keadaan umum pasien"
     },
     {
       key: medicalRecordID.kesadaraan,
       label: "Kesadaraan",
       state: "awareness",
-      type: "text"
+      type: "text",
+      placeholder: 'Keadaan pasien'
     },
   ],
   [
@@ -25,28 +27,32 @@ export const inputList = [
       key: medicalRecordID.teknanDarah,
       label: "Tekanan Darah",
       state: "bloodPresure",
-      type: "number"
+      type: "text",
+      placeholder: "Tekanan darah"
     },
     {
       key: medicalRecordID.nadi,
       label: "Nadi (x/menit)",
       state: "pulse",
-      type: "number"
+      type: "number",
+      placeholder: 'Keadaan nadi'
     }
   ],
   [
     {
       key: medicalRecordID.respirasi,
-      label: "Respirasi",
+      label: "Respirasi (x/menit)",
       state: "respiration",
-      type: "text"
+      type: "text",
+      placeholder: 'Respirasi pasien'
 
     },
     {
       key: medicalRecordID.suhu,
       label: "Suhu (°C)",
       state: "bodyTemperature",
-      type: "number"
+      type: "number",
+      placeholder: 'Suhu tubuh pasien'
     },
   ],
   [
@@ -54,13 +60,15 @@ export const inputList = [
       key: medicalRecordID.beratBadan,
       label: "Berat Badan (kg)",
       state: "bodyWeight",
-      type: "number"
+      type: "number",
+      placeholder: 'Berat badan pasien'
     },
     {
       key: medicalRecordID.tinggiBadan,
       label: "Tinggi Badan (cm)",
       state: "bodyHeight",
-      type: "number"
+      type: "number",
+      placeholder: 'Tinggi badan pasien'
     },
   ]
 ]
@@ -95,6 +103,7 @@ const GeneralCondition = ({ mode }) => {
                   validator={(e) => { }}
                   value={generalAssesment.generalCondition[input.state]}
                   readOnly={mode === siteMode.detail ? true : false}
+                  placeholder={input.placeholder}
                 // value={username}
                 />
               </Box>

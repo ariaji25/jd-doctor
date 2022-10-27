@@ -66,7 +66,7 @@ const ListDataClinic = () => {
     <Flex flexDirection={'column'} flex={6}>
       <Flex borderBottom={'1px solid #C0C0C0'} paddingBottom={'10px'}>
         <Box fontSize={'18px'} color={colors.PRIMARY} fontWeight={'bold'} >
-          Jadwal
+          Jadwal Klinik
         </Box>
         <Flex alignItems={'center'}>
           <Center height='15px' padding={'0 4px'} >
@@ -87,7 +87,7 @@ const ListDataClinic = () => {
 
           <Flex justifyContent={'space-between'}>
             <Box fontSize={'18px'} fontWeight={'bold'} color={colors.PRIMARY}>
-              Klinik
+              Antrian Klinik
             </Box>
           </Flex>
 

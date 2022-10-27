@@ -32,7 +32,8 @@ export const inputList = [
     key: medicalRecordID.keadaanMulutLainnya,
     label: "Lainnya",
     state: "other",
-    type: "text"
+    type: "text",
+    placeholder: 'Isi jika ada'
   }
 ]
 
@@ -80,6 +81,7 @@ const DigestiveSystem = ({ mode }) => {
                         type={input.type}
                         w={'100%'}
                         readOnly={mode === siteMode.detail}
+                        placeholder={input.placeholder}
                       />
                     </Flex>
                   </Box>

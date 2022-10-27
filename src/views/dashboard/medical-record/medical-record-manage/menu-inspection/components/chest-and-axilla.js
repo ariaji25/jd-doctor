@@ -21,6 +21,7 @@ export const inputList = [
     label: "Areolla Mammae",
     state: "mammeAreolla",
     type: "text",
+    placeholder: 'Isi jika ada'
   },
   {
     key: medicalRecordID.papila,
@@ -81,6 +82,7 @@ const ChestAndAxilla = ({ mode }) => {
                         type={input.type}
                         w={'100%'}
                         readOnly={mode === siteMode.detail}
+                        placeholder={input.placeholder}
                       />
                       <Flex whiteSpace={'pre'} borderBottom={'1px solid #ccc'} color={colors.PRIMARY} alignItems={'center'}>
                         <Box>

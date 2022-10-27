@@ -12,7 +12,8 @@ export const inputList = [
     key: medicalRecordID.kecepatanDenyutApical,
     label: "Kecepatan denyut apical",
     state: "pulseSpeed",
-    type: "number"
+    type: "number",
+    placeholder: 'Kecepatan denyut'
   },
   {
     key: medicalRecordID.iramaJantung,
@@ -95,6 +96,7 @@ const HeartCirculation = ({ mode }) => {
                         type={input.type}
                         w={'100%'}
                         readOnly={mode === siteMode.detail}
+                        placeholder={input.placeholder}
                       />
                       <Flex whiteSpace={'pre'} borderBottom={'1px solid #ccc'} color={colors.PRIMARY} alignItems={'center'}>
                         <Box>
