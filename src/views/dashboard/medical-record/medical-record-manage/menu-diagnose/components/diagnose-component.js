@@ -45,24 +45,17 @@ const DiagnoseComponent = ({ mode }) => {
 
   const onButtonAddClicked = () => {
     // Add id needed to remove the item
-    setSelectedDiagnosis({ ...selectedDiagnosis, id: s4(), saved: false })
-    setDiagnosisList(current => [...diagnosisList, selectedDiagnosis])
-    stateInputMR.diagnosis = [...stateInputMR.diagnosis, selectedDiagnosis]
+    if (!diagnosisList || (diagnosisList && diagnosisList.length < 6)) {
+      setSelectedDiagnosis({ ...selectedDiagnosis, id: s4(), saved: false })
+      setDiagnosisList(current => [...diagnosisList, selectedDiagnosis])
+      stateInputMR.diagnosis = [...stateInputMR.diagnosis, selectedDiagnosis]
+    }
   }
 
   const onDeleteDiagnosis = (id, isSaved) => {
     console.log("DELETE", isSaved)
-    if (isSaved) {
-      console.log("DELETE", id)
-      apiMedicalrecord.deleteMedicalRecord(id).then(r => {
-        setDiagnosisList(current => current.filter(c => c.id !== id))
-        stateInputMR.diagnosis = stateInputMR.diagnosis.filter(c => c.id !== id)
-      })
-    } else {
-      setDiagnosisList(current => current.filter(c => c.id !== id))
-      stateInputMR.diagnosis = stateInputMR.diagnosis.filter(c => c.id !== id)
-    }
-
+    setDiagnosisList(current => current.filter(c => c.id !== id))
+    stateInputMR.diagnosis = stateInputMR.diagnosis.filter(c => c.id !== id)
   }
   useEffect(() => {
     console.log("INIT DIagnosis 1", diagnosis)
@@ -126,6 +119,11 @@ const DiagnoseComponent = ({ mode }) => {
               />
             </Box>
           </Flex>
+      }
+      {
+        mode === siteMode.detail
+          ? <></>
+          : (diagnosisList && diagnosisList.length === 6) ? <Text color={"Red"}>Input diagnosis hanya bisa 1 diagnosis primer dan 5 diagnosis sekunder</Text> : <></>
       }
       {
         mode === siteMode.detail

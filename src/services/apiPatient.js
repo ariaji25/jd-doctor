@@ -288,6 +288,23 @@ const getAllPatients = async (page, pageSize) => {
   return response.data;
 }
 
+
+const searchPatientBY = async (search, searchKey) => {
+  const response = await request.get(
+    urls.PATIENTS(),
+    {
+      params: {
+        totalPages: true,
+        order: "created:desc",
+        pageSize: 10,
+        page: 0,
+        filter: `${searchKey}:like:${search}`
+      }
+    }
+  )
+  return response.data;
+}
+
 export const apiPatient = {
   create,
   update,
@@ -296,5 +313,6 @@ export const apiPatient = {
   getPatientByNIK,
   getPatienDetailByID,
   serviceHistory,
-  getAllPatients
+  getAllPatients,
+  searchPatientBY
 };

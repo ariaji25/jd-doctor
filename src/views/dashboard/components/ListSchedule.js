@@ -1,11 +1,11 @@
-import { useDisclosure, Box, Flex, Avatar, Image, Center, CircularProgress } from '@chakra-ui/react';
+import { useDisclosure, Box, Flex, Avatar, Image, Center, CircularProgress, Text } from '@chakra-ui/react';
 import colors from 'values/colors';
 import ButtonMain from 'components/button/ButtonMain';
 import SideModal from 'components/SideModal';
 import DetailPatientModal from './DetailPatientModal';
 import { useCallback, useEffect, useState } from 'react';
 import EmptyComponent from 'components/EmptyComponent';
-import { dateFormat, getCurrentUserFromStorage } from 'utils';
+import { dateFormat, getCurrentUserFromStorage, getInitial } from 'utils';
 import apiDoctor from 'services/apiDoctor';
 import { apiPatient } from 'services/apiPatient';
 import { layananList, queryConditions } from 'utils/constant';
@@ -61,7 +61,7 @@ const ListSchedule = ({ state, selectedTab, tabs, isLoading, serviceHistory, tot
             : serviceHistory.length > 0 ? serviceHistory.map((r, i) => (
               <Flex key={i} flex={1} justifyContent={'center'} gap={2} border={'1px solid #C4C4C4'} borderRadius={'5px'} margin={'14px 0px 0px 20px'}>
                 <Box flex={1} padding={'13px 0 13px 13px'}>
-                  <Avatar icon={<Image src={r.img} w='25px' />} color={'black'} bg={'transparent'} border={'1px solid #C0C0C0'} />
+                  <Avatar icon={<Text>{getInitial(r.name)}</Text>} color={'black'} bg={'transparent'} border={'1px solid #C0C0C0'} />
                 </Box>
                 <Flex flex={5} flexDirection={'column'} padding={'13px 13px 13px 0'}>
                   <Flex gap={1} justifyContent='end'>

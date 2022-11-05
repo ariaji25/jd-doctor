@@ -1,4 +1,4 @@
-import { Box, Flex, Image, Divider, Center, CircularProgress } from '@chakra-ui/react';
+import { Box, Flex, Image, Divider, Center, CircularProgress, Avatar, Text } from '@chakra-ui/react';
 import colors from 'values/colors';
 import ButtonMain from 'components/button/ButtonMain';
 import { FaPhone } from 'react-icons/fa';
@@ -7,6 +7,7 @@ import { keySelectedService, layananList, monthNames } from 'utils/constant';
 import { useSnapshot } from 'valtio';
 import stateInputMR, { clearStateInputMR } from 'states/stateInputMedicalRecord';
 import stateBooking from 'states/stateBooking';
+import { getInitial } from 'utils';
 
 const DetailPatientModal = ({ data, loading }) => {
   const history = useHistory();
@@ -21,14 +22,7 @@ const DetailPatientModal = ({ data, loading }) => {
         ? <Center><CircularProgress isIndeterminate size='100px' thickness='4px' /></Center>
         : <Flex mx="12" gap={2} flexDir={'column'} width={'100%'}>
           <Flex alignItems={'center'} flexDir='column'>
-            <Box>
-              <Image
-                alt='patient-photo'
-                src='/img/patientPhoto.png'
-                cursor={'pointer'}
-                width={150}
-              />
-            </Box>
+            <Avatar width={'100px'} height={'100px'} icon={<Text fontSize={'3xl'}>{getInitial(data.name)}</Text>} color={'black'} bg={'transparent'} border={'1px solid #C0C0C0'} />
             <Box>
               {data.name}
             </Box>

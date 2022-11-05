@@ -9,7 +9,7 @@ import { useSnapshot } from "valtio";
 import apiDoctor from "services/apiDoctor";
 import { s4 } from "utils";
 import apiMedicalrecord from "services/apiMedicalRecord";
-import { siteMode } from "utils/constant";
+import { actionElements, siteMode } from "utils/constant";
 import { AutoComplete, AutoCompleteInput, AutoCompleteItem, AutoCompleteList } from "@choc-ui/chakra-autocomplete";
 import colors from "values/colors";
 
@@ -45,23 +45,16 @@ const ActionComponent = ({ mode }) => {
 
   const onButtonAddClicked = () => {
     // Add id needed to remove the item
-    setSelectedaction({ ...selectedaction, id: s4(), saved: false })
-    setactionList(current => [...actionList, selectedaction])
-    stateInputMR.action = [...stateInputMR.action, selectedaction]
+    if (!actionList || (actionList && actionList.length < actionElements.length)) {
+      setSelectedaction({ ...selectedaction, id: s4(), saved: false })
+      setactionList(current => [...actionList, selectedaction])
+      stateInputMR.action = [...stateInputMR.action, selectedaction]
+    }
   }
 
   const onDeleteaction = (id, isSaved) => {
-    console.log("DELETE", isSaved)
-    if (isSaved) {
-      console.log("DELETE", id)
-      apiMedicalrecord.deleteMedicalRecord(id).then(r => {
-        setactionList(current => current.filter(c => c.id !== id))
-        stateInputMR.action = stateInputMR.action.filter(c => c.id !== id)
-      })
-    } else {
-      setactionList(current => current.filter(c => c.id !== id))
-      stateInputMR.action = stateInputMR.action.filter(c => c.id !== id)
-    }
+    setactionList(current => current.filter(c => c.id !== id))
+    stateInputMR.action = stateInputMR.action.filter(c => c.id !== id)
 
   }
   useEffect(() => {
@@ -125,6 +118,13 @@ const ActionComponent = ({ mode }) => {
               />
             </Box>
           </Flex>
+      }
+      {
+        mode === siteMode.detail
+          ? <></>
+          : actionList && actionList.length === actionElements.length
+            ? <Text>Tindakan yang di masukkan hanya boleh sampai 5 tindakan</Text>
+            : <></>
       }
       {
         mode === siteMode.detail

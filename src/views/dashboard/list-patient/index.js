@@ -14,6 +14,7 @@ import { FiFilter, FiSearch } from 'react-icons/fi';
 import { useHistory } from 'react-router-dom';
 import EmptyComponent from 'components/EmptyComponent';
 import { apiPatient } from 'services/apiPatient';
+import { clearStateInputMR } from 'states/stateInputMedicalRecord';
 
 const tabs = [
   { id: 1, name: 'Klinik' },
@@ -81,26 +82,59 @@ const ListPatientPage = () => {
     apiPatient.getAllPatients(
       page, pager.pageSize
     ).then((r) => {
-      var i = 1;
-      let _patients = r.trackedEntityInstances.filter(e => e.attributes.length > 0).map((p) => {
-        const data = {
-          id: i,
-          nrm: getATTRValue(p.attributes, ATTR.nrm),
-          name: getATTRValue(p.attributes, ATTR.nama),
-          dob: getATTRValue(p.attributes, ATTR.tanggalLahir),
-          gender: getATTRValue(p.attributes, ATTR.jenisKelamin),
-          address: getATTRValue(p.attributes, ATTR.alamatDomisili),
-        }
-        i++;
-        return data;
-      })
-      setPatients(c => [..._patients])
-      setPager({ ...r.pager })
+      setPatientStateData(r)
       setIsLoading(false)
     }).catch(e => {
       setIsLoading(false)
     })
   }
+
+
+  const setPatientStateData = (r) => {
+    var i = 1;
+    let _patients = r.trackedEntityInstances.filter(e => e.attributes.length > 0).map((p) => {
+      const data = {
+        id: i,
+        patientId: p.trackedEntityInstance,
+        nrm: getATTRValue(p.attributes, ATTR.nrm),
+        name: getATTRValue(p.attributes, ATTR.nama),
+        dob: getATTRValue(p.attributes, ATTR.tanggalLahir),
+        gender: getATTRValue(p.attributes, ATTR.jenisKelamin),
+        address: getATTRValue(p.attributes, ATTR.alamatDomisili),
+      }
+      i++;
+      return data;
+    })
+    setPatients(c => [..._patients])
+    setPager({ ...r.pager })
+  }
+
+  const isNRM = (str) => {
+    return /\d/.test(str)
+  }
+
+  const searchPatient = (search) => {
+    if (isNRM(search)) {
+      apiPatient.searchPatientBY(
+        search, ATTR.nrm
+      ).then((r) => {
+        setPatientStateData(r)
+        setIsLoading(false)
+      }).catch(e => {
+        setIsLoading(false)
+      })
+    } else {
+      apiPatient.searchPatientBY(
+        search, ATTR.nama
+      ).then((r) => {
+        setPatientStateData(r)
+        setIsLoading(false)
+      }).catch(e => {
+        setIsLoading(false)
+      })
+    }
+  }
+
   const init = useCallback(() => {
     getPatients(1);
   }, [])
@@ -113,6 +147,7 @@ const ListPatientPage = () => {
     setCurrentPage(page);
     getPatients(page)
   }
+
   return (
     <Box>
       <Flex alignItems={'center'} padding={'30px'}>
@@ -157,7 +192,7 @@ const ListPatientPage = () => {
                 ))}
               </Flex> */}
                 <Flex>
-                  <ButtonMain marginRight={'10px'} bg="white" color={'#505050'} borderColor='#505050'><FiFilter fontSize={'25px'} /> <span style={{ paddingLeft: '5px' }}></span>Filter</ButtonMain>
+                  {/* <ButtonMain marginRight={'10px'} bg="white" color={'#505050'} borderColor='#505050'><FiFilter fontSize={'25px'} /> <span style={{ paddingLeft: '5px' }}></span>Filter</ButtonMain> */}
                   <InputGroup>
                     <InputLeftElement
                       pointerEvents='none'
@@ -168,7 +203,13 @@ const ListPatientPage = () => {
                         </Box>
                       }
                     />
-                    <Input type='text' placeholder='Search' minWidth={'364px'} borderRadius={'114px'} border={'2px solid #505050 !important'} />
+                    <Input type='text' onChange={e => {
+                      if (e.target.value && e.target.value.length > 3) {
+                        searchPatient(e.target.value)
+                      } else if (!e.target.value) {
+                        getPatients(1)
+                      }
+                    }} placeholder='Search' minWidth={'364px'} borderRadius={'114px'} border={'2px solid #505050 !important'} />
                   </InputGroup>
                 </Flex>
               </Flex>
@@ -187,7 +228,10 @@ const ListPatientPage = () => {
                       </Thead>
                       <Tbody>
                         {patients.map((r, i) => (
-                          <Tr key={i}>
+                          <Tr key={i} onClick={e => {
+                            clearStateInputMR()
+                            history.push(`/dashboard/medical-record/${r.patientId}`)
+                          }}>
                             <Td>{r.nrm}</Td>
                             <Td fontWeight={'bold'}>{r.name}</Td>
                             <Td>{r.gender === 'male' ? "Laki-laki" : "Perempuan"}</Td>

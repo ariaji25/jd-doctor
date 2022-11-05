@@ -3,6 +3,7 @@ import { useParams, useHistory } from "react-router-dom"
 import colors from "values/colors"
 import { useSnapshot } from 'valtio';
 import stateMedicalRecord from "states/stateMedicalRecord";
+import { FiCheckCircle } from "react-icons/fi";
 
 const tabs = [
   { id: 1, name: 'Pemeriksaan', icon: '/icon/inspection_menu.svg' },
@@ -11,7 +12,7 @@ const tabs = [
   { id: 4, name: 'Pengobatan', icon: '/icon/treatment_menu.svg' },
 ]
 
-const MedicalNavigation = () => {
+const MedicalNavigation = ({ savedStates }) => {
   const history = useHistory()
   let { idPatient } = useParams()
   const state = useSnapshot(stateMedicalRecord);
@@ -54,6 +55,7 @@ const MedicalNavigation = () => {
                 <Box>
                   {r.name}
                 </Box>
+                <FiCheckCircle color={savedStates[i] > 0 ? "green" : "grey"} />
               </Flex>
             </Box>
           ))}

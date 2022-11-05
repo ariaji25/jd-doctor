@@ -14,7 +14,7 @@ import { useParams } from "react-router-dom/cjs/react-router-dom";
 import { getAge, useQueryParams } from "utils";
 import apiBooking from "services/apiBooking";
 import { useCallback, useEffect, useState } from "react";
-import { keySelectedService, medicalRecordID, medicalRecordProgram, siteMode } from "utils/constant";
+import { actionElements, diagnosesElements, keySelectedService, medicalRecordID, medicalRecordProgram, siteMode, treatmentElements } from "utils/constant";
 import { apiPatient } from "services/apiPatient";
 import stateInputMR from "states/stateInputMedicalRecord";
 import apiMedicalrecord from "services/apiMedicalRecord";
@@ -135,52 +135,63 @@ const MedicalRecordManagePage = () => {
     console.log("Assesment", stateInputMR.generalAssesment.generalCondition)
   }
   const initDiagnosisFromSaved = (savedDiagnosis) => {
-    var _diagnosis = savedDiagnosis.map(d => {
-      return {
-        id: d.event,
-        saved: true,
-        diagnosisCode: d.dataValues.filter(e => e.dataElement === medicalRecordID.codingDiagnosis)
-          && d.dataValues.filter(e => e.dataElement === medicalRecordID.codingDiagnosis).length > 0
-          ? d.dataValues.filter(e => e.dataElement === medicalRecordID.codingDiagnosis)[0].value : '',
-        diagnosisNote: d.dataValues.filter(e => e.dataElement === medicalRecordID.keteranganDiagnosis)
-          && d.dataValues.filter(e => e.dataElement === medicalRecordID.keteranganDiagnosis).length > 0
-          ? d.dataValues.filter(e => e.dataElement === medicalRecordID.keteranganDiagnosis)[0].value : '-'
-      }
-    })
-    stateInputMR.diagnosis = [..._diagnosis]
+    if (savedDiagnosis.dataValues && savedDiagnosis.dataValues.length > 0) {
+      let _diagnoses = []
+      diagnosesElements.forEach(dE => {
+        let _d = savedDiagnosis.dataValues.find(e => e.dataElement === dE.diagnoses)
+        let _dNotes = savedDiagnosis.dataValues.find(e => e.dataElement === dE.diagnosesNotes)
+        if (_d && _d.value) {
+          _diagnoses.push({
+            id: dE.diagnoses,
+            eventId: savedDiagnosis.event,
+            saved: true,
+            diagnosisCode: _d.value,
+            diagnosisNote: _dNotes && _dNotes.value ? _dNotes.value : "-"
+          })
+        }
+      })
+      stateInputMR.diagnosis = [..._diagnoses]
+    }
   }
 
   const initActionFromSaved = (savedAction) => {
-    var _action = savedAction.map(d => {
-      return {
-        id: d.event,
-        saved: true,
-        actionCode: d.dataValues.filter(e => e.dataElement === medicalRecordID.tindakan)
-          && d.dataValues.filter(e => e.dataElement === medicalRecordID.tindakan).length > 0
-          ? d.dataValues.filter(e => e.dataElement === medicalRecordID.tindakan)[0].value : '',
-        actionNote: d.dataValues.filter(e => e.dataElement === medicalRecordID.waktuTindakan)
-          && d.dataValues.filter(e => e.dataElement === medicalRecordID.waktuTindakan).length > 0
-          ? d.dataValues.filter(e => e.dataElement === medicalRecordID.waktuTindakan)[0].value : '-'
-      }
-    })
-    console.log("TINDAKAN+++", _action)
-    stateInputMR.action = [..._action]
+    if (savedAction.dataValues && savedAction.dataValues.length > 0) {
+      let _actions = []
+      actionElements.forEach(aE => {
+        let _a = savedAction.dataValues.find(e => e.dataElement === aE.action)
+        let _aNotes = savedAction.dataValues.find(e => e.dataElement === aE.actionNote)
+        if (_a && _a.value) {
+          _actions.push({
+            id: aE.action,
+            eventId: _savedAction.event,
+            saved: true,
+            actionCode: _a.value,
+            actionNote: _aNotes && _aNotes.value ? _aNotes.value : "-"
+          })
+        }
+      })
+      stateInputMR.action = [..._actions]
+    }
   }
 
   const initTreatmentFromSaved = (savedTreatment) => {
-    var _treatment = savedTreatment.map(d => {
-      return {
-        id: d.event,
-        saved: true,
-        treatment: d.dataValues.filter(e => e.dataElement === medicalRecordID.namaObat)
-          && d.dataValues.filter(e => e.dataElement === medicalRecordID.namaObat).length > 0
-          ? d.dataValues.filter(e => e.dataElement === medicalRecordID.namaObat)[0].value : '',
-        treatmentDosis: d.dataValues.filter(e => e.dataElement === medicalRecordID.dosis)
-          && d.dataValues.filter(e => e.dataElement === medicalRecordID.dosis).length > 0
-          ? d.dataValues.filter(e => e.dataElement === medicalRecordID.dosis)[0].value : ''
-      }
-    })
-    stateInputMR.treatment = [..._treatment]
+    if (savedTreatment.dataValues && savedTreatment.dataValues.length > 0) {
+      let _treatments = []
+      treatmentElements.forEach(tE => {
+        let _t = savedTreatment.dataValues.find(e => e.dataElement === tE.treatment)
+        let _tNotes = savedTreatment.dataValues.find(e => e.dataElement === tE.treatmentDose)
+        if (_t && _t.value) {
+          _treatments.push({
+            id: tE.treatment,
+            eventId: savedTreatment.event,
+            saved: true,
+            treatment: _t.value,
+            treatmentDose: _tNotes && _tNotes.value ? _tNotes.value : "-"
+          })
+        }
+      })
+      stateInputMR.treatment = [..._treatments]
+    }
   }
 
   const getMedicalRecordData = async () => {
@@ -196,18 +207,18 @@ const MedicalRecordManagePage = () => {
     }
     const _diagnosis = await apiMedicalrecord.getMedicalRecord(serviceId ?? StateInputMR.serviceDetail.serviceID, medicalRecordProgram.diagnosis)
     if (_diagnosis.events && _diagnosis.events.length > 0) {
-      setDiagnosis([..._diagnosis.events])
-      initDiagnosisFromSaved(_diagnosis.events)
+      setDiagnosis(_diagnosis.events[0])
+      initDiagnosisFromSaved(_diagnosis.events[0])
     }
     const _treatments = await apiMedicalrecord.getMedicalRecord(serviceId ?? StateInputMR.serviceDetail.serviceID, medicalRecordProgram.obat)
     if (_treatments.events && _treatments.events.length > 0) {
-      setTreatment([..._treatments.events])
-      initTreatmentFromSaved(_treatments.events)
+      setTreatment(_treatments.events[0])
+      initTreatmentFromSaved(_treatments.events[0])
     }
     const _action = await apiMedicalrecord.getMedicalRecord(serviceId ?? StateInputMR.serviceDetail.serviceID, medicalRecordProgram.tindakan)
     if (_action.events && _action.events.length > 0) {
-      setAction([..._action.events])
-      initActionFromSaved(_action.events)
+      setAction(_action.events[0])
+      initActionFromSaved(_action.events[0])
     }
     setIsLoading(false)
     return true
@@ -339,39 +350,58 @@ const MedicalRecordManagePage = () => {
       case 2: {
         const _enrollmentID = mrEnrollments.filter(e => e.program === medicalRecordProgram.diagnosis)
         if (stateInputMR.diagnosis && stateInputMR.diagnosis.length > 0) {
-          var counterSuccess = 0
-          stateInputMR.diagnosis.forEach(e => {
-            console.log(e.diagnosisCode, e.diagnosisNote)
-            const dataValues = []
-            dataValues.push({
-              dataElement: medicalRecordID.codingDiagnosis,
-              value: e.diagnosisCode
-            })
-            if (e.diagnosisNote && e.diagnosisNote.length > 0) dataValues.push({
-              dataElement: medicalRecordID.keteranganDiagnosis,
-              value: e.diagnosisNote
-            })
-            dataValues.push({
-              dataElement: medicalRecordID.referensiPelayanan,
-              value: serviceId ?? stateInputMR.serviceDetail.serviceID
-            })
-            if (!e.saved) apiMedicalrecord.createNewMedicalRecord(
-              medicalRecordProgram.diagnosis,
-              medicalRecordProgram.diagnosisStage,
-              _enrollmentID[0].enrollment,
-              dataValues,
-              serviceId ?? stateInputMR.serviceDetail.serviceID,
-              stateInputMR.patient.id
-            ).then(r => {
-              counterSuccess++
-              if (counterSuccess === stateInputMR.diagnosis.length) {
-                apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.diagnosis[0].diagnosisCode}-${stateInputMR.diagnosis[0].diagnosisNote}`, medicalRecordID.referensiDiagnosis)
-                  .then(e => {
-                    onOpen()
-                  })
+          let _dataValues = []
+          diagnosesElements.forEach(dE => {
+            if (stateInputMR.diagnosis[dE.id]) {
+              console.log(dE.id, stateInputMR.diagnosis[dE.id])
+              let _dCode = {
+                dataElement: dE.diagnoses,
+                value: stateInputMR.diagnosis[dE.id].diagnosisCode
               }
+              let _dNote = {
+                dataElement: dE.diagnoses,
+                value: stateInputMR.diagnosis[dE.id].diagnosesNote ?? "-"
+              }
+              _dataValues.push(_dCode)
+              _dataValues.push(_dNote)
+            }
+          })
+          _dataValues.push({
+            dataElement: medicalRecordID.referensiPelayanan,
+            value: serviceId ?? stateInputMR.serviceDetail.serviceID
+          })
+          if (_savedDiagnosis && _savedDiagnosis.event) {
+            let _event = _savedDiagnosis
+            _event.dataValues = _dataValues
+
+            if (_event.dataValues.length > 0) apiMedicalrecord.updateMedicalRecord(_event).then(r => {
+              apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.diagnosis[0].diagnosisCode}-${stateInputMR.diagnosis[0].diagnosisNote ?? ''}`, medicalRecordID.referensiDiagnosis)
+                .then(e => {
+                  onOpen()
+                })
             })
-            else counterSuccess++
+          }
+          else apiMedicalrecord.createNewMedicalRecord(
+            medicalRecordProgram.diagnosis,
+            medicalRecordProgram.diagnosisStage,
+            _enrollmentID[0].enrollment,
+            _dataValues,
+            serviceId ?? stateInputMR.serviceDetail.serviceID,
+            stateInputMR.patient.id
+          ).then(r => {
+            apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.diagnosis[0].diagnosisCode}-${stateInputMR.diagnosis[0].diagnosisNote ?? ''}`, medicalRecordID.referensiDiagnosis)
+              .then(e => {
+                onOpen()
+              })
+          })
+        } else if (_savedDiagnosis && _savedDiagnosis.event && !(stateInputMR.diagnosis && stateInputMR.diagnosis.length > 0)) {
+          let _event = _savedDiagnosis
+          _event.dataValues = []
+          apiMedicalrecord.deleteMedicalRecord(_event.event).then(r => {
+            apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, ``, medicalRecordID.referensiDiagnosis)
+              .then(e => {
+                onOpen()
+              })
           })
         }
         break
@@ -379,79 +409,118 @@ const MedicalRecordManagePage = () => {
       case 3: {
         const _enrollmentID = mrEnrollments.filter(e => e.program === medicalRecordProgram.tindakan)
         if (stateInputMR.action && stateInputMR.action.length > 0) {
-          var counterSuccess = 0
-          stateInputMR.action.forEach(e => {
-            console.log(e.actionCode, e.actionNote)
-            const dataValues = []
-            dataValues.push({
-              dataElement: medicalRecordID.tindakan,
-              value: e.actionCode
-            })
-            if (e.actionNote && e.actionNote.length > 0) dataValues.push({
-              dataElement: medicalRecordID.waktuTindakan,
-              value: e.actionNote
-            })
-            dataValues.push({
-              dataElement: medicalRecordID.referensiPelayanan,
-              value: serviceId ?? stateInputMR.serviceDetail.serviceID
-            })
-            if (!e.saved) apiMedicalrecord.createNewMedicalRecord(
-              medicalRecordProgram.tindakan,
-              medicalRecordProgram.tindakanStage,
-              _enrollmentID[0].enrollment,
-              dataValues,
-              serviceId ?? stateInputMR.serviceDetail.serviceID,
-              stateInputMR.patient.id
-            ).then(r => {
-              counterSuccess++
-              if (counterSuccess === stateInputMR.action.length) {
-                apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.action[0].actionCode}-${stateInputMR.action[0].actionNote}`, medicalRecordID.refernsiTindakan)
-                  .then(e => {
-                    onOpen()
-                  })
+          let _dataValues = []
+          actionElements.forEach(aE => {
+            if (stateInputMR.action[aE.id]) {
+              console.log(aE.id, stateInputMR.action[aE.id])
+              let _aCode = {
+                dataElement: aE.action,
+                value: stateInputMR.action[aE.id].actionCode
               }
+              let _aNote = {
+                dataElement: aE.actionNote,
+                value: stateInputMR.action[aE.id].actionNote ?? "-"
+              }
+              _dataValues.push(_aCode)
+              _dataValues.push(_aNote)
+            }
+          })
+          _dataValues.push({
+            dataElement: medicalRecordID.referensiPelayanan,
+            value: serviceId ?? stateInputMR.serviceDetail.serviceID
+          })
+          if (_savedAction && _savedAction.event) {
+            let _event = _savedAction
+            _event.dataValues = _dataValues
+            if (_event.dataValues.length > 0) apiMedicalrecord.updateMedicalRecord(_event).then(r => {
+              apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.action[0].actionCode}-${stateInputMR.action[0].actionNote ?? ''}`, medicalRecordID.refernsiTindakan)
+                .then(e => {
+                  onOpen()
+                })
             })
-            else counterSuccess++
+          }
+          else apiMedicalrecord.createNewMedicalRecord(
+            medicalRecordProgram.tindakan,
+            medicalRecordProgram.tindakanStage,
+            _enrollmentID[0].enrollment,
+            _dataValues,
+            serviceId ?? stateInputMR.serviceDetail.serviceID,
+            stateInputMR.patient.id
+          ).then(r => {
+            apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.action[0].actionCode}-${stateInputMR.action[0].actionNote ?? ''}`, medicalRecordID.refernsiTindakan)
+              .then(e => {
+                onOpen()
+              })
+          })
+        } else if (_savedAction && _savedAction.event && !(stateInputMR.action && stateInputMR.action.length > 0)) {
+          let _event = _savedAction
+          _event.dataValues = []
+          apiMedicalrecord.deleteMedicalRecord(_event.event).then(r => {
+            apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, ``, medicalRecordID.refernsiTindakan)
+              .then(e => {
+                onOpen()
+              })
           })
         }
+
         break
       }
       // Treatment
       case 4: {
+
         const _enrollmentID = mrEnrollments.filter(e => e.program === medicalRecordProgram.obat)
-        var counterSuccess = 0
         if (stateInputMR.treatment && stateInputMR.treatment.length > 0) {
-          stateInputMR.treatment.forEach(e => {
-            console.log(e.treatment, e.treatmentDosis)
-            const dataValues = []
-            dataValues.push({
-              dataElement: medicalRecordID.namaObat,
-              value: e.treatment
-            })
-            if (e.treatmentDosis && e.treatmentDosis.length > 0) dataValues.push({
-              dataElement: medicalRecordID.dosis,
-              value: e.treatmentDosis
-            })
-            dataValues.push({
-              dataElement: medicalRecordID.referensiPelayanan,
-              value: serviceId ?? stateInputMR.serviceDetail.serviceID
-            })
-            if (!e.saved) apiMedicalrecord.createNewMedicalRecord(
-              medicalRecordProgram.obat,
-              medicalRecordProgram.obatStage,
-              _enrollmentID[0].enrollment,
-              dataValues,
-              serviceId ?? stateInputMR.serviceDetail.serviceID,
-              stateInputMR.patient.id
-            ).then(r => {
-              counterSuccess++
-              if (counterSuccess === stateInputMR.treatment.length) {
-                apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.treatment[0].treatment}`, medicalRecordID.refernsiPengobatan).then(e => {
+          let _dataValues = []
+          treatmentElements.forEach(tE => {
+            if (stateInputMR.treatment[tE.id]) {
+              console.log(tE.id, stateInputMR.treatment[tE.id])
+              let _tCode = {
+                dataElement: tE.treatment,
+                value: stateInputMR.treatment[tE.id].treatment
+              }
+              let _tNote = {
+                dataElement: tE.treatmentDose,
+                value: stateInputMR.treatment[tE.id].treatmentDose ?? "-"
+              }
+              _dataValues.push(_tCode)
+              _dataValues.push(_tNote)
+            }
+          })
+          _dataValues.push({
+            dataElement: medicalRecordID.referensiPelayanan,
+            value: serviceId ?? stateInputMR.serviceDetail.serviceID
+          })
+          if (_savedTreatment && _savedTreatment.event) {
+            let _event = _savedTreatment
+            _event.dataValues = _dataValues
+            if (_event.dataValues.length > 0) apiMedicalrecord.updateMedicalRecord(_event).then(r => {
+              apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.treatment[0].treatment}-${stateInputMR.treatment[0].treatmentDose ?? ''}`, medicalRecordID.refernsiPengobatan)
+                .then(e => {
                   onOpen()
                 })
-              }
             })
-            else counterSuccess++
+          }
+          else apiMedicalrecord.createNewMedicalRecord(
+            medicalRecordProgram.obat,
+            medicalRecordProgram.obatStage,
+            _enrollmentID[0].enrollment,
+            _dataValues,
+            serviceId ?? stateInputMR.serviceDetail.serviceID,
+            stateInputMR.patient.id
+          ).then(r => {
+            apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.treatment[0].treatment}-${stateInputMR.treatment[0].treatmentDose ?? ''}`, medicalRecordID.refernsiPengobatan)
+              .then(e => {
+                onOpen()
+              })
+          })
+        } else if (_savedTreatment && _savedTreatment.event && !(stateInputMR.treatment && stateInputMR.treatment.length > 0)) {
+          let _event = _savedTreatment
+          _event.dataValues = []
+          apiMedicalrecord.deleteMedicalRecord(_event.event).then(r => {
+            apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, ``, medicalRecordID.refernsiPengobatan)
+              .then(e => {
+                onOpen()
+              })
           })
         }
         break
@@ -466,7 +535,7 @@ const MedicalRecordManagePage = () => {
   return (
     <>
       <Flex minH={'100vh'}>
-        <MedicalNavigation />
+        <MedicalNavigation savedStates={[_savedgeneralAssesment, _savedDiagnosis, _savedAction, _savedTreatment]} />
         <Box minW={0} flex={'auto'}>
           <MedicalHeader />
           <Flex flexDir={'column'} flex={4} justifyContent={'center'}>
