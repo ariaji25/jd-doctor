@@ -6,7 +6,7 @@ import EmptyComponent from "components/EmptyComponent";
 import { useEffect, useState } from "react";
 import { s4 } from "utils";
 import stateInputMR from "states/stateInputMedicalRecord";
-import { siteMode } from "utils/constant";
+import { siteMode, treatmentElements } from "utils/constant";
 import { useSnapshot } from "valtio";
 import apiMedicalrecord from "services/apiMedicalRecord";
 
@@ -23,27 +23,21 @@ const TreatmentComponent = ({ mode }) => {
   }
 
   const onChangeTreatmentDosis = (e) => {
-    setTreatment({ ...treatment, treatmentDosis: e.target.value })
+    setTreatment({ ...treatment, treatmentDose: e.target.value })
   }
 
   const onButtonAddClicked = () => {
     // Add id needed to remove the item
-    setTreatment({ ...treatment, id: s4(), saved: false })
-    setTreatmentList(current => [...treatmentList, treatment])
-    stateInputMR.treatment = [...stateInputMR.treatment, treatment]
+    if (!treatmentList || (treatmentList && treatmentList.length < treatmentElements.length)) {
+      setTreatment({ ...treatment, id: s4(), saved: false })
+      setTreatmentList(current => [...treatmentList, treatment])
+      stateInputMR.treatment = [...stateInputMR.treatment, treatment]
+    }
   }
 
   const onDeleteTreatment = (id, isSaved) => {
-    if (isSaved) {
-      console.log("DELETE", id)
-      apiMedicalrecord.deleteMedicalRecord(id).then(r => {
-        setTreatmentList(current => current.filter(c => c.id !== id))
-        stateInputMR.treatment = stateInputMR.treatment.filter(c => c.id !== id)
-      })
-    } else {
-      setTreatmentList(current => current.filter(c => c.id !== id))
-      stateInputMR.treatment = stateInputMR.treatment.filter(c => c.id !== id)
-    }
+    setTreatmentList(current => current.filter(c => c.id !== id))
+    stateInputMR.treatment = stateInputMR.treatment.filter(c => c.id !== id)
   }
 
   useEffect(() => {
@@ -80,6 +74,11 @@ const TreatmentComponent = ({ mode }) => {
                 />
               </Box>
             </Flex>
+            {
+              (treatmentList && treatmentList.length && treatmentList.length === treatmentElements.length)
+                ? <Text color={"Red"}>Untuk pengobatan hanya boleh memasukkan sampai 7 obat</Text>
+                : <></>
+            }
             <Flex justifyContent={'end'} pt={2}>
               <ButtonMain onClick={onButtonAddClicked}><FiPlusCircle /> Tambahkan obat</ButtonMain>
             </Flex>
@@ -99,7 +98,7 @@ const TreatmentComponent = ({ mode }) => {
               {treatmentList.length > 0 ? treatmentList.map((r, i) => (
                 <Tr key={i} bg={'#F9F9FC'}>
                   <Td>{r.treatment}</Td>
-                  <Td>{r.treatmentDosis}</Td>
+                  <Td>{r.treatmentDose}</Td>
                   {mode === siteMode.detail
                     ? <></>
                     : <Td><FiTrash onClick={(e) => onDeleteTreatment(r.id, r.saved)} color="red" /></Td>

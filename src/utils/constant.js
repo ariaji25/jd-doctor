@@ -177,6 +177,106 @@ export const medicalRecordProgram = {
   obatStage: "M6aIIfUDGT4"
 }
 
+
+export const diagnosesElements = [
+  {
+    id: 0,
+    diagnoses: "Ia5upPH9ZKS",
+    diagnosesNotes: "DDPZHzOaq4g"
+  },
+  {
+    id: 1,
+    diagnoses: "sb32TOeWL2o",
+    diagnosesNotes: "Elpeau2AsFM"
+  },
+  {
+    id: 2,
+    diagnoses: "frWv8Ce3hAl",
+    diagnosesNotes: "CVDZAW7PnOJ"
+  },
+  {
+    id: 3,
+    diagnoses: "M6TjzogMUcF",
+    diagnosesNotes: "Rs2NbToJGMF"
+  },
+  {
+    id: 4,
+    diagnoses: "TcULTrnw7XO",
+    diagnosesNotes: "xlbQnmjBmkk"
+  },
+  {
+    id: 5,
+    diagnoses: "IMhiWcdnHk9",
+    diagnosesNotes: "RNafYBRiroj"
+  },
+]
+
+export const actionElements = [
+  {
+    id: 0,
+    action: "AFxA2KxhvkQ",
+    actionNote: "vl8BakJFE5y"
+  },
+  {
+    id: 1,
+    action: "ruMJLrEziOZ",
+    actionNote: "miJxiuOGXuE"
+  },
+  {
+    id: 2,
+    action: "QC52o47NU9e",
+    actionNote: "cgReXw6BA3N"
+  },
+  {
+    id: 3,
+    action: "JsPxdqV4A1m",
+    actionNote: "KxoPmkKem8U"
+  },
+  {
+    id: 4,
+    action: "wPG4Sh72zBW",
+    actionNote: "p0X5S0UV9II"
+  },
+]
+
+export const treatmentElements = [
+  {
+    id: 0,
+    treatment: "adfqVxQYDGH",
+    treatmentDose: "SgF9qnmQLaU"
+  },
+  {
+    id: 1,
+    treatment: "y2pWIDCGAx3",
+    treatmentDose: "gY5Am4gYvO1"
+  },
+  {
+    id: 2,
+    treatment: "o6TgN99ZKQU",
+    treatmentDose: "AEsEOAi5MIX"
+  },
+  {
+    id: 3,
+    treatment: "oNKKJ4LodLI",
+    treatmentDose: "QEjdm2UC9jb"
+  },
+  {
+    id: 4,
+    treatment: "O0TDEDBbWkm",
+    treatmentDose: "ZnQIqCTIK0W"
+  },
+  {
+    id: 5,
+    treatment: "pdo5CIMBbM7",
+    treatmentDose: "Bp3rIrtrLQX"
+  },
+  {
+    id: 6,
+    treatment: "FcIeOQ0unCi",
+    treatmentDose: "xz9IMeTOFcF"
+  },
+]
+
 export const siteMode = {
   create: "create",
   detail: "detail",

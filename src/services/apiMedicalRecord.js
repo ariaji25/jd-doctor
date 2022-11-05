@@ -91,10 +91,12 @@ const addMedicalRecordReference = async (serviceId, reference, referenceID) => {
   )
   const newEvent = _event.data;
   if (newEvent) {
-    newEvent.dataValues.push({
+    let _newDataValues = newEvent.dataValues.filter(c => c.dataElement !== referenceID)
+    _newDataValues.push({
       dataElement: referenceID,
       value: reference
     })
+    newEvent.dataValues = _newDataValues
     const res = await request.post(urls.EVENTS, newEvent, { params: { strategy: "CREATE_AND_UPDATE" } })
     return res.data
   }
