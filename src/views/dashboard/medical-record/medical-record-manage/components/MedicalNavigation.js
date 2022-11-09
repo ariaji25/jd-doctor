@@ -6,10 +6,10 @@ import stateMedicalRecord from "states/stateMedicalRecord";
 import { FiCheckCircle } from "react-icons/fi";
 
 const tabs = [
-  { id: 1, name: 'Pemeriksaan', icon: '/icon/inspection_menu.svg' },
-  { id: 2, name: 'Diagnosis', icon: '/icon/diagnose_menu.svg' },
-  { id: 3, name: 'Tindakan', icon: '/icon/action_menu.svg' },
-  { id: 4, name: 'Pengobatan', icon: '/icon/treatment_menu.svg' },
+  { id: 1, name: 'Pemeriksaan', icon: '/icon/inspection_menu.svg', keySave: 'savedgeneralAssesment' },
+  { id: 2, name: 'Diagnosis', icon: '/icon/diagnose_menu.svg', keySave: 'savedDiagnoses' },
+  { id: 3, name: 'Tindakan', icon: '/icon/action_menu.svg', keySave: 'savedActions' },
+  { id: 4, name: 'Pengobatan', icon: '/icon/treatment_menu.svg', keySave: 'savedTreatment' },
 ]
 
 const MedicalNavigation = ({ savedStates }) => {
@@ -55,7 +55,7 @@ const MedicalNavigation = ({ savedStates }) => {
                 <Box>
                   {r.name}
                 </Box>
-                <FiCheckCircle color={savedStates[i] > 0 ? "green" : "grey"} />
+                <FiCheckCircle color={(savedStates[r.keySave] && savedStates[r.keySave].dataValues && savedStates[r.keySave].dataValues.length > 0) ? "green" : "grey"} />
               </Flex>
             </Box>
           ))}

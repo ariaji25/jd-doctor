@@ -327,9 +327,12 @@ const MedicalRecordManagePage = () => {
           var _event = _savedgeneralAssesment;
           _event.dataValues = dataValues
           if (dataValues.length > 0) apiMedicalrecord.updateMedicalRecord(_event).then(r => {
-            getMedicalRecordData().then(r => {
-              onOpen()
-            })
+            if (r.response.importSummaries
+              && r.response.importSummaries[0]
+              && r.response.importSummaries[0].reference) apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${r.response.importSummaries[0].reference}`, medicalRecordID.referensiPemeriksaanFisik)
+                .then(e => {
+                  onOpen()
+                })
           })
         }
         else apiMedicalrecord.createNewMedicalRecord(
@@ -340,9 +343,12 @@ const MedicalRecordManagePage = () => {
           serviceId ?? stateInputMR.serviceDetail.serviceID,
           stateInputMR.patient.id
         ).then(r => {
-          getMedicalRecordData().then(r => {
-            onOpen()
-          })
+          if (r.response.importSummaries
+            && r.response.importSummaries[0]
+            && r.response.importSummaries[0].reference) apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${r.response.importSummaries[0].reference}`, medicalRecordID.referensiPemeriksaanFisik)
+              .then(e => {
+                onOpen()
+              })
         })
         break
       }
@@ -532,10 +538,20 @@ const MedicalRecordManagePage = () => {
   }
   let titleSave = state.selectedTab === 1 ? 'Pemeriksaan' : state.selectedTab === 2 ? 'Diagnosis' : state.selectedTab === 3 ? 'Tindakan' : 'Pengobatan'
 
+  let updateTitleText = (item) => {
+    let _items = [_savedgeneralAssesment, _savedDiagnosis, _savedAction, _savedTreatment]
+    return _items[item] && _items[item].dataValues && _items[item].dataValues.length > 0
+  }
+
   return (
     <>
       <Flex minH={'100vh'}>
-        <MedicalNavigation savedStates={[_savedgeneralAssesment, _savedDiagnosis, _savedAction, _savedTreatment]} />
+        <MedicalNavigation savedStates={{
+          savedgeneralAssesment: _savedgeneralAssesment,
+          savedDiagnoses: _savedDiagnosis,
+          savedActions: _savedAction,
+          savedTreatment: _savedTreatment,
+        }} />
         <Box minW={0} flex={'auto'}>
           <MedicalHeader />
           <Flex flexDir={'column'} flex={4} justifyContent={'center'}>
@@ -586,7 +602,7 @@ const MedicalRecordManagePage = () => {
               : <Box px={40} py={5} textAlign={state.selectedTab === 1 ? 'right' : 'center'}>
                 <ButtonMain width={state.selectedTab === 1 ? '47%' : '100%'} maxW={'700px'} onClick={(e) => {
                   onClickButtonSave()
-                }}>Simpan {titleSave}</ButtonMain>
+                }}>Simpan {updateTitleText(state.selectedTab - 1) ? "Perubahan" : ""} {titleSave}</ButtonMain>
               </Box>
           }
         </Box>

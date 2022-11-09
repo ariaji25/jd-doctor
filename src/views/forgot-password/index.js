@@ -82,6 +82,9 @@ const ForgotPasswordForm = ({ onClikWaHelp }) => {
             cursor="pointer"
             color='#505050'
             textAlign='center'
+            onClick={e => {
+              window.browserHistory.push("/");
+            }}
           >
             Kembali
           </Text>

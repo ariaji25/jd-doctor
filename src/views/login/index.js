@@ -72,7 +72,7 @@ const LoginForm = ({ onClikWaHelp }) => {
       <Box w="full" color={colors.PRIMARY}>
         <form onSubmit={onSubmit}>
           <Text pb={8} fontSize="3xl" fontWeight="bold" color='#505050'>
-            Hay dok, Silahkan login!
+          Hai dok, Silahkan login!
           </Text>
           <Box>
             <InputUnderlined

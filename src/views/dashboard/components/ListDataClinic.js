@@ -39,6 +39,7 @@ const ListDataClinic = () => {
           schedule: ev.dataValues.find((e) => e.dataElement === 'X7GUfsOErZh') ? ev.dataValues.find((e) => e.dataElement === 'X7GUfsOErZh').value ?? '-' : '-',
           problem: ev.dataValues.find((e) => e.dataElement === 'Yh6ylx8D3tO') ? ev.dataValues.find((e) => e.dataElement === 'Yh6ylx8D3tO').value ?? '-' : '-',
           service: ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6') ? ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6').value ?? '-' : '-',
+          serviceStatus: ev.dataValues.find((e) => e.dataElement === 'iRiPZZajW1E') ? ev.dataValues.find((e) => e.dataElement === 'iRiPZZajW1E').value ?? '' : '',
           serviceID: ev.event
         }
         i++;
@@ -102,6 +103,7 @@ const ListDataClinic = () => {
                         <Td>No.Antrian</Td>
                         <Td>Nama lengkap pasien</Td>
                         <Td>Layanan</Td>
+                        <Td>Status Pelayanan</Td>
                         <Td>Waktu</Td>
                       </Tr>
                     </Thead>
@@ -115,6 +117,7 @@ const ListDataClinic = () => {
                           <Td>{addZeroPad(r.id, 4)}</Td>
                           <Td fontWeight={'bold'}>{r.name}</Td>
                           <Td>{r.service}</Td>
+                          <Td>{r.serviceStatus ? "Sudah Dilayani" : "Menunggu Pelayanan"}</Td>
                           <Td fontWeight={'bold'}>{r.schedule}</Td>
                         </Tr>
                       ))}
