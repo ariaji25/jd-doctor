@@ -140,7 +140,8 @@ export const medicalRecordID = {
   refernsiPengobatan: "uQrOU6N2FfL",
 
   // Refensi
-  referensiPelayanan: "FipmUjYUujm"
+  referensiPelayanan: "FipmUjYUujm",
+  referensiPemeriksaanFisik: "iRiPZZajW1E"
 }
 
 export const medicalRecordOption = {

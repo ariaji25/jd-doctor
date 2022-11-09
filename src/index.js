@@ -21,6 +21,9 @@ moment.locale('id');
 window.store = store;
 window.browserHistory = history;
 
+if (process.env.NODE_ENV !== "development")
+    console.log = () => { };
+
 ReactDOM.render(
   <HelmetProvider>
     <Helmet>
