@@ -1,4 +1,4 @@
-import { Box, Flex, TableContainer, Table, Thead, Tr, Tbody, Td, Divider, Center, CircularProgress } from '@chakra-ui/react';
+import { Box, Flex, TableContainer, Table, Thead, Tr, Tbody, Td, Divider, Center, CircularProgress, InputGroup, InputLeftElement, Input } from '@chakra-ui/react';
 import colors from 'values/colors';
 import ButtonMain from 'components/button/ButtonMain';
 import { useHistory } from 'react-router-dom';
@@ -7,11 +7,13 @@ import { useCallback, useEffect, useState } from 'react';
 import { addZeroPad, dateFormat, getCurrentUserFromStorage } from 'utils';
 import apiDoctor from 'services/apiDoctor';
 import stateInputMR, { clearStateInputMR } from 'states/stateInputMedicalRecord';
+import { FiSearch } from 'react-icons/fi';
 
 const ListDataClinic = () => {
   const history = useHistory();
   const [serviceHistory, setServiceHistory] = useState([])
   const [isLoading, setIsLoading] = useState(false)
+  const [searchPatient, setSearchPatient] = useState(null)
 
   const getServiceHistory = () => {
     console.log("DoctorId", getCurrentUserFromStorage().id)
@@ -30,6 +32,14 @@ const ListDataClinic = () => {
         console.log(timenow.getTime())
         return aTime.getTime() >= timenow.getTime();
       }
+      const filterLess = (a, b) => {
+        const aTime = new Date(`${dateFormat(new Date(), "yyyy-MM-dd")}T${a.schedule}:00`)
+        const timenow = new Date()
+        console.log(aTime.getTime() < timenow.getTime())
+        console.log(aTime.getTime())
+        console.log(timenow.getTime())
+        return aTime.getTime() < timenow.getTime();
+      }
       var history = r.events.map((ev) => {
         const data = {
           id: i,
@@ -40,13 +50,20 @@ const ListDataClinic = () => {
           problem: ev.dataValues.find((e) => e.dataElement === 'Yh6ylx8D3tO') ? ev.dataValues.find((e) => e.dataElement === 'Yh6ylx8D3tO').value ?? '-' : '-',
           service: ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6') ? ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6').value ?? '-' : '-',
           serviceStatus: ev.dataValues.find((e) => e.dataElement === 'iRiPZZajW1E') ? ev.dataValues.find((e) => e.dataElement === 'iRiPZZajW1E').value ?? '' : '',
-          serviceID: ev.event
+          serviceID: ev.event,
+          expired: false
         }
         i++;
         return data;
       })
       console.log("Response", history)
+      let _expiredServices = history.filter(filterLess)
       history = history.filter(filter)
+      if (_expiredServices) {
+        _expiredServices.forEach(eS => {
+          history.push({ ...eS, expired: true })
+        })
+      }
       setServiceHistory(history)
       setIsLoading(false)
     }).catch(e => {
@@ -90,6 +107,30 @@ const ListDataClinic = () => {
             <Box fontSize={'18px'} fontWeight={'bold'} color={colors.PRIMARY}>
               Antrian Klinik
             </Box>
+            {serviceHistory && serviceHistory.length > 0
+              ? <Box>
+                <InputGroup>
+                  <InputLeftElement
+                    pointerEvents='none'
+
+                    children={
+                      <Box borderRight={'1px solid #505050'} padding={'0 7px'}>
+                        <FiSearch style={{ color: '#505050' }} />
+                      </Box>
+                    }
+                  />
+                  <Input type='text' onChange={e => {
+                    if (e.target.value && e.target.value.length > 3) {
+                      let _search = serviceHistory.filter(p => `${p.name}`.toLocaleLowerCase().includes(`${e.target.value}`.toLocaleLowerCase()))
+                      console.log("Search", _search)
+                      if (_search) setSearchPatient(c => [..._search])
+                    } else if (!e.target.value) {
+                      setSearchPatient(null)
+                    }
+                  }} placeholder='Search' minWidth={'364px'} borderRadius={'114px'} border={'1px solid #505050 !important'} />
+                </InputGroup>
+              </Box>
+              : <></>}
           </Flex>
 
           <Box maxHeight={'347px'} height={'347px'} paddingTop={'20px'} display={'grid'}>
@@ -108,17 +149,18 @@ const ListDataClinic = () => {
                       </Tr>
                     </Thead>
                     <Tbody>
-                      {serviceHistory.map((r, i) => (
+                      {(searchPatient ?? serviceHistory).map((r, i) => (
                         <Tr onClick={(e) => {
                           clearStateInputMR()
                           stateInputMR.serviceDetail = r
                           history.push(`/dashboard/medical-record/${r.patientId}`)
-                        }} key={i}>
+                        }} key={i}
+                        >
                           <Td>{addZeroPad(r.id, 4)}</Td>
                           <Td fontWeight={'bold'}>{r.name}</Td>
                           <Td>{r.service}</Td>
                           <Td>{r.serviceStatus ? "Sudah Dilayani" : "Menunggu Pelayanan"}</Td>
-                          <Td fontWeight={'bold'}>{r.schedule}</Td>
+                          <Td textColor={r.expired ? "Red" : null} fontWeight={'bold'}>{r.schedule}</Td>
                         </Tr>
                       ))}
                     </Tbody>
