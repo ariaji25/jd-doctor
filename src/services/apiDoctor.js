@@ -36,20 +36,20 @@ const list = async (clinic) => {
 const create = async (attributes) => {
 
   const payload = {
-    trackedEntityType: 'NvPl8j4DzNA',
+    trackedEntityType: 'MvJlDDrR78m',
     orgUnit: getOU(),
     attributes: attributes,
     enrollments: [
       {
-        program: 'wcA7dgdvgt3',
+        program: 'zuQhdRo8Rnn',
         status: 'ACTIVE',
         orgUnit: getOU(),
-        trackedEntityType: "NvPl8j4DzNA",
+        trackedEntityType: "MvJlDDrR78m",
         enrollmentDate: `${dateFormat(Date(), 'yyyy-MM-dd')}`,
         incidentDate: `${dateFormat(Date(), 'yyyy-MM-dd')}`,
         events: [
           {
-            program: 'wcA7dgdvgt3',
+            program: 'zuQhdRo8Rnn',
             programStage: 'JOsX8D90CIM',
             orgUnit: getOU(),
             dueDate: `${dateFormat(Date(), 'yyyy-MM-dd')}`,

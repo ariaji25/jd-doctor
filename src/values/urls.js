@@ -10,13 +10,13 @@ const urls = {
   BOOKING_CREATE: `${config.apiURL}/api/events?strategy=CREATE_AND_UPDATE`,
   BOOKING_UPDATE: `${config.apiURL}/api/events?strategy=CREATE_AND_UPDATE`,
   BOOKING_DETAIL: (id) => `${config.apiURL}/api/events/${id}?strategy=CREATE_AND_UPDATE`,
-  PATIENTS: () => `${config.apiURL}/api/trackedEntityInstances?program=Rn9Uv17VmSO&ou=${getOU()}&fields=[*]`,
+  PATIENTS: () => `${config.apiURL}/api/trackedEntityInstances?program=El6a2lnac0D&ou=${getOU()}&fields=[*]`,
   PATIENT_CREATE: `${config.apiURL}/api/trackedEntityInstances`,
   DOCTOR_CREATE: `${config.apiURL}/api/register`,
-  PATIENT_UPDATE: (id) => `${config.apiURL}/api/trackedEntityInstances/${id}`,
-  PATIENT_DETAIL: (nrm) => `${config.apiURL}/api/trackedEntityInstances?program=Rn9Uv17VmSO&ou=${getOU()}&filter=kOJUHSrbkBS:EQ:${nrm}`,
-  PATIENT_DETAIL_BYNIK: (nik) => `${config.apiURL}/api/trackedEntityInstances?program=Rn9Uv17VmSO&ou=${getOU()}&filter=xGjeKnsJobT:EQ:${nik}`,
-  PATIENT_CHECK_TEI: (tei) => `${config.apiURL}/api/trackedEntityInstances/${tei}.json?fields=orgUnit,trackedEntityInstance,inactive,deleted`,
+  PATIENT_UPDATE: (id, ou) => `${config.apiURL}/api/trackedEntityInstances?trackedEntityInstance=${id}&ou=${ou}`,
+  PATIENT_DETAIL: (nrm) => `${config.apiURL}/api/trackedEntityInstances?program=El6a2lnac0D&ou=${getOU()}&filter=kOJUHSrbkBS:EQ:${nrm}`,
+  PATIENT_DETAIL_BYNIK: (nik) => `${config.apiURL}/api/trackedEntityInstances?program=El6a2lnac0D&ou=${getOU()}&filter=xGjeKnsJobT:EQ:${nik}`,
+  PATIENT_CHECK_TEI: (tei, ou) => `${config.apiURL}/api/trackedEntityInstances?trackedEntityInstance=${tei}&ou=${ou}&fields=orgUnit,trackedEntityInstance,inactive,deleted`,
 
   GET_LAYANAN_LIST: `${config.apiURL}/api/29/options?filter=optionSet.id:eq:efYkwRxNLXq`,
   DOCTOR_LIST: (clinic) => `${config.apiURL}/api/users.json?fields=id,name&filter=userGroups.id:eq:EEYd5tvXZ5d&ou=${clinic}&paging=false`,
@@ -37,14 +37,14 @@ const urls = {
 
   // LOGIN
   LOGIN_URL: `${config.apiURL}/api/login`,
-  DOCTER_DETAIL: (email) => `${config.apiURL}/api/trackedEntityInstances?program=wcA7dgdvgt3&filter=KNhGfY4ApxB:EQ:${email}`,
+  DOCTER_DETAIL: (email) => `${config.apiURL}/api/trackedEntityInstances?program=zuQhdRo8Rnn&filter=KNhGfY4ApxB:EQ:${email}`,
   DOCTER_CLINIC_SERVICE_HISTORY: (id) => `${config.apiURL}/api/events?filter=Mu6xWeUWtWV:eq:${id}&filter=Sd9Z8lFBuQB:like:Kunjungan`,
-  DOCTER_HOMECARE_SERVICE_HISTORY: (id) => `${config.apiURL}/api/events?filter=Mu6xWeUWtWV:eq:${id}&status=COMPLETED&filter=Sd9Z8lFBuQB:like:Pelayanan&programStage=dbtQvmcQvp3`,
+  DOCTER_HOMECARE_SERVICE_HISTORY: (id) => `${config.apiURL}/api/events?filter=Mu6xWeUWtWV:eq:${id}&status=COMPLETED&filter=Sd9Z8lFBuQB:like:Pelayanan&programStage=Aic2hFz57cE`,
   // DOCTER_HOMECARE_SERVICE_HISTORY_NOTIF: (id) => `${config.apiURL}/api/events?filter=Mu6xWeUWtWV:eq:${id}&filter=a5xBShlsRo8:eq:Waiting&filter=xLeRj3JlXLO:gt:1&rootJunction=OR`,
   DIAGNOSIS_SEARCH: `${config.apiURL}/api/diagnosis`,
 
   // HISTORY
-  PATIENT_SERVICE_HISTORY: (id) => `${config.apiURL}/api/events?trackedEntityInstance=${id}&programStage=dbtQvmcQvp3`,
+  PATIENT_SERVICE_HISTORY: (id) => `${config.apiURL}/api/events?trackedEntityInstance=${id}&programStage=Aic2hFz57cE`,
   //OPTIONS
   OPTION_SET_API_URL: `${config.apiURL}/api/options?fields=[id,code,name]`,
 
