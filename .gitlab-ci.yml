@@ -67,9 +67,9 @@ build-prod:
     - cat registry.json | docker login -u _json_key --password-stdin https://asia.gcr.io
   script:
     - export TAGID=prod-$(date "+%Y%m%d")-$CI_PIPELINE_ID
-    - export TAG=asia.gcr.io/castellum-digital-indonesia/jd-docter:$TAGID
+    - export TAG=asia.gcr.io/castellum-digital-indonesia/jd-doctor:$TAGID
     - make TAG=$TAG CI_PIPELINE_ID=$CI_PIPELINE_ID BUILD_TYPE=prod build
     - docker push $TAG
 
     # Let's do a magic update for app
-    - ssh jumpadokter@jumpadokter.com "(cd app && chmod +x run.sh && ./run.sh $TAGID)"
+    - ssh jumpadokter@jumpadokter.com "(cd doctor && sed -i -r 's/JD_DOCTOR\=(.+)/JD_DOCTOR='"$TAGID"'/g' .env && chmod +x run && ./run)"
