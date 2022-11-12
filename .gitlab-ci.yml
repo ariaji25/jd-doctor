@@ -54,7 +54,7 @@ build-prod:
     - tags
   only:
     variables:
-      - $RELEASE_PROD == "true"
+      - $RELEASE_PROD == "true" && $RELEASE == "false"
   before_script:
     - mkdir -p ~/.ssh || true
     - eval `ssh-agent -s`
