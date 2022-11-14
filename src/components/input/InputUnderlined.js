@@ -45,7 +45,7 @@ const InputUnderlined = (
   { typeIcon, icon, onClear, label, maxLength, onChange, validator, readOnly, disabled, ...props },
   ref
 ) => {
-  const [isValid, setIsValid] = useState(false)
+  const [isValid, setIsValid] = useState(true)
   const [value, setValue] = useState('')
   const LeadingIcon = () => {
     if (icon) {
@@ -237,6 +237,7 @@ const InputUnderlined = (
           </Circle>
         )}
       </Flex>
+      {console.log(props.errmessage, isValid, "lllllllllloooooollllll", props.value)}
       {(props.errmessage) && <TextSmall color="red.500">{isValid ? "" : props.errmessage}</TextSmall>}
     </Box>
   );
