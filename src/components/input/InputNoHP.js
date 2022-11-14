@@ -12,7 +12,7 @@ const InputNoHP = (
   { onChangeNoHp, onClear, leading, label, ...props },
   ref
 ) => {
-  const [isValid, setIsValid] = useState(false)
+  const [isValid, setIsValid] = useState(true)
   const Leading = () => {
     if (leading) {
       return <Box mr="4">{leading}</Box>;

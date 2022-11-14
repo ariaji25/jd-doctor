@@ -30,7 +30,10 @@ const RegistrationStatusForm = ({ onClikWaHelp }) => {
   const history = useHistory()
   const { username, password, processing } = useSnapshot(stateLogin);
   const [showPassword, setShowPassword] = useState(false)
-
+  const [login, setLogin] = useState({
+    username: '',
+    password: ''
+  })
   const handleShow = () => {
     setShowPassword(!showPassword);
   };
@@ -82,7 +85,7 @@ const RegistrationStatusForm = ({ onClikWaHelp }) => {
               onChange={onChangeUsername}
               type="text"
               placeholder='mail@email.com'
-              value={username}
+              value={login.username}
             />
           </Box>
           <Box pt={4}>
@@ -95,7 +98,7 @@ const RegistrationStatusForm = ({ onClikWaHelp }) => {
               type='password'
               handleShow={handleShow}
               placeholder='Masukkan no STR'
-              value={password}
+              value={login.password}
               show={showPassword}
             />
           </Box>
