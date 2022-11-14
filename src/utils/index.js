@@ -1,6 +1,9 @@
 import dateFns from "date-fns/format";
 import id from "date-fns/locale/id";
 import jwtDecode from 'jwt-decode';
+import React from "react";
+import { useLocation } from "react-router-dom/cjs/react-router-dom";
+import keyStorage from "values/keyStorage";
 import { CURRENT_USER_KEY, TOKEN_KEY } from "./constant";
 
 const setDataToStorage = (key, data) => {
@@ -33,8 +36,8 @@ const removeFromLocalStorage = (key) => {
 };
 
 const isAuthenticated = () => {
-  const currentUser = getCurrentUserFromStorage();
-  return currentUser || (currentUser && currentUser.isAuthenticated);
+  const currentUser = localStorage.getItem(keyStorage.EMAIL);
+  return currentUser && currentUser.length > 0;
 };
 
 const setTokenToStorage = (token) => {
@@ -58,6 +61,8 @@ const getCurrentUserFromStorage = () => {
 
   return user;
 };
+
+const getOU = () => localStorage.getItem("ou") ?? '';
 
 const removeCurrentUserFromStorage = () => {
   removeFromLocalStorage([CURRENT_USER_KEY, TOKEN_KEY]);
@@ -150,8 +155,43 @@ const readArrayBuffer = (file, result) => {
   };
 }
 
+const addZeroPad = (num, totalLength) => {
+  return `${num}`.padStart(totalLength, '0')
+}
+
+const useQueryParams = (key) => {
+  const { search } = useLocation();
+
+  const queryparams = React.useMemo(() => new URLSearchParams(search), [search]);
+  return queryparams[key]
+}
+
+const s4 = () => {
+  return Math.floor((1 + Math.random()) * 0x10000)
+    .toString(16)
+    .substring(1);
+}
+
+const getAge = (date) => {
+  const dob = new Date(date)
+  const current = new Date()
+  return (dob.getFullYear() - current.getFullYear()).toString().replace("-", "")
+}
+
+
+function getInitial(name) {
+  let names = `${name}`.split(" ");
+  console.log(names);
+  if (names.length > 1) {
+    return `${names[0].charAt(0)}${names[1].charAt(0)}`;
+  } else {
+    return `${names[0].charAt(0)}${names[0].charAt(names[0].length - 1)}`;
+  }
+}
+
 
 export {
+  addZeroPad,
   dateFormat,
   errHandler,
   decodeToken,
@@ -168,6 +208,11 @@ export {
   getCurrentUserFromStorage,
   removeCurrentUserFromStorage,
   getBase64,
-  readArrayBuffer
+  readArrayBuffer,
+  useQueryParams,
+  s4,
+  getOU,
+  getAge,
+  getInitial
 };
 

@@ -1,6 +1,6 @@
 import {
   Box,
-  Button, Flex, ListItem,
+  Button, CircularProgress, Flex, ListItem,
   OrderedList,
   Text,
   useDisclosure
@@ -11,23 +11,39 @@ import Carousel from 'components/Carousel';
 import Content from 'components/Content';
 import HeaderClean from 'components/HeaderClean';
 import InputNoHP from 'components/input/InputNoHP';
+import InputUnderlined from 'components/input/InputUnderlined';
 import PageContainer from 'components/PageContainer';
 import SideModal from 'components/SideModal';
-import React from 'react';
-import { Link } from 'react-router-dom';
+import ToastNotif from 'components/Toast';
+import React, { useState } from 'react';
+import { Link, useHistory } from 'react-router-dom';
+import apiAuth from 'services/apiAuth';
+import apiDoctor from 'services/apiDoctor';
 import apiOtp from 'services/apiOtp';
 import stateLogin from 'states/stateLogin';
+import { setCurrentUserToStorage, setTokenToStorage } from 'utils';
 import { useSnapshot } from 'valtio';
 import colors from 'values/colors';
 
 const LoginForm = ({ onClikWaHelp }) => {
-  const { nohp, processing } = useSnapshot(stateLogin);
-  const onClear = () => {
-    stateLogin.nohp = '';
+  const history = useHistory()
+  const { username, password, processing } = useSnapshot(stateLogin);
+  const [showPassword, setShowPassword] = useState(false)
+  const [login, setLogin] = useState({
+    username: '',
+    password: ''
+  })
+
+  const handleShow = () => {
+    setShowPassword(!showPassword);
   };
 
-  const onChangeNoHp = (nohp) => {
-    stateLogin.nohp = nohp;
+  const onChangeUsername = (username) => {
+    stateLogin.username = username;
+  };
+
+  const onChangePassword = (password) => {
+    stateLogin.password = password;
   };
 
   const onSubmit = async (e) => {
@@ -35,10 +51,21 @@ const LoginForm = ({ onClikWaHelp }) => {
 
     try {
       stateLogin.processing = true;
-      await apiOtp.request(stateLogin.nohp);
-      stateLogin.showInputOtp = true;
+      const loginResponse = await apiAuth.login(username.target.value, password.target.value)
+      if (loginResponse.code === 200) {
+        setTokenToStorage(loginResponse.data.token)
+        localStorage.setItem("email", username.target.value)
+        localStorage.setItem("ou", loginResponse.data.ou)
+        const currentUser = await apiDoctor.getDetail();
+        setCurrentUserToStorage(currentUser);
+        window.browserHistory.push("/dashboard")
+      } else {
+        ToastNotif({
+          message: "Username atau password tidak dikenal"
+        })
+      }
     } catch (error) {
-      console.error('❌ onSubmit:', e);
+      console.error('❌ onSubmit:', error);
     } finally {
       stateLogin.processing = false;
     }
@@ -48,53 +75,61 @@ const LoginForm = ({ onClikWaHelp }) => {
     <>
       <Box w="full" color={colors.PRIMARY}>
         <form onSubmit={onSubmit}>
-          <Text fontSize="3xl" fontWeight="bold">
-            Masuk
+          <Text pb={8} fontSize="3xl" fontWeight="bold" color='#505050'>
+            Hai dok, Silahkan login!
           </Text>
-          <Text color={colors.HITAM_PUDAR} mb="8">
-            Masuk dengan nomor Whatsapp
-          </Text>
-          <Flex>
-            <Text fontSize="lg" fontWeight="thin">
-              Nomor Whatsapp
-            </Text>
-            <Text color={colors.DANGER}>*</Text>
-          </Flex>
-          <InputNoHP
-            isRequired
-            isDisabled={processing}
-            w="full"
-            value={nohp}
-            onChangeNoHp={onChangeNoHp}
-            placeholder=""
-            name="nohp"
-            onClear={onClear}
-          />
-          <Box h="4" />
-          <Text
-            mb="8"
-            fontSize={{ base: 'xs', md: 'unset' }}
-          >
-            <Button
-              variant={"unstyled"}
-              onClick={() => onClikWaHelp()}
-              _focus={{ border: "none" }}
-              _active={{ border: "none" }}
-              style={{ textDecoration: 'underline' }}>
-              Terjadi kendala dengan nomor Whatsapp-mu?
-            </Button>
-          </Text>
+          <Box>
+            <InputUnderlined
+              isRequired
+              icon="/icon/user.svg"
+              label="Username/Email"
+              onChange={onChangeUsername}
+              type="text"
+              placeholder='mail@email.com'
+              value={login.username}
+            />
+          </Box>
+          <Box pt={4}>
+            <InputUnderlined
+              isRequired
+              icon="/icon/credit_card.svg"
+              label='Password'
+              onChange={onChangePassword}
+              type='password'
+              handleShow={handleShow}
+              placeholder='Masukkan password'
+              value={login.password}
+              show={showPassword}
+            />
+          </Box>
+          <Box h="8" />
           <ButtonMain type="submit" disabled={processing} w="full">
-            Masuk
+            {stateLogin.processing ? <CircularProgress isIndeterminate color={colors.PRIMARY} size={'25px'} /> : 'Login'}
           </ButtonMain>
           <Text
-            mt="8"
+            my="6"
             fontSize={{ base: 'xs', md: 'unset' }}
-            color={colors.HITAM_PUDAR}
+            cursor="pointer"
+            color='#505050'
+            textAlign='center'
+            onClick={() => history.push('/forgot-password')}
           >
-            Dengan masuk, Anda telah menerima
-            <Link to={"/term-and-condition"} style={{ fontWeight: 'bold', color: colors.PRIMARY }}> Ketentuan Layanan</Link> dan
-            <Link to={"/privacy-policy"} style={{ fontWeight: 'bold', color: colors.PRIMARY }}> Kebijakan privasi</Link>
+            Lupa Password
+          </Text>
+          <ButtonMain type="button" disabled={processing} w="full" bg="white" color={colors.PRIMARY}
+            onClick={() => history.push('/sign-up')}
+          >
+            Registrasi sebagai dokter
+          </ButtonMain>
+          <Text
+            my="6"
+            fontSize={{ base: 'xs', md: 'unset' }}
+            cursor="pointer"
+            color='#505050'
+            textAlign='center'
+            onClick={() => history.push('/registration-status')}
+          >
+            Cek status pendaftaran
           </Text>
         </form>
       </Box>
@@ -117,12 +152,12 @@ const LoginPage = () => {
               maxW={{ base: 'md', lg: '5xl' }}
               mx="auto"
               display={{ lg: 'flex' }}
-              alignItems="center"
+              alignItems="baseline"
               gap={{ lg: '200px' }}
             >
               <LoginForm onClikWaHelp={onToggle} />
 
-              <Carousel />
+              <Carousel onPage={'login'} />
             </Box>
           )}
           {showInputOtp && (

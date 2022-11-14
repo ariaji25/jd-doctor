@@ -97,7 +97,12 @@ const create = async (data = {
 
 const getByID = async (id) => {
   const req = await request.get(
-    `${urls.BOOKING_UPDATE}/${id}.json`
+    urls.BOOKING_DETAIL(id),
+    {
+      params: {
+        fields: "[*]"
+      }
+    }
   )
   return req.data
 }
@@ -107,6 +112,14 @@ const getLayananList = async () => {
   return req.data;
 };
 
-const apiBooking = { create, getLayananList , getByID};
+const updateBooking = async (data) => {
+  const req = await request.post(
+    urls.BOOKING_UPDATE,
+    data,
+  )
+  return req.status === 200
+}
+
+const apiBooking = { create, getLayananList, getByID };
 
 export default apiBooking;

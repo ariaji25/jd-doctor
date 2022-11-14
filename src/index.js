@@ -13,12 +13,16 @@ import App from './App';
 import './index.css';
 import store, { history } from "./redux/store";
 import reportWebVitals from "./reportWebVitals";
+import 'react-calendar/dist/Calendar.css';
 import './styles/globals.css';
 
 moment.locale('id');
 
 window.store = store;
 window.browserHistory = history;
+
+if (process.env.NODE_ENV !== "development")
+    console.log = () => { };
 
 ReactDOM.render(
   <HelmetProvider>

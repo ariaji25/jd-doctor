@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { getCurrentUserFromStorage, getOU } from 'utils';
 import request from 'utils/request';
 import DATE_DEFAULT_FORMAT from 'values/dateFormat';
 import keyStorage from 'values/keyStorage';
@@ -31,7 +32,7 @@ const create = async ({
 
   const payload = {
     trackedEntityType: 'NvPl8j4DzNA',
-    orgUnit: 'FexDOKZlHSx',
+    orgUnit: getOU(),
     attributes: [
       {
         attribute: 'kOJUHSrbkBS',
@@ -82,14 +83,14 @@ const create = async ({
       {
         program: 'Rn9Uv17VmSO',
         status: 'ACTIVE',
-        orgUnit: 'FexDOKZlHSx',
+        orgUnit: getOU(),
         enrollmentDate: today,
         incidentDate: today,
         events: [
           {
             program: 'Rn9Uv17VmSO',
             programStage: 'dbtQvmcQvp3',
-            orgUnit: 'FexDOKZlHSx',
+            orgUnit: getOU(),
             dueDate: today,
             eventDate: today,
             status: 'ACTIVE',
@@ -116,7 +117,7 @@ const update = async ({
   ...biodata
 }) => {
   const payload = {
-    orgUnit: 'FexDOKZlHSx',
+    orgUnit: getOU(),
     attributes: [
       {
         attribute: 'kOJUHSrbkBS',
@@ -247,10 +248,71 @@ const checkTeiAvailable = async (tei) => {
   }
 };
 
+const getPatienDetailByID = async (id) => {
+  const response = await request.get(urls.PATIENT_UPDATE(id),
+    {
+      params: {
+        fields: '[*]'
+      }
+    })
+  return response.data;
+}
+
+const serviceHistory = async (id, page) => {
+  const response = await request.get(urls.PATIENT_SERVICE_HISTORY(id), {
+    params: {
+      order: "created:DESC",
+      totalPages: "true",
+      page: page ?? 1,
+      pageSize: 10,
+      fields: '[*]',
+      // filter: "PynURTrdTEs:gt:1"
+      // page:
+    }
+  })
+  return response.data;
+}
+
+const getAllPatients = async (page, pageSize) => {
+  const response = await request.get(
+    urls.PATIENTS(),
+    {
+      params: {
+        totalPages: true,
+        order: "created:desc",
+        pageSize: pageSize || 5,
+        page: page
+      }
+    }
+  )
+  return response.data;
+}
+
+
+const searchPatientBY = async (search, searchKey) => {
+  const response = await request.get(
+    urls.PATIENTS(),
+    {
+      params: {
+        totalPages: true,
+        order: "created:desc",
+        pageSize: 10,
+        page: 0,
+        filter: `${searchKey}:like:${search}`
+      }
+    }
+  )
+  return response.data;
+}
+
 export const apiPatient = {
   create,
   update,
   getDetail,
   checkTeiAvailable,
-  getPatientByNIK
+  getPatientByNIK,
+  getPatienDetailByID,
+  serviceHistory,
+  getAllPatients,
+  searchPatientBY
 };

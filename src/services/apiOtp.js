@@ -35,7 +35,7 @@ const requestNRM = async (phone) => {
 };
 
 const loggedOuts = () => {
-  window.location = "/landing";
+  window.location = "/";
   window.store.dispatch(loggedOut());
 
 };
