@@ -50,7 +50,7 @@ build-prod:
   except:
     - tags
   only:
-    - main
+    - update/prod-environtment
   before_script:
     - mkdir -p ~/.ssh || true
     - eval `ssh-agent -s`
