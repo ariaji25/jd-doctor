@@ -114,7 +114,7 @@ const ListPatientClinicPage = () => {
                         </Box>
                       }
                     />
-                    <Input type='text' placeholder='Search' minWidth={'364px'} borderRadius={'114px'} border={'2px solid #505050 !important'} />
+                    <Input type='text' placeholder='Cari Nama' minWidth={'364px'} borderRadius={'114px'} border={'2px solid #505050 !important'} />
                   </InputGroup>
                 </Flex>
               </Flex>
@@ -130,7 +130,7 @@ const ListPatientClinicPage = () => {
                         </Tr>
                       </Thead>
                       <Tbody>
-                        {serviceHistory.map((r, i) => ( 
+                        {serviceHistory.map((r, i) => (
                           <Tr onClick={(e) => {
                             clearStateInputMR()
                             stateInputMR.serviceDetail = r
