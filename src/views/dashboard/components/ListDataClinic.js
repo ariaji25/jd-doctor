@@ -127,7 +127,7 @@ const ListDataClinic = () => {
                     } else if (!e.target.value) {
                       setSearchPatient(null)
                     }
-                  }} placeholder='Search' minWidth={'364px'} borderRadius={'114px'} border={'1px solid #505050 !important'} />
+                  }} placeholder='Cari Nama' minWidth={'364px'} borderRadius={'114px'} border={'1px solid #505050 !important'} />
                 </InputGroup>
               </Box>
               : <></>}
