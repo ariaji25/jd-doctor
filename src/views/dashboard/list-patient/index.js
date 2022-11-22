@@ -209,7 +209,7 @@ const ListPatientPage = () => {
                       } else if (!e.target.value) {
                         getPatients(1)
                       }
-                    }} placeholder='Search' minWidth={'364px'} borderRadius={'114px'} border={'2px solid #505050 !important'} />
+                    }} placeholder='Cari Nama/NRM' minWidth={'364px'} borderRadius={'114px'} border={'2px solid #505050 !important'} />
                   </InputGroup>
                 </Flex>
               </Flex>

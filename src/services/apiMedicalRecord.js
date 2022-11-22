@@ -22,7 +22,7 @@ const createEnrollmentForMR = async (mrId, patientId) => {
     orgUnit: getOU(),
     program: mrId,
     trackedEntityInstance: patientId,
-    trackedEntityType: "NvPl8j4DzNA"
+    trackedEntityType: "MvJlDDrR78m"
   }
   const response = await request.post(urls.ENROLLMENTS, enrollment, {
     params: {
@@ -35,14 +35,14 @@ const createEnrollmentForMR = async (mrId, patientId) => {
 
 const getPatientMedicalRecordEnrollment = async (patientId) => {
   const response = await request.get(
-    urls.PATIENT_UPDATE(patientId),
+    urls.PATIENT_UPDATE(patientId, getOU()),
     {
       params: {
         fields: "enrollments"
       }
     }
   )
-  return response.data
+  return response.data.trackedEntityInstances[0] ?? {};
 }
 
 const createNewMedicalRecord = async (programId, programStage, enrollmentId, dataValues, serviceID, patientId, willUpdateEvent) => {
