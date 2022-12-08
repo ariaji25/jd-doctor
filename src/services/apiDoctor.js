@@ -34,24 +34,30 @@ const list = async (clinic) => {
 };
 
 const create = async (attributes) => {
+  if (attributes) {
+    attributes.push({
+      attribute: "mJolgOL7hjA",
+      value: "0"
+    })
+  }
 
   const payload = {
     trackedEntityType: 'MvJlDDrR78m',
-    orgUnit: getOU(),
+    orgUnit: "jp49nCFvI75",
     attributes: attributes,
     enrollments: [
       {
         program: 'zuQhdRo8Rnn',
         status: 'ACTIVE',
-        orgUnit: getOU(),
+        orgUnit: "jp49nCFvI75",
         trackedEntityType: "MvJlDDrR78m",
         enrollmentDate: `${dateFormat(Date(), 'yyyy-MM-dd')}`,
         incidentDate: `${dateFormat(Date(), 'yyyy-MM-dd')}`,
         events: [
           {
             program: 'zuQhdRo8Rnn',
-            programStage: 'JOsX8D90CIM',
-            orgUnit: getOU(),
+            programStage: 'OOpHOLnhQp6',
+            orgUnit: "jp49nCFvI75",
             dueDate: `${dateFormat(Date(), 'yyyy-MM-dd')}`,
             eventDate: `${dateFormat(Date(), 'yyyy-MM-dd')}`,
             status: 'ACTIVE',
