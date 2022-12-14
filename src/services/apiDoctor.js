@@ -73,7 +73,7 @@ const create = async (attributes) => {
     ],
   };
 
-  await request.post(urls.DOCTOR_CREATE, payload);
+  return await request.post(urls.DOCTOR_CREATE, payload);
 };
 
 
