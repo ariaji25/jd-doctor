@@ -8,6 +8,7 @@ import { addZeroPad, dateFormat, getCurrentUserFromStorage } from 'utils';
 import apiDoctor from 'services/apiDoctor';
 import stateInputMR, { clearStateInputMR } from 'states/stateInputMedicalRecord';
 import { FiSearch } from 'react-icons/fi';
+import { medicalRecordID } from 'utils/constant';
 
 const ListDataClinic = () => {
   const history = useHistory();
@@ -49,7 +50,7 @@ const ListDataClinic = () => {
           schedule: ev.dataValues.find((e) => e.dataElement === 'X7GUfsOErZh') ? ev.dataValues.find((e) => e.dataElement === 'X7GUfsOErZh').value ?? '-' : '-',
           problem: ev.dataValues.find((e) => e.dataElement === 'Yh6ylx8D3tO') ? ev.dataValues.find((e) => e.dataElement === 'Yh6ylx8D3tO').value ?? '-' : '-',
           service: ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6') ? ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6').value ?? '-' : '-',
-          serviceStatus: ev.dataValues.find((e) => e.dataElement === 'iRiPZZajW1E') ? ev.dataValues.find((e) => e.dataElement === 'iRiPZZajW1E').value ?? '' : '',
+          serviceStatus: ev.dataValues.find((e) => e.dataElement === medicalRecordID.referensiDiagnosis) ? ev.dataValues.find((e) => e.dataElement === medicalRecordID.referensiDiagnosis).value ?? '' : '',
           serviceID: ev.event,
           expired: false
         }
