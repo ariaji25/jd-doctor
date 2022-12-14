@@ -48,7 +48,6 @@ const PlacesAutocomplete = ({ setSelected }) => {
   } = usePlacesAutocomplete();
 
   const handleInput = (e) => {
-    console.log(e.target.value, "cariii")
     setValue(e.target.value);
   };
 
@@ -58,9 +57,7 @@ const PlacesAutocomplete = ({ setSelected }) => {
     const results = await getGeocode(val)
     const { lat, lng } = await getLatLng(results[0])
     setSelected({ lat, lng })
-    console.log(val, "valllll", lat, lng, results)
   };
-  console.log(data, "dataaaa")
 
   return (
     <AutoComplete openOnFocus>
@@ -120,8 +117,6 @@ function GoogleMapComponent({ children }) {
     })
   }
 
-  console.log(selected, 'selected')
-
   const onDragEnd = (e) => {
     setSelected({
       lat: e.latLng.lat(),
@@ -142,7 +137,7 @@ function GoogleMapComponent({ children }) {
           </Text>
         </Flex>
       </Box>
-      <Box >
+      <Box textDecor={'underline'} marginBottom={5}>
         <PlacesAutocomplete setSelected={setSelected} />
       </Box>
       <GoogleMap
@@ -187,7 +182,6 @@ export const RegisterPage = () => {
       setStep(1)
     }
   }, [params])
-  console.log(step, "step", params, history.location)
 
   const leftInputModel = [
     {
@@ -266,7 +260,7 @@ export const RegisterPage = () => {
       label: 'Nama Ibu Kandung',
       id: 'mother_name',
       uid: null,
-      isRequired: true,
+      isRequired: false,
       errMessage: 'Nama Ibu Kandung tidak boleh kosong',
       type: 'text',
       icon: '/icon/user.svg'
@@ -324,6 +318,7 @@ export const RegisterPage = () => {
 
   const onSave = async () => {
     // const onSave = async () => {
+
     const attributes = []
     for (const d in registerData) {
       if (registerData[d].uid) attributes.push({
@@ -332,7 +327,7 @@ export const RegisterPage = () => {
       })
     }
 
-    if (attributes.length < 12) {
+    if (attributes.length < 11) {
       ToastNotif({
         message: 'Oops.. Data diri belum lengkap, mohon dilengkapi !',
         type: 'error'
@@ -341,10 +336,11 @@ export const RegisterPage = () => {
       const response = await apiDoctor.create(attributes)
       if (response.status === 200) {
         ToastNotif({
-          message: 'Yeay, Berhasil registras',
+          message: 'Yeay, Berhasil registrasi',
           type: 'success'
         })
-        history.push(`/sign-up/mail@mail.com`)
+        const email = attributes.find(r => r.attribute === 'KNhGfY4ApxB').value
+        history.push(`/sign-up/${email}`)
       } else {
         ToastNotif({
           message: 'Oopss.. Terjadi kesalahan',
@@ -441,9 +437,7 @@ export const RegisterPage = () => {
 
   const [isLargerThan1000] = useMediaQuery('(min-width: 1000px)')
   const getOrgUnit = async () => {
-
     const orgUnit = await apiClinicArea.list()
-    console.log(orgUnit);
   }
 
   const init = useCallback(() => {
@@ -519,7 +513,7 @@ export const RegisterPage = () => {
                         <ul style={{ paddingLeft: 20, fontWeight: 'bold' }}>
                           <li>Estimasi verifikasi 3-4 hari kerja</li>
                           <li>JumpaDokter akan mengirimkan notifikasi hasil verifikasi data melalui alamat email</li>
-                          <li>Silahkan cek status verifikasi secara berkala melalui web dokter.jumpadokter.com/statusdokter</li>
+                          <li>Klik <a href='https://dokter.jumpadokter.com/registration-status'>disini</a> untuk cek status verifikasi secara berkala</li>
                         </ul>
                       </Text>
                     </Stack>
