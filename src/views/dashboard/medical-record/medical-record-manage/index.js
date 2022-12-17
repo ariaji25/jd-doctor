@@ -64,6 +64,13 @@ const MedicalRecordManagePage = () => {
   const [_savedTreatment, setTreatment] = useState([])
   const [_savedAction, setAction] = useState([])
 
+  const [savedMedicalRecordStatus, setSavedMedicalRecordStatus] = useState({
+    savedgeneralAssesment: false,
+    savedDiagnoses: false,
+    savedActions: false,
+    savedTreatment: false,
+  })
+
   const initGeneralAssesmentFromSaved = (savedAssesment) => {
     generalAssesment.forEach(ga => {
       ga.forEach(element => {
@@ -220,6 +227,13 @@ const MedicalRecordManagePage = () => {
       setAction(_action.events[0])
       initActionFromSaved(_action.events[0])
     }
+    setSavedMedicalRecordStatus({
+      ...savedMedicalRecordStatus,
+      savedgeneralAssesment: (_generalAssesment.events && _generalAssesment.events.length > 0),
+      savedDiagnoses: (_diagnosis.events && _diagnosis.events.length > 0),
+      savedActions: (_action.events && _action.events.length > 0),
+      savedTreatment: (_treatments.events && _treatments.events.length > 0)
+    })
     setIsLoading(false)
     return true
   }
@@ -331,6 +345,7 @@ const MedicalRecordManagePage = () => {
               && r.response.importSummaries[0]
               && r.response.importSummaries[0].reference) apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${r.response.importSummaries[0].reference}`, medicalRecordID.referensiPemeriksaanFisik)
                 .then(e => {
+                  setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedgeneralAssesment: true })
                   onOpen()
                 })
           })
@@ -347,6 +362,7 @@ const MedicalRecordManagePage = () => {
             && r.response.importSummaries[0]
             && r.response.importSummaries[0].reference) apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${r.response.importSummaries[0].reference}`, medicalRecordID.referensiPemeriksaanFisik)
               .then(e => {
+                setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedgeneralAssesment: true })
                 onOpen()
               })
         })
@@ -383,6 +399,7 @@ const MedicalRecordManagePage = () => {
             if (_event.dataValues.length > 0) apiMedicalrecord.updateMedicalRecord(_event).then(r => {
               apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.diagnosis[0].diagnosisCode}-${stateInputMR.diagnosis[0].diagnosisNote ?? ''}`, medicalRecordID.referensiDiagnosis)
                 .then(e => {
+                  setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedDiagnoses: true })
                   onOpen()
                 })
             })
@@ -397,6 +414,7 @@ const MedicalRecordManagePage = () => {
           ).then(r => {
             apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.diagnosis[0].diagnosisCode}-${stateInputMR.diagnosis[0].diagnosisNote ?? ''}`, medicalRecordID.referensiDiagnosis)
               .then(e => {
+                setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedDiagnoses: true })
                 onOpen()
               })
           })
@@ -406,6 +424,7 @@ const MedicalRecordManagePage = () => {
           apiMedicalrecord.deleteMedicalRecord(_event.event).then(r => {
             apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, ``, medicalRecordID.referensiDiagnosis)
               .then(e => {
+                setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedDiagnoses: true })
                 onOpen()
               })
           })
@@ -441,6 +460,7 @@ const MedicalRecordManagePage = () => {
             if (_event.dataValues.length > 0) apiMedicalrecord.updateMedicalRecord(_event).then(r => {
               apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.action[0].actionCode}-${stateInputMR.action[0].actionNote ?? ''}`, medicalRecordID.refernsiTindakan)
                 .then(e => {
+                  setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedActions: true })
                   onOpen()
                 })
             })
@@ -455,6 +475,7 @@ const MedicalRecordManagePage = () => {
           ).then(r => {
             apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.action[0].actionCode}-${stateInputMR.action[0].actionNote ?? ''}`, medicalRecordID.refernsiTindakan)
               .then(e => {
+                setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedActions: true })
                 onOpen()
               })
           })
@@ -464,6 +485,7 @@ const MedicalRecordManagePage = () => {
           apiMedicalrecord.deleteMedicalRecord(_event.event).then(r => {
             apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, ``, medicalRecordID.refernsiTindakan)
               .then(e => {
+                setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedActions: true })
                 onOpen()
               })
           })
@@ -502,6 +524,7 @@ const MedicalRecordManagePage = () => {
             if (_event.dataValues.length > 0) apiMedicalrecord.updateMedicalRecord(_event).then(r => {
               apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.treatment[0].treatment}-${stateInputMR.treatment[0].treatmentDose ?? ''}`, medicalRecordID.refernsiPengobatan)
                 .then(e => {
+                  setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedTreatment: true })
                   onOpen()
                 })
             })
@@ -516,6 +539,7 @@ const MedicalRecordManagePage = () => {
           ).then(r => {
             apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.treatment[0].treatment}-${stateInputMR.treatment[0].treatmentDose ?? ''}`, medicalRecordID.refernsiPengobatan)
               .then(e => {
+                setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedTreatment: true })
                 onOpen()
               })
           })
@@ -525,6 +549,7 @@ const MedicalRecordManagePage = () => {
           apiMedicalrecord.deleteMedicalRecord(_event.event).then(r => {
             apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, ``, medicalRecordID.refernsiPengobatan)
               .then(e => {
+                setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedTreatment: true })
                 onOpen()
               })
           })
@@ -546,12 +571,7 @@ const MedicalRecordManagePage = () => {
   return (
     <>
       <Flex minH={'100vh'}>
-        <MedicalNavigation savedStates={{
-          savedgeneralAssesment: _savedgeneralAssesment,
-          savedDiagnoses: _savedDiagnosis,
-          savedActions: _savedAction,
-          savedTreatment: _savedTreatment,
-        }} />
+        <MedicalNavigation savedStates={savedMedicalRecordStatus} />
         <Box minW={0} flex={'auto'}>
           <MedicalHeader />
           <Flex flexDir={'column'} flex={4} justifyContent={'center'}>
