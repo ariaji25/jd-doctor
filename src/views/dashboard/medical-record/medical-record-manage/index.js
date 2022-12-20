@@ -9,7 +9,7 @@ import MenuAction from "./menu-action";
 import MenuTreatment from "./menu-treatment";
 import MedicalNavigation from "./components/MedicalNavigation";
 import MedicalHeader from "./components/MedicalHeader";
-import { FiClipboard } from "react-icons/fi";
+import { FiCheckCircle, FiClipboard } from "react-icons/fi";
 import { useParams } from "react-router-dom/cjs/react-router-dom";
 import { getAge, useQueryParams } from "utils";
 import apiBooking from "services/apiBooking";
@@ -27,7 +27,21 @@ import { inputList as uroGenitalSystem } from "./menu-inspection/components/geni
 import { inputList as intugmenSystem } from "./menu-inspection/components/integumentary-musculoskeletal-system";
 import { inputList as chestAndAxila } from "./menu-inspection/components/chest-and-axilla";
 
-const NotificationStatus = ({ isOpen, onClose }) => {
+const NotificationStatus = ({ isOpen, onClose, state }) => {
+  const message = () => {
+    switch (state) {
+      case 1:
+        return ["Pemeriksaan Fisik", "Diagnosis"]
+      case 2:
+        return ["Diagnosis", "Tindakan"]
+      case 3:
+        return ["Tindakan", "Pengobatan"]
+      case 4:
+        return ["Pengobatan", ""]
+      default:
+        return ["", ""]
+    }
+  }
   return (
     <Modal isOpen={isOpen} onClose={onClose} size='xl' isCentered>
       <ModalOverlay />
@@ -35,10 +49,15 @@ const NotificationStatus = ({ isOpen, onClose }) => {
         <ModalBody>
           <Box color={colors.PRIMARY} textAlign={'center'} py={20}>
             <Flex justifyContent={'center'}>
-              <FiClipboard fontSize={60} />
+              <FiCheckCircle color="green" fontSize={60} />
             </Flex>
-            <Text fontSize={40} fontWeight={'bold'}>BERHASIL</Text>
-            <Text color={'#8E8E8E'}>Data rekam medis berhasil disimpan</Text>
+            <Text fontSize={40} fontWeight={'bold'}>Tersimpan</Text>
+            <Text color={'#8E8E8E'}>{message()[0]} berhasil disimpan</Text>
+            <Text color={'#8E8E8E'}>{state === 4 ? "silahkan kembali ke Beranda" : "silahkan lanjut ke " + message()[1]}</Text>
+            <Box h={"20px"} />
+            <ButtonMain w={"100px"} onClick={e => onClose()}>
+              <Text>OK</Text>
+            </ButtonMain>
           </Box>
         </ModalBody>
       </ModalContent>
@@ -627,7 +646,13 @@ const MedicalRecordManagePage = () => {
           }
         </Box>
       </Flex>
-      <NotificationStatus isOpen={isOpen} onClose={onClose} />
+      <NotificationStatus isOpen={isOpen} onClose={() => {
+        onClose()
+        if (state.selectedTab < 4) stateMedicalRecord.selectedTab = state.selectedTab + 1
+        if (state.selectedTab === 4) {
+          window.browserHistory.push("/")
+        }
+      }} state={state.selectedTab} />
     </>
   )
 }

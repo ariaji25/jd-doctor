@@ -25,21 +25,11 @@ const ListDataClinic = () => {
     ).then((r) => {
       console.log("ResponseHistory", r);
       var i = 1;
-      const filter = (a, b) => {
-        const aTime = new Date(`${dateFormat(new Date(), "yyyy-MM-dd")}T${a.schedule}:00`)
-        const timenow = new Date()
-        console.log(aTime.getTime() < timenow.getTime())
-        console.log(aTime.getTime())
-        console.log(timenow.getTime())
-        return aTime.getTime() >= timenow.getTime();
+      const filterFinishedService = (a) => {
+        return a.serviceStatus.length > 0;
       }
-      const filterLess = (a, b) => {
-        const aTime = new Date(`${dateFormat(new Date(), "yyyy-MM-dd")}T${a.schedule}:00`)
-        const timenow = new Date()
-        console.log(aTime.getTime() < timenow.getTime())
-        console.log(aTime.getTime())
-        console.log(timenow.getTime())
-        return aTime.getTime() < timenow.getTime();
+      const filterActiveService = (a) => {
+        return a.serviceStatus.length <= 0;
       }
       var history = r.events.map((ev) => {
         const data = {
@@ -58,10 +48,10 @@ const ListDataClinic = () => {
         return data;
       })
       console.log("Response", history)
-      let _expiredServices = history.filter(filterLess)
-      history = history.filter(filter)
-      if (_expiredServices) {
-        _expiredServices.forEach(eS => {
+      let finishedService = history.filter(filterFinishedService)
+      history = history.filter(filterActiveService)
+      if (finishedService) {
+        finishedService.forEach(eS => {
           history.push({ ...eS, expired: true })
         })
       }
