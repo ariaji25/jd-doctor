@@ -196,6 +196,17 @@ const searchICD9CODE = async (search) => {
   return response.data
 }
 
+const checkRegistrationStatus = async (email,strNumber) => {
+  const response = await request.post(
+    urls.CHECK_REGISTRATION_STATUS,
+    {
+      email: email,
+      str: strNumber
+    },
+  )
+  return response.data
+}
+
 const apiDoctor = {
   list,
   create,
@@ -206,7 +217,8 @@ const apiDoctor = {
   getServiceNotifications,
   searchDiagnosis,
   getAllClinicServiceHistory,
-  searchICD9CODE
+  searchICD9CODE,
+  checkRegistrationStatus
 };
 
 export default apiDoctor;

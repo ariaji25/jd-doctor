@@ -28,45 +28,40 @@ import colors from 'values/colors';
 
 const RegistrationStatusForm = ({ onClikWaHelp }) => {
   const history = useHistory()
-  const { username, password, processing } = useSnapshot(stateLogin);
-  const [showPassword, setShowPassword] = useState(false)
-  const [login, setLogin] = useState({
-    username: '',
-    password: ''
-  })
-  const handleShow = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const onChangeUsername = (username) => {
-    stateLogin.username = username;
-  };
-
-  const onChangePassword = (password) => {
-    stateLogin.password = password;
-  };
+  const [email, setEmail] = useState('')
+  const [str, setStr] = useState('')
+  const [processing, setOnProcessing] = useState(false)
 
   const onSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      stateLogin.processing = true;
-      const loginResponse = await apiAuth.login(username.target.value, password.target.value)
-      if (loginResponse.code === 200) {
-        setTokenToStorage(loginResponse.data.token)
-        localStorage.setItem("email", username.target.value)
-        const currentUser = await apiDoctor.getDetail();
-        setCurrentUserToStorage(currentUser);
-        window.browserHistory.push("/sign-up")
-      } else {
-        ToastNotif({
-          message: "Username atau password tidak dikenal"
-        })
+      setOnProcessing(true)
+      const statusRes = await apiDoctor.checkRegistrationStatus(email, str)
+      if (statusRes) {
+        console.log("Status", statusRes)
+        switch (statusRes.status) {
+          case "0":
+            window.browserHistory.push("/sign-up/1")
+            break
+          case "1":
+            window.browserHistory.push("/sign-up/3")
+            break
+          case "2":
+            window.browserHistory.push("/sign-up/2")
+            break
+          default:
+            window.browserHistory.push("/sign-up/1")
+            break
+
+        }
       }
+
+      setOnProcessing(false)
     } catch (error) {
       console.error('❌ onSubmit:', e);
     } finally {
-      stateLogin.processing = false;
+      setOnProcessing(false)
     }
   };
 
@@ -82,10 +77,13 @@ const RegistrationStatusForm = ({ onClikWaHelp }) => {
               isRequired
               icon="/icon/user.svg"
               label="Email"
-              onChange={onChangeUsername}
+              onChange={(e) => {
+                setEmail(e.target.value)
+              }}
               type="text"
               placeholder='mail@email.com'
-              value={login.username}
+              key={"email"}
+              value={email}
             />
           </Box>
           <Box pt={4}>
@@ -94,12 +92,13 @@ const RegistrationStatusForm = ({ onClikWaHelp }) => {
               typeIcon={'library'}
               icon={<FiFileText fontSize={'25px'} color={'#505050'} />}
               label='No STR'
-              onChange={onChangePassword}
-              type='password'
-              handleShow={handleShow}
+              onChange={(e) => {
+                setStr(e.target.value)
+              }}
+              type='text'
               placeholder='Masukkan no STR'
-              value={login.password}
-              show={showPassword}
+              value={str}
+              key={"str"}
             />
           </Box>
           <Box h="8" />
@@ -145,26 +144,8 @@ const RegistrationStatusPage = () => {
               <Carousel onPage={'login'} />
             </Box>
           )}
-          {showInputOtp && (
-            <Box px="4" maxW="5xl" mx="auto" alignItems="center">
-              <InputOTP />
-            </Box>
-          )}
         </Content>
       </PageContainer>
-      <SideModal
-        title={'Kesulitan Login?'}
-        isOpen={isOpen}
-        onToogle={onToggle}>
-        <Box mx="8" >
-          <OrderedList mt={2}>
-            <ListItem>Pastikan kamu memasukkan no HP yang benar.</ListItem>
-            <ListItem>No hp yang dimasukkan harus sudah terdaftar ke “Whatsapp” karena kode OTP akan dikirimkan melalui Whatsapp.</ListItem>
-            <ListItem>Jika masih mengalami kendala saat login cobalah menggunakan no HP (Whatsapp) yang lain.</ListItem>
-            <ListItem>Dan pastikan kamu tidak memberitahukan kode OTP kepada siapapun yang mengatasnamakan JumpaDokter maupun pihak lain.</ListItem>
-          </OrderedList>
-        </Box>
-      </SideModal>
     </>
   );
 };

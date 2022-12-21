@@ -54,7 +54,9 @@ const urls = {
   EVENTS: `${config.apiURL}/api/events`,
   EVENTS_ID: id => `${config.apiURL}/api/events/${id}`,
   //ICD9:
-  ICD9_URL: `${config.icd9ApiURL}`
+  ICD9_URL: `${config.icd9ApiURL}`,
+  CHECK_REGISTRATION_STATUS: `${config.apiURL}/api/register-status`,
+  
 
 };
 
