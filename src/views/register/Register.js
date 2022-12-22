@@ -159,13 +159,11 @@ function GoogleMapComponent({ children }) {
 export const RegisterPage = () => {
   const history = useHistory()
   const { params } = useParams()
-  const gContext = React.useContext(globalContext);
 
   const [registerData, setRegisterData] = useState({});
   const [step, setStep] = useState(0)
   const [verif, setVerif] = useState(false)
 
-  const [orgUnits, setOrgUnits] = useState(null);
 
   const validator = (e) => {
     switch (e.target.id) {
@@ -179,7 +177,13 @@ export const RegisterPage = () => {
   }
   useEffect(() => {
     if (params) {
-      setStep(1)
+      let receivedState = parseInt(params)
+      if (receivedState === 3) {
+        setVerif(true)
+        setStep(2)
+      } else
+        setStep(parseInt(params))
+
     }
   }, [params])
 
@@ -513,7 +517,7 @@ export const RegisterPage = () => {
                         <ul style={{ paddingLeft: 20, fontWeight: 'bold' }}>
                           <li>Estimasi verifikasi 3-4 hari kerja</li>
                           <li>JumpaDokter akan mengirimkan notifikasi hasil verifikasi data melalui alamat email</li>
-                          <li>Klik <a href='https://dokter.jumpadokter.com/registration-status'>disini</a> untuk cek status verifikasi secara berkala</li>
+                          <li>Klik <a href='/registration-status'><u color="blue">disini</u></a> untuk cek status verifikasi secara berkala</li>
                         </ul>
                       </Text>
                     </Stack>
