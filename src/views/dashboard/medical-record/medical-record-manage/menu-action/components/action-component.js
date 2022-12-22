@@ -105,7 +105,7 @@ const ActionComponent = ({ mode }) => {
             </Box>
           </Flex>
       }
-      {
+      {/* {
         mode === siteMode.detail
           ? <></>
           : <Flex alignItems={'end'}>
@@ -118,7 +118,7 @@ const ActionComponent = ({ mode }) => {
               />
             </Box>
           </Flex>
-      }
+      } */}
       {
         mode === siteMode.detail
           ? <></>
@@ -139,7 +139,7 @@ const ActionComponent = ({ mode }) => {
             <Thead color={'#484964'}>
               <Tr bg={'#F9F9FC'} fontWeight={'bold'}>
                 <Td>Tindakan</Td>
-                <Td>Waktu</Td>
+                {/* <Td>Waktu</Td> */}
                 <Td></Td>
               </Tr>
             </Thead>
@@ -147,7 +147,7 @@ const ActionComponent = ({ mode }) => {
               {actionList.length > 0 ? actionList.map((r, i) => (
                 <Tr key={i} bg={'#F9F9FC'}>
                   <Td>{r.actionCode}</Td>
-                  <Td>{r.actionNote}</Td>
+                  {/* <Td>{r.actionNote}</Td> */}
                   {
                     mode === siteMode.detail
                       ? <></>
