@@ -48,7 +48,6 @@ const PlacesAutocomplete = ({ setSelected }) => {
   } = usePlacesAutocomplete();
 
   const handleInput = (e) => {
-    console.log(e.target.value, "cariii")
     setValue(e.target.value);
   };
 
@@ -58,9 +57,7 @@ const PlacesAutocomplete = ({ setSelected }) => {
     const results = await getGeocode(val)
     const { lat, lng } = await getLatLng(results[0])
     setSelected({ lat, lng })
-    console.log(val, "valllll", lat, lng, results)
   };
-  console.log(data, "dataaaa")
 
   return (
     <AutoComplete openOnFocus>
@@ -120,8 +117,6 @@ function GoogleMapComponent({ children }) {
     })
   }
 
-  console.log(selected, 'selected')
-
   const onDragEnd = (e) => {
     setSelected({
       lat: e.latLng.lat(),
@@ -142,7 +137,7 @@ function GoogleMapComponent({ children }) {
           </Text>
         </Flex>
       </Box>
-      <Box >
+      <Box textDecor={'underline'} marginBottom={5}>
         <PlacesAutocomplete setSelected={setSelected} />
       </Box>
       <GoogleMap
@@ -164,13 +159,11 @@ function GoogleMapComponent({ children }) {
 export const RegisterPage = () => {
   const history = useHistory()
   const { params } = useParams()
-  const gContext = React.useContext(globalContext);
 
   const [registerData, setRegisterData] = useState({});
   const [step, setStep] = useState(0)
   const [verif, setVerif] = useState(false)
 
-  const [orgUnits, setOrgUnits] = useState(null);
 
   const validator = (e) => {
     switch (e.target.id) {
@@ -184,10 +177,15 @@ export const RegisterPage = () => {
   }
   useEffect(() => {
     if (params) {
-      setStep(1)
+      let receivedState = parseInt(params)
+      if (receivedState === 3) {
+        setVerif(true)
+        setStep(2)
+      } else
+        setStep(parseInt(params))
+
     }
   }, [params])
-  console.log(step, "step", params, history.location)
 
   const leftInputModel = [
     {
@@ -266,7 +264,7 @@ export const RegisterPage = () => {
       label: 'Nama Ibu Kandung',
       id: 'mother_name',
       uid: null,
-      isRequired: true,
+      isRequired: false,
       errMessage: 'Nama Ibu Kandung tidak boleh kosong',
       type: 'text',
       icon: '/icon/user.svg'
@@ -323,38 +321,38 @@ export const RegisterPage = () => {
   ]
 
   const onSave = async () => {
-    history.push(`/sign-up/mail@mail.com`)
-  }
-  // const onSave = async () => {
-  //   const attributes = []
-  //   for (const d in registerData) {
-  //     if (registerData[d].uid) attributes.push({
-  //       value: registerData[d].value,
-  //       attribute: registerData[d].uid
-  //     })
-  //   }
+    // const onSave = async () => {
 
-  //   if (attributes.length < 12) {
-  //     ToastNotif({
-  //       message: 'Oops.. Data diri belum lengkap, mohon dilengkapi !',
-  //       type: 'error'
-  //     });
-  //   } else {
-  //     const response = await apiDoctor.create(attributes)
-  //     if (response.status === 200) {
-  //       ToastNotif({
-  //         message: 'Yeay, Berhasil registras',
-  //         type: 'success'
-  //       })
-  //       history.push(`/sign-up/mail@mail.com`)
-  //     } else {
-  //       ToastNotif({
-  //         message: 'Oopss.. Terjadi kesalahan',
-  //         type: 'error'
-  //       })
-  //     }
-  //   }
-  // }
+    const attributes = []
+    for (const d in registerData) {
+      if (registerData[d].uid) attributes.push({
+        value: registerData[d].value,
+        attribute: registerData[d].uid
+      })
+    }
+
+    if (attributes.length < 11) {
+      ToastNotif({
+        message: 'Oops.. Data diri belum lengkap, mohon dilengkapi !',
+        type: 'error'
+      });
+    } else {
+      const response = await apiDoctor.create(attributes)
+      if (response.status === 200) {
+        ToastNotif({
+          message: 'Yeay, Berhasil registrasi',
+          type: 'success'
+        })
+        const email = attributes.find(r => r.attribute === 'KNhGfY4ApxB').value
+        history.push(`/sign-up/${email}`)
+      } else {
+        ToastNotif({
+          message: 'Oopss.. Terjadi kesalahan',
+          type: 'error'
+        })
+      }
+    }
+  }
 
   const onInputChange = (e) => {
     var data = registerData;
@@ -408,58 +406,23 @@ export const RegisterPage = () => {
                 <Text fontWeight={'bold'} fontSize={'36px'}>Registrasi dokter</Text>
                 <Text fontSize={'14px'} pb={8}>Data yang disimpan tidak dapat diubah, pastikan data Anda sudah benar</Text>
                 <Stack pb={8}>
-                  <Flex bg={'#F9F9FC'}>
-                    <Text flex={1} color={colors.PRIMARY} fontWeight={'bold'}>Nama lengkap</Text>
-                    <Text flex={1}>John Doe</Text>
-                  </Flex>
-                  <Flex bg={'#F9F9FC'}>
-                    <Text flex={1} color={colors.PRIMARY} fontWeight={'bold'}>No KTP</Text>
-                    <Text flex={1}>1002993003884993</Text>
-                  </Flex>
-                  <Flex bg={'#F9F9FC'}>
-                    <Text flex={1} color={colors.PRIMARY} fontWeight={'bold'}>10 Desember 2000</Text>
-                    <Text flex={1}>10 Desember 2000</Text>
-                  </Flex>
-                  <Flex bg={'#F9F9FC'}>
-                    <Text flex={1} color={colors.PRIMARY} fontWeight={'bold'}>Jenis kelamin</Text>
-                    <Text flex={1}>Laki-Laki</Text>
-                  </Flex>
-                  <Flex bg={'#F9F9FC'}>
-                    <Text flex={1} color={colors.PRIMARY} fontWeight={'bold'}>Alamat domisili</Text>
-                    <Text flex={1}>Jl.domisisli no 24</Text>
-                  </Flex>
-                  <Flex bg={'#F9F9FC'}>
-                    <Text flex={1} color={colors.PRIMARY} fontWeight={'bold'}>Nomor HP</Text>
-                    <Text flex={1}>0823999499303</Text>
-                  </Flex>
-                  <Flex bg={'#F9F9FC'}>
-                    <Text flex={1} color={colors.PRIMARY} fontWeight={'bold'}>Email</Text>
-                    <Text flex={1}>johndoe@gmail.com</Text>
-                  </Flex>
-                  <Flex bg={'#F9F9FC'}>
-                    <Text flex={1} color={colors.PRIMARY} fontWeight={'bold'}>Nama ibu kandung</Text>
-                    <Text flex={1}>Muminah</Text>
-                  </Flex>
-                  <Flex bg={'#F9F9FC'}>
-                    <Text flex={1} color={colors.PRIMARY} fontWeight={'bold'}>NO STR</Text>
-                    <Text flex={1}>12345678901234</Text>
-                  </Flex>
-                  <Flex bg={'#F9F9FC'}>
-                    <Text flex={1} color={colors.PRIMARY} fontWeight={'bold'}>No SIP</Text>
-                    <Text flex={1}>1002988388843</Text>
-                  </Flex>
-                  <Flex bg={'#F9F9FC'}>
-                    <Text flex={1} color={colors.PRIMARY} fontWeight={'bold'}>Lokasi praktik</Text>
-                    <Text flex={1}>Klinik sahabat</Text>
-                  </Flex>
-                  <Flex bg={'#F9F9FC'}>
-                    <Text flex={1} color={colors.PRIMARY} fontWeight={'bold'}>Latitude</Text>
-                    <Text flex={1}>-8.6769664</Text>
-                  </Flex>
-                  <Flex bg={'#F9F9FC'}>
-                    <Text flex={1} color={colors.PRIMARY} fontWeight={'bold'}>Longitude</Text>
-                    <Text flex={1}>115.195904</Text>
-                  </Flex>
+
+                  {
+                    leftInputModel.map((i) =>
+                      <Flex bg={'#F9F9FC'}>
+                        <Text flex={1} color={colors.PRIMARY} fontWeight={'bold'}>{i.label}</Text>
+                        <Text flex={1}>{registerData[i.id] && registerData[i.id].value}</Text>
+                      </Flex>
+                    )
+                  }
+                  {
+                    rightInputModel.filter(e => !e.label.includes("Upload")).map((i) =>
+                      <Flex bg={'#F9F9FC'}>
+                        <Text flex={1} color={colors.PRIMARY} fontWeight={'bold'}>{i.label}</Text>
+                        <Text flex={1}>{registerData[i.id] && registerData[i.id].value}</Text>
+                      </Flex>
+                    )
+                  }
                 </Stack>
                 <Box textAlign={'center'}>
                   <ButtonMain minW={isLargerThan1280 ? '400px' : null} onClick={() => onSave()}>
@@ -478,9 +441,7 @@ export const RegisterPage = () => {
 
   const [isLargerThan1000] = useMediaQuery('(min-width: 1000px)')
   const getOrgUnit = async () => {
-
     const orgUnit = await apiClinicArea.list()
-    console.log(orgUnit);
   }
 
   const init = useCallback(() => {
@@ -556,7 +517,7 @@ export const RegisterPage = () => {
                         <ul style={{ paddingLeft: 20, fontWeight: 'bold' }}>
                           <li>Estimasi verifikasi 3-4 hari kerja</li>
                           <li>JumpaDokter akan mengirimkan notifikasi hasil verifikasi data melalui alamat email</li>
-                          <li>Silahkan cek status verifikasi secara berkala melalui web dokter.jumpadokter.com/statusdokter</li>
+                          <li>Klik <a href='/registration-status'><u color="blue">disini</u></a> untuk cek status verifikasi secara berkala</li>
                         </ul>
                       </Text>
                     </Stack>

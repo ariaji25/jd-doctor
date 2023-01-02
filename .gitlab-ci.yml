@@ -24,9 +24,6 @@ build-dev:
   stage: build-dev
   except:
     - tags
-  # only:
-  #   variables:
-  #     - $RELEASE == "true"
   before_script:
     - mkdir -p ~/.ssh || true
     - eval `ssh-agent -s`
@@ -46,15 +43,14 @@ build-dev:
     # Let's do a magic update for app
     - ssh fhir@castellumdigital.org "(cd demo/jumpadokter && sed -i -r 's/JD_DOCTOR\=(.+)/JD_DOCTOR='"$TAGID"'/g' .env && chmod +x doctor && ./doctor )"
   only:
-    - main
+    - develop
 
 build-prod:
   stage: build-prod
   except:
     - tags
   only:
-    variables:
-      - $RELEASE_PROD == "true" && $RELEASE == "false"
+    - main
   before_script:
     - mkdir -p ~/.ssh || true
     - eval `ssh-agent -s`

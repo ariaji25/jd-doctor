@@ -55,7 +55,7 @@ const MedicalNavigation = ({ savedStates }) => {
                 <Box>
                   {r.name}
                 </Box>
-                <FiCheckCircle color={(savedStates[r.keySave] && savedStates[r.keySave].dataValues && savedStates[r.keySave].dataValues.length > 0) ? "green" : "grey"} />
+                <FiCheckCircle color={(savedStates[r.keySave]) ? "green" : "grey"} />
               </Flex>
             </Box>
           ))}

@@ -8,6 +8,7 @@ import { addZeroPad, dateFormat, getCurrentUserFromStorage } from 'utils';
 import apiDoctor from 'services/apiDoctor';
 import stateInputMR, { clearStateInputMR } from 'states/stateInputMedicalRecord';
 import { FiSearch } from 'react-icons/fi';
+import { medicalRecordID } from 'utils/constant';
 
 const ListDataClinic = () => {
   const history = useHistory();
@@ -24,21 +25,11 @@ const ListDataClinic = () => {
     ).then((r) => {
       console.log("ResponseHistory", r);
       var i = 1;
-      const filter = (a, b) => {
-        const aTime = new Date(`${dateFormat(new Date(), "yyyy-MM-dd")}T${a.schedule}:00`)
-        const timenow = new Date()
-        console.log(aTime.getTime() < timenow.getTime())
-        console.log(aTime.getTime())
-        console.log(timenow.getTime())
-        return aTime.getTime() >= timenow.getTime();
+      const filterFinishedService = (a) => {
+        return a.serviceStatus.length > 0;
       }
-      const filterLess = (a, b) => {
-        const aTime = new Date(`${dateFormat(new Date(), "yyyy-MM-dd")}T${a.schedule}:00`)
-        const timenow = new Date()
-        console.log(aTime.getTime() < timenow.getTime())
-        console.log(aTime.getTime())
-        console.log(timenow.getTime())
-        return aTime.getTime() < timenow.getTime();
+      const filterActiveService = (a) => {
+        return a.serviceStatus.length <= 0;
       }
       var history = r.events.map((ev) => {
         const data = {
@@ -49,7 +40,7 @@ const ListDataClinic = () => {
           schedule: ev.dataValues.find((e) => e.dataElement === 'X7GUfsOErZh') ? ev.dataValues.find((e) => e.dataElement === 'X7GUfsOErZh').value ?? '-' : '-',
           problem: ev.dataValues.find((e) => e.dataElement === 'Yh6ylx8D3tO') ? ev.dataValues.find((e) => e.dataElement === 'Yh6ylx8D3tO').value ?? '-' : '-',
           service: ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6') ? ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6').value ?? '-' : '-',
-          serviceStatus: ev.dataValues.find((e) => e.dataElement === 'iRiPZZajW1E') ? ev.dataValues.find((e) => e.dataElement === 'iRiPZZajW1E').value ?? '' : '',
+          serviceStatus: ev.dataValues.find((e) => e.dataElement === medicalRecordID.referensiDiagnosis) ? ev.dataValues.find((e) => e.dataElement === medicalRecordID.referensiDiagnosis).value ?? '' : '',
           serviceID: ev.event,
           expired: false
         }
@@ -57,10 +48,10 @@ const ListDataClinic = () => {
         return data;
       })
       console.log("Response", history)
-      let _expiredServices = history.filter(filterLess)
-      history = history.filter(filter)
-      if (_expiredServices) {
-        _expiredServices.forEach(eS => {
+      let finishedService = history.filter(filterFinishedService)
+      history = history.filter(filterActiveService)
+      if (finishedService) {
+        finishedService.forEach(eS => {
           history.push({ ...eS, expired: true })
         })
       }
@@ -127,7 +118,7 @@ const ListDataClinic = () => {
                     } else if (!e.target.value) {
                       setSearchPatient(null)
                     }
-                  }} placeholder='Search' minWidth={'364px'} borderRadius={'114px'} border={'1px solid #505050 !important'} />
+                  }} placeholder='Cari Nama' minWidth={'364px'} borderRadius={'114px'} border={'1px solid #505050 !important'} />
                 </InputGroup>
               </Box>
               : <></>}

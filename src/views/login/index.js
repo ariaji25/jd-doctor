@@ -29,6 +29,10 @@ const LoginForm = ({ onClikWaHelp }) => {
   const history = useHistory()
   const { username, password, processing } = useSnapshot(stateLogin);
   const [showPassword, setShowPassword] = useState(false)
+  const [login, setLogin] = useState({
+    username: '',
+    password: ''
+  })
 
   const handleShow = () => {
     setShowPassword(!showPassword);
@@ -72,7 +76,7 @@ const LoginForm = ({ onClikWaHelp }) => {
       <Box w="full" color={colors.PRIMARY}>
         <form onSubmit={onSubmit}>
           <Text pb={8} fontSize="3xl" fontWeight="bold" color='#505050'>
-          Hai dok, Silahkan login!
+            Hai dok, Silahkan login!
           </Text>
           <Box>
             <InputUnderlined
@@ -82,7 +86,7 @@ const LoginForm = ({ onClikWaHelp }) => {
               onChange={onChangeUsername}
               type="text"
               placeholder='mail@email.com'
-              value={username}
+              value={login.username}
             />
           </Box>
           <Box pt={4}>
@@ -94,7 +98,7 @@ const LoginForm = ({ onClikWaHelp }) => {
               type='password'
               handleShow={handleShow}
               placeholder='Masukkan password'
-              value={password}
+              value={login.password}
               show={showPassword}
             />
           </Box>

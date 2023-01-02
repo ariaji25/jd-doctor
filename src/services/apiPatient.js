@@ -31,7 +31,7 @@ const create = async ({
   const today = moment().format(DATE_DEFAULT_FORMAT);
 
   const payload = {
-    trackedEntityType: 'NvPl8j4DzNA',
+    trackedEntityType: 'MvJlDDrR78m',
     orgUnit: getOU(),
     attributes: [
       {
@@ -81,15 +81,15 @@ const create = async ({
     ],
     enrollments: [
       {
-        program: 'Rn9Uv17VmSO',
+        program: 'El6a2lnac0D',
         status: 'ACTIVE',
         orgUnit: getOU(),
         enrollmentDate: today,
         incidentDate: today,
         events: [
           {
-            program: 'Rn9Uv17VmSO',
-            programStage: 'dbtQvmcQvp3',
+            program: 'El6a2lnac0D',
+            programStage: 'Aic2hFz57cE',
             orgUnit: getOU(),
             dueDate: today,
             eventDate: today,
@@ -103,72 +103,6 @@ const create = async ({
   await request.post(urls.PATIENT_CREATE, JSON.stringify(payload));
 };
 
-const update = async ({
-  id,
-  nama,
-  alamatKTP,
-  nik,
-  nohp,
-  tempatLahir,
-  tanggalLahir,
-  jenisKelamin,
-  alamatDomisili,
-  agama,
-  ...biodata
-}) => {
-  const payload = {
-    orgUnit: getOU(),
-    attributes: [
-      {
-        attribute: 'kOJUHSrbkBS',
-        value: localStorage.getItem(keyStorage.NRM),
-      },
-      {
-        attribute: 'HyfzjNVhlzM',
-        value: nama,
-      },
-      {
-        attribute: 'NCLBUYYxnWU',
-        value: nohp,
-      },
-      {
-        attribute: 'Q3tLvwl4Ttq',
-        value: alamatKTP,
-      },
-      {
-        attribute: 'Qtjs7yonSYc',
-        value: tempatLahir,
-      },
-      {
-        attribute: 'SSsiEz3cVbn',
-        value: tanggalLahir,
-      },
-      {
-        attribute: 'TlO4kdMfHqa',
-        value: jenisKelamin,
-      },
-      {
-        attribute: 'aRHSGgFeOjr',
-        value: alamatDomisili,
-      },
-      {
-        attribute: 'k3TvJYe6jBT',
-        value: agama,
-      },
-
-      {
-        attribute: 'x9tchw0swEu',
-        value: nohp,
-      },
-      {
-        attribute: 'xGjeKnsJobT',
-        value: nik,
-      },
-    ],
-  };
-
-  await request.put(urls.PATIENT_UPDATE(id + ''), JSON.stringify(payload));
-};
 
 const getPatientByNIK = async (nik) => {
   const { data } = await request.get(urls.PATIENT_DETAIL_BYNIK(nik));
@@ -249,13 +183,13 @@ const checkTeiAvailable = async (tei) => {
 };
 
 const getPatienDetailByID = async (id) => {
-  const response = await request.get(urls.PATIENT_UPDATE(id),
+  const response = await request.get(urls.PATIENT_UPDATE(id, getOU()),
     {
       params: {
         fields: '[*]'
       }
     })
-  return response.data;
+  return response.data.trackedEntityInstances[0] ?? {};
 }
 
 const serviceHistory = async (id, page) => {
@@ -307,7 +241,6 @@ const searchPatientBY = async (search, searchKey) => {
 
 export const apiPatient = {
   create,
-  update,
   getDetail,
   checkTeiAvailable,
   getPatientByNIK,
