@@ -21,7 +21,7 @@ const InputWithButton = (
 ) => {
 
   const [fileName, setFileName] = useState(null)
-  const [isValid, setIsValid] = useState(false)
+  const [isValid, setIsValid] = useState(true)
 
   // Hidden element for file picker
 

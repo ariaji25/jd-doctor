@@ -9,7 +9,7 @@ import MenuAction from "./menu-action";
 import MenuTreatment from "./menu-treatment";
 import MedicalNavigation from "./components/MedicalNavigation";
 import MedicalHeader from "./components/MedicalHeader";
-import { FiClipboard } from "react-icons/fi";
+import { FiCheckCircle, FiClipboard } from "react-icons/fi";
 import { useParams } from "react-router-dom/cjs/react-router-dom";
 import { getAge, useQueryParams } from "utils";
 import apiBooking from "services/apiBooking";
@@ -27,7 +27,21 @@ import { inputList as uroGenitalSystem } from "./menu-inspection/components/geni
 import { inputList as intugmenSystem } from "./menu-inspection/components/integumentary-musculoskeletal-system";
 import { inputList as chestAndAxila } from "./menu-inspection/components/chest-and-axilla";
 
-const NotificationStatus = ({ isOpen, onClose }) => {
+const NotificationStatus = ({ isOpen, onClose, state }) => {
+  const message = () => {
+    switch (state) {
+      case 1:
+        return ["Pemeriksaan Fisik", "Diagnosis"]
+      case 2:
+        return ["Diagnosis", "Tindakan"]
+      case 3:
+        return ["Tindakan", "Pengobatan"]
+      case 4:
+        return ["Pengobatan", ""]
+      default:
+        return ["", ""]
+    }
+  }
   return (
     <Modal isOpen={isOpen} onClose={onClose} size='xl' isCentered>
       <ModalOverlay />
@@ -35,10 +49,15 @@ const NotificationStatus = ({ isOpen, onClose }) => {
         <ModalBody>
           <Box color={colors.PRIMARY} textAlign={'center'} py={20}>
             <Flex justifyContent={'center'}>
-              <FiClipboard fontSize={60} />
+              <FiCheckCircle color="green" fontSize={60} />
             </Flex>
-            <Text fontSize={40} fontWeight={'bold'}>BERHASIL</Text>
-            <Text color={'#8E8E8E'}>Data rekam medis berhasil disimpan</Text>
+            <Text fontSize={40} fontWeight={'bold'}>Tersimpan</Text>
+            <Text color={'#8E8E8E'}>{message()[0]} berhasil disimpan</Text>
+            <Text color={'#8E8E8E'}>{state === 4 ? "silahkan kembali ke Beranda" : "silahkan lanjut ke " + message()[1]}</Text>
+            <Box h={"20px"} />
+            <ButtonMain w={"100px"} onClick={e => onClose()}>
+              <Text>OK</Text>
+            </ButtonMain>
           </Box>
         </ModalBody>
       </ModalContent>
@@ -63,6 +82,13 @@ const MedicalRecordManagePage = () => {
   const [_savedDiagnosis, setDiagnosis] = useState([])
   const [_savedTreatment, setTreatment] = useState([])
   const [_savedAction, setAction] = useState([])
+
+  const [savedMedicalRecordStatus, setSavedMedicalRecordStatus] = useState({
+    savedgeneralAssesment: false,
+    savedDiagnoses: false,
+    savedActions: false,
+    savedTreatment: false,
+  })
 
   const initGeneralAssesmentFromSaved = (savedAssesment) => {
     generalAssesment.forEach(ga => {
@@ -220,6 +246,13 @@ const MedicalRecordManagePage = () => {
       setAction(_action.events[0])
       initActionFromSaved(_action.events[0])
     }
+    setSavedMedicalRecordStatus({
+      ...savedMedicalRecordStatus,
+      savedgeneralAssesment: (_generalAssesment.events && _generalAssesment.events.length > 0),
+      savedDiagnoses: (_diagnosis.events && _diagnosis.events.length > 0),
+      savedActions: (_action.events && _action.events.length > 0),
+      savedTreatment: (_treatments.events && _treatments.events.length > 0)
+    })
     setIsLoading(false)
     return true
   }
@@ -331,6 +364,7 @@ const MedicalRecordManagePage = () => {
               && r.response.importSummaries[0]
               && r.response.importSummaries[0].reference) apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${r.response.importSummaries[0].reference}`, medicalRecordID.referensiPemeriksaanFisik)
                 .then(e => {
+                  setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedgeneralAssesment: true })
                   onOpen()
                 })
           })
@@ -347,6 +381,7 @@ const MedicalRecordManagePage = () => {
             && r.response.importSummaries[0]
             && r.response.importSummaries[0].reference) apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${r.response.importSummaries[0].reference}`, medicalRecordID.referensiPemeriksaanFisik)
               .then(e => {
+                setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedgeneralAssesment: true })
                 onOpen()
               })
         })
@@ -383,6 +418,7 @@ const MedicalRecordManagePage = () => {
             if (_event.dataValues.length > 0) apiMedicalrecord.updateMedicalRecord(_event).then(r => {
               apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.diagnosis[0].diagnosisCode}-${stateInputMR.diagnosis[0].diagnosisNote ?? ''}`, medicalRecordID.referensiDiagnosis)
                 .then(e => {
+                  setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedDiagnoses: true })
                   onOpen()
                 })
             })
@@ -397,6 +433,7 @@ const MedicalRecordManagePage = () => {
           ).then(r => {
             apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.diagnosis[0].diagnosisCode}-${stateInputMR.diagnosis[0].diagnosisNote ?? ''}`, medicalRecordID.referensiDiagnosis)
               .then(e => {
+                setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedDiagnoses: true })
                 onOpen()
               })
           })
@@ -406,6 +443,7 @@ const MedicalRecordManagePage = () => {
           apiMedicalrecord.deleteMedicalRecord(_event.event).then(r => {
             apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, ``, medicalRecordID.referensiDiagnosis)
               .then(e => {
+                setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedDiagnoses: true })
                 onOpen()
               })
           })
@@ -441,6 +479,7 @@ const MedicalRecordManagePage = () => {
             if (_event.dataValues.length > 0) apiMedicalrecord.updateMedicalRecord(_event).then(r => {
               apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.action[0].actionCode}-${stateInputMR.action[0].actionNote ?? ''}`, medicalRecordID.refernsiTindakan)
                 .then(e => {
+                  setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedActions: true })
                   onOpen()
                 })
             })
@@ -455,6 +494,7 @@ const MedicalRecordManagePage = () => {
           ).then(r => {
             apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.action[0].actionCode}-${stateInputMR.action[0].actionNote ?? ''}`, medicalRecordID.refernsiTindakan)
               .then(e => {
+                setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedActions: true })
                 onOpen()
               })
           })
@@ -464,6 +504,7 @@ const MedicalRecordManagePage = () => {
           apiMedicalrecord.deleteMedicalRecord(_event.event).then(r => {
             apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, ``, medicalRecordID.refernsiTindakan)
               .then(e => {
+                setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedActions: true })
                 onOpen()
               })
           })
@@ -502,6 +543,7 @@ const MedicalRecordManagePage = () => {
             if (_event.dataValues.length > 0) apiMedicalrecord.updateMedicalRecord(_event).then(r => {
               apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.treatment[0].treatment}-${stateInputMR.treatment[0].treatmentDose ?? ''}`, medicalRecordID.refernsiPengobatan)
                 .then(e => {
+                  setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedTreatment: true })
                   onOpen()
                 })
             })
@@ -516,6 +558,7 @@ const MedicalRecordManagePage = () => {
           ).then(r => {
             apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.treatment[0].treatment}-${stateInputMR.treatment[0].treatmentDose ?? ''}`, medicalRecordID.refernsiPengobatan)
               .then(e => {
+                setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedTreatment: true })
                 onOpen()
               })
           })
@@ -525,6 +568,7 @@ const MedicalRecordManagePage = () => {
           apiMedicalrecord.deleteMedicalRecord(_event.event).then(r => {
             apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, ``, medicalRecordID.refernsiPengobatan)
               .then(e => {
+                setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedTreatment: true })
                 onOpen()
               })
           })
@@ -546,12 +590,7 @@ const MedicalRecordManagePage = () => {
   return (
     <>
       <Flex minH={'100vh'}>
-        <MedicalNavigation savedStates={{
-          savedgeneralAssesment: _savedgeneralAssesment,
-          savedDiagnoses: _savedDiagnosis,
-          savedActions: _savedAction,
-          savedTreatment: _savedTreatment,
-        }} />
+        <MedicalNavigation savedStates={savedMedicalRecordStatus} />
         <Box minW={0} flex={'auto'}>
           <MedicalHeader />
           <Flex flexDir={'column'} flex={4} justifyContent={'center'}>
@@ -607,7 +646,13 @@ const MedicalRecordManagePage = () => {
           }
         </Box>
       </Flex>
-      <NotificationStatus isOpen={isOpen} onClose={onClose} />
+      <NotificationStatus isOpen={isOpen} onClose={() => {
+        onClose()
+        if (state.selectedTab < 4) stateMedicalRecord.selectedTab = state.selectedTab + 1
+        if (state.selectedTab === 4) {
+          window.browserHistory.push("/")
+        }
+      }} state={state.selectedTab} />
     </>
   )
 }

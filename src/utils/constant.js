@@ -168,14 +168,14 @@ export const medicalRecordOption = {
 }
 
 export const medicalRecordProgram = {
-  pemeriksaanFisik: "uIAIfNINwSH",
-  pemeriksaanFisikStage: "lAOOLYivWvq",
-  diagnosis: "bHPVKNiKgH5",
-  diagnosisStage: "R1qbVHYNxsA",
-  tindakan: "cZ4bzk46y0Y",
-  tindakanStage: "NSW1zi1H9D3",
-  obat: "VVN4LncUJRl",
-  obatStage: "M6aIIfUDGT4"
+  pemeriksaanFisik: "CP8P94pFlyG",
+  pemeriksaanFisikStage: "P1XRK2lf8af",
+  diagnosis: "dHs2XURYTqq",
+  diagnosisStage: "v9zyE0nQgJZ",
+  tindakan: "aqqEEJInAkA",
+  tindakanStage: "FAYAkeOcd4M",
+  obat: "eI50g5IYedo",
+  obatStage: "wuHJnHWhJ3x"
 }
 
 

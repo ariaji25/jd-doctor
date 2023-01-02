@@ -24,7 +24,7 @@ const InputRadio = (
   { name, w, isRequired, options, label, value, onChange, radioStyle = radioType.vertical, readOnly, ...props },
   ref
 ) => {
-  const [isValid, setIsValid] = useState(false)
+  const [isValid, setIsValid] = useState(true)
 
   const onStateChange = (e) => {
     console.log(e)

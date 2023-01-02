@@ -34,24 +34,30 @@ const list = async (clinic) => {
 };
 
 const create = async (attributes) => {
+  if (attributes) {
+    attributes.push({
+      attribute: "mJolgOL7hjA",
+      value: "0"
+    })
+  }
 
   const payload = {
-    trackedEntityType: 'NvPl8j4DzNA',
-    orgUnit: getOU(),
+    trackedEntityType: 'MvJlDDrR78m',
+    orgUnit: "jp49nCFvI75",
     attributes: attributes,
     enrollments: [
       {
-        program: 'wcA7dgdvgt3',
+        program: 'zuQhdRo8Rnn',
         status: 'ACTIVE',
-        orgUnit: getOU(),
-        trackedEntityType: "NvPl8j4DzNA",
+        orgUnit: "jp49nCFvI75",
+        trackedEntityType: "MvJlDDrR78m",
         enrollmentDate: `${dateFormat(Date(), 'yyyy-MM-dd')}`,
         incidentDate: `${dateFormat(Date(), 'yyyy-MM-dd')}`,
         events: [
           {
-            program: 'wcA7dgdvgt3',
-            programStage: 'JOsX8D90CIM',
-            orgUnit: getOU(),
+            program: 'zuQhdRo8Rnn',
+            programStage: 'OOpHOLnhQp6',
+            orgUnit: "jp49nCFvI75",
             dueDate: `${dateFormat(Date(), 'yyyy-MM-dd')}`,
             eventDate: `${dateFormat(Date(), 'yyyy-MM-dd')}`,
             status: 'ACTIVE',
@@ -67,7 +73,7 @@ const create = async (attributes) => {
     ],
   };
 
-  await request.post(urls.DOCTOR_CREATE, payload);
+  return await request.post(urls.DOCTOR_CREATE, payload);
 };
 
 
@@ -190,6 +196,17 @@ const searchICD9CODE = async (search) => {
   return response.data
 }
 
+const checkRegistrationStatus = async (email,strNumber) => {
+  const response = await request.post(
+    urls.CHECK_REGISTRATION_STATUS,
+    {
+      email: email,
+      str: strNumber
+    },
+  )
+  return response.data
+}
+
 const apiDoctor = {
   list,
   create,
@@ -200,7 +217,8 @@ const apiDoctor = {
   getServiceNotifications,
   searchDiagnosis,
   getAllClinicServiceHistory,
-  searchICD9CODE
+  searchICD9CODE,
+  checkRegistrationStatus
 };
 
 export default apiDoctor;

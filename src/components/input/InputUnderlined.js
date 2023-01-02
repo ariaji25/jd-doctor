@@ -9,11 +9,30 @@ import {
   InputRightElement,
   Button,
 } from '@chakra-ui/react';
+import { SingleDatepicker } from 'chakra-dayzed-datepicker';
 import TextSmall from 'components/text/TextSmall';
+import { getMonth, getYear } from 'date-fns';
 import { forwardRef, useCallback, useState } from 'react';
 import ReactDatePicker from 'react-datepicker';
 import { dateFormat } from 'utils';
 import colors from 'values/colors';
+
+// For date picker
+const years = Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i)
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 const customDateInput = ({ value, onClick, onChange }, ref) => (
   <Input
@@ -45,7 +64,7 @@ const InputUnderlined = (
   { typeIcon, icon, onClear, label, maxLength, onChange, validator, readOnly, disabled, ...props },
   ref
 ) => {
-  const [isValid, setIsValid] = useState(false)
+  const [isValid, setIsValid] = useState(true)
   const [value, setValue] = useState('')
   const LeadingIcon = () => {
     if (icon) {
@@ -150,12 +169,55 @@ const InputUnderlined = (
         {props.type === 'date'
           ?
           <InputGroup size='md'>
-            {/* <SingleDatepicker
-              name="date-input"
-              date={value}
-              onDateChange={handleOnChange}
-            /> */}
             <ReactDatePicker
+              renderCustomHeader={({
+                date,
+                changeYear,
+                changeMonth,
+                decreaseMonth,
+                increaseMonth,
+                prevMonthButtonDisabled,
+                nextMonthButtonDisabled,
+              }) => (
+                <div
+                  style={{
+                    margin: 10,
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <button onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>
+                    {"<"}
+                  </button>
+                  <select
+                    value={getYear(date)}
+                    onChange={({ target: { value } }) => changeYear(value)}
+                  >
+                    {years.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+
+                  <select
+                    value={months[getMonth(date)]}
+                    onChange={({ target: { value } }) =>
+                      changeMonth(months.indexOf(value))
+                    }
+                  >
+                    {months.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+
+                  <button onClick={increaseMonth} disabled={nextMonthButtonDisabled}>
+                    {">"}
+                  </button>
+                </div>
+              )}
               selected={value}
               onChange={handleOnChange}
               // isClearable={isClearable}
@@ -164,10 +226,6 @@ const InputUnderlined = (
               dateFormat={'dd/MM/yyyy'}
               customInput={<CustomInput />}
             />
-            {/* <ReactDatePicker
-              dateFormat={'dd/MM/yyyy'}
-              selected={value}
-              onChange={handleOnChange} /> */}
           </InputGroup>
           : props.type === 'password' ?
             <InputGroup size='md'>
@@ -237,6 +295,7 @@ const InputUnderlined = (
           </Circle>
         )}
       </Flex>
+      {console.log(props.errmessage, isValid, "lllllllllloooooollllll", props.value)}
       {(props.errmessage) && <TextSmall color="red.500">{isValid ? "" : props.errmessage}</TextSmall>}
     </Box>
   );

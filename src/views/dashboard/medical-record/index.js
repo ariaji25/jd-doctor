@@ -212,7 +212,7 @@ const MedicalRecordPage = () => {
                           </Box>
                         }
                       />
-                      <Input type='text' placeholder='Search' minWidth={'364px'} borderRadius={'114px'} border={'2px solid #505050 !important'} />
+                      <Input type='text' placeholder='Cari Layanan/Diagnosis' minWidth={'364px'} borderRadius={'114px'} border={'2px solid #505050 !important'} />
                     </InputGroup>
                   </Flex>
                 </Flex>
