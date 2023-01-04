@@ -262,7 +262,7 @@ const MedicalRecordPage = () => {
                                             stateInputMR.serviceDetail = currentService
                                             stateInputMR.patient = _patient
                                             stateInputMR.problemForServiceDetail = r.problem
-                                            history.push(`/dashboard/medical-record/${idPatient}/${siteMode.edit}/${r.serviceID}`)
+                                            history.push(`/dashboard/medical-record/${idPatient}/${siteMode.edit}/${r.serviceID}?complaint=${r.problem}`)
                                           }} display={'flex'} gap={3}>
                                             <Box><FiEdit /></Box>
                                             <Box>Edit</Box>

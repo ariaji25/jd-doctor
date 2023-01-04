@@ -10,7 +10,7 @@ import MenuTreatment from "./menu-treatment";
 import MedicalNavigation from "./components/MedicalNavigation";
 import MedicalHeader from "./components/MedicalHeader";
 import { FiCheckCircle, FiClipboard } from "react-icons/fi";
-import { useParams } from "react-router-dom/cjs/react-router-dom";
+import { useLocation, useParams } from "react-router-dom/cjs/react-router-dom";
 import { getAge, useQueryParams } from "utils";
 import apiBooking from "services/apiBooking";
 import { useCallback, useEffect, useState } from "react";
@@ -52,11 +52,11 @@ const NotificationStatus = ({ isOpen, onClose, state }) => {
               <FiCheckCircle color="green" fontSize={60} />
             </Flex>
             <Text fontSize={40} fontWeight={'bold'}>Tersimpan</Text>
-            <Text color={'#8E8E8E'}>{message()[0]} berhasil disimpan</Text>
-            <Text color={'#8E8E8E'}>{state === 4 ? "silahkan kembali ke Beranda" : "silahkan lanjut ke " + message()[1]}</Text>
+            <Text color={'#8E8E8E'}>{message()[0]} berhasil tersimpan</Text>
+            <Text color={'#8E8E8E'}>{state === 4 ? "" : "silahkan lanjut ke " + message()[1]}</Text>
             <Box h={"20px"} />
-            <ButtonMain w={"100px"} onClick={e => onClose()}>
-              <Text>OK</Text>
+            <ButtonMain minW={'100px'} w={"fit-content"} onClick={e => onClose()}>
+              <Text>{state === 4 ? 'Kembali ke home' : 'Ok'}</Text>
             </ButtonMain>
           </Box>
         </ModalBody>
@@ -67,13 +67,16 @@ const NotificationStatus = ({ isOpen, onClose, state }) => {
 
 const MedicalRecordManagePage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const { mrMethod, serviceId } = useParams()
+  const { idPatient, mrMethod, serviceId } = useParams()
+  const { search } = useLocation()
 
   const state = useSnapshot(stateMedicalRecord);
 
   const [isLoading, setIsLoading] = useState(false)
+  const [isSaveLoading, setSaveLoading] = useState(false)
 
   const { patient, serviceDetail } = useSnapshot(stateInputMR)
+  console.log(patient, "cokkkkkkk", useParams(), useLocation())
   const StateInputMR = useSnapshot(stateInputMR)
 
   const [mrEnrollments, setMREnrollments] = useState([])
@@ -222,7 +225,7 @@ const MedicalRecordManagePage = () => {
 
   const getMedicalRecordData = async () => {
     setIsLoading(true)
-    const enroll = await apiMedicalrecord.getPatientMedicalRecordEnrollment(patient.id)
+    const enroll = await apiMedicalrecord.getPatientMedicalRecordEnrollment(patient ? patient.id : idPatient)
     if (enroll.enrollments && enroll.enrollments.length > 0) {
       setMREnrollments(enroll.enrollments)
     }
@@ -257,17 +260,65 @@ const MedicalRecordManagePage = () => {
     return true
   }
 
-  const init = useCallback(() => {
-    getMedicalRecordData()
+  const checkEnrollment = async (patient) => {
+    const _enrollMR1 = patient.enrollments.filter(e => e.program === medicalRecordProgram.pemeriksaanFisik)
+    if (_enrollMR1.length <= 0) {
+      await apiMedicalrecord.createEnrollmentForMR(medicalRecordProgram.pemeriksaanFisik, patient ? patient.id : idPatient)
+    }
+    const _enrollMR2 = patient.enrollments.filter(e => e.program === medicalRecordProgram.diagnosis)
+    if (_enrollMR2.length <= 0) {
+      await apiMedicalrecord.createEnrollmentForMR(medicalRecordProgram.diagnosis, patient ? patient.id : idPatient)
+    }
+    const _enrollMR3 = patient.enrollments.filter(e => e.program === medicalRecordProgram.tindakan)
+    if (_enrollMR3.length <= 0) {
+      await apiMedicalrecord.createEnrollmentForMR(medicalRecordProgram.tindakan, patient ? patient.id : idPatient)
+    }
+    const _enrollMR4 = patient.enrollments.filter(e => e.program === medicalRecordProgram.obat)
+    if (_enrollMR4.length <= 0) {
+      await apiMedicalrecord.createEnrollmentForMR(medicalRecordProgram.obat, patient ? patient.id : idPatient)
+    }
+  }
+  const getPatientDetail = () => {
+    setIsLoading(true)
+    apiPatient.getPatienDetailByID(idPatient).then((p) => {
+      const data = {
+        id: p.trackedEntityInstance,
+        name: p.attributes.find((a) => a.attribute === "HyfzjNVhlzM") ? p.attributes.find((a) => a.attribute === "HyfzjNVhlzM").value ?? '-' : '-',
+        phone: p.attributes.find((a) => a.attribute === "NCLBUYYxnWU") ? p.attributes.find((a) => a.attribute === "NCLBUYYxnWU").value ?? '-' : '-',
+        address: p.attributes.find((a) => a.attribute === "aRHSGgFeOjr") ? p.attributes.find((a) => a.attribute === "aRHSGgFeOjr").value ?? '-' : '-',
+        gender: p.attributes.find((a) => a.attribute === "TlO4kdMfHqa") ? p.attributes.find((a) => a.attribute === "TlO4kdMfHqa").value ?? '-' : '-',
+        dob: p.attributes.find((a) => a.attribute === "SSsiEz3cVbn") ? p.attributes.find((a) => a.attribute === "SSsiEz3cVbn").value ?? '-' : '-',
+        enrollments: p.enrollments
+      }
+      stateInputMR.patient = data
+      console.log("Enrollment", data.enrollments)
+      checkEnrollment(data)
+      setIsLoading(false)
+    }).catch(e => {
+      setIsLoading(false)
+    })
+  }
+  useEffect(() => {
+    getPatientDetail()
   }, [])
 
   useEffect(() => {
-    init()
-  }, [init])
+    if (patient && patient.id) {
+      getMedicalRecordData()
+    }
+  }, [patient && patient.id])
+  // console.log(patient, "jancokkkkk")
+
+  // useEffect(() => {
+  //   init()
+  // }, [init])
+
+  console.log("mrrrrrrrrr", serviceDetail)
 
 
 
   const onClickButtonSave = () => {
+    setSaveLoading(true)
     switch (state.selectedTab) {
       // Pemeriksaan fisik
       case 1: {
@@ -365,6 +416,7 @@ const MedicalRecordManagePage = () => {
               && r.response.importSummaries[0].reference) apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${r.response.importSummaries[0].reference}`, medicalRecordID.referensiPemeriksaanFisik)
                 .then(e => {
                   setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedgeneralAssesment: true })
+                  setSaveLoading(false)
                   onOpen()
                 })
           })
@@ -382,6 +434,7 @@ const MedicalRecordManagePage = () => {
             && r.response.importSummaries[0].reference) apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${r.response.importSummaries[0].reference}`, medicalRecordID.referensiPemeriksaanFisik)
               .then(e => {
                 setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedgeneralAssesment: true })
+                setSaveLoading(false)
                 onOpen()
               })
         })
@@ -419,6 +472,7 @@ const MedicalRecordManagePage = () => {
               apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.diagnosis[0].diagnosisCode}-${stateInputMR.diagnosis[0].diagnosisNote ?? ''}`, medicalRecordID.referensiDiagnosis)
                 .then(e => {
                   setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedDiagnoses: true })
+                  setSaveLoading(false)
                   onOpen()
                 })
             })
@@ -434,6 +488,7 @@ const MedicalRecordManagePage = () => {
             apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.diagnosis[0].diagnosisCode}-${stateInputMR.diagnosis[0].diagnosisNote ?? ''}`, medicalRecordID.referensiDiagnosis)
               .then(e => {
                 setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedDiagnoses: true })
+                setSaveLoading(false)
                 onOpen()
               })
           })
@@ -444,6 +499,7 @@ const MedicalRecordManagePage = () => {
             apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, ``, medicalRecordID.referensiDiagnosis)
               .then(e => {
                 setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedDiagnoses: true })
+                setSaveLoading(false)
                 onOpen()
               })
           })
@@ -480,6 +536,7 @@ const MedicalRecordManagePage = () => {
               apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.action[0].actionCode}-${stateInputMR.action[0].actionNote ?? ''}`, medicalRecordID.refernsiTindakan)
                 .then(e => {
                   setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedActions: true })
+                  setSaveLoading(false)
                   onOpen()
                 })
             })
@@ -495,6 +552,7 @@ const MedicalRecordManagePage = () => {
             apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.action[0].actionCode}-${stateInputMR.action[0].actionNote ?? ''}`, medicalRecordID.refernsiTindakan)
               .then(e => {
                 setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedActions: true })
+                setSaveLoading(false)
                 onOpen()
               })
           })
@@ -505,6 +563,7 @@ const MedicalRecordManagePage = () => {
             apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, ``, medicalRecordID.refernsiTindakan)
               .then(e => {
                 setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedActions: true })
+                setSaveLoading(false)
                 onOpen()
               })
           })
@@ -544,6 +603,7 @@ const MedicalRecordManagePage = () => {
               apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.treatment[0].treatment}-${stateInputMR.treatment[0].treatmentDose ?? ''}`, medicalRecordID.refernsiPengobatan)
                 .then(e => {
                   setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedTreatment: true })
+                  setSaveLoading(false)
                   onOpen()
                 })
             })
@@ -559,6 +619,7 @@ const MedicalRecordManagePage = () => {
             apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, `${stateInputMR.treatment[0].treatment}-${stateInputMR.treatment[0].treatmentDose ?? ''}`, medicalRecordID.refernsiPengobatan)
               .then(e => {
                 setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedTreatment: true })
+                setSaveLoading(false)
                 onOpen()
               })
           })
@@ -569,6 +630,7 @@ const MedicalRecordManagePage = () => {
             apiMedicalrecord.addMedicalRecordReference(serviceId ?? stateInputMR.serviceDetail.serviceID, ``, medicalRecordID.refernsiPengobatan)
               .then(e => {
                 setSavedMedicalRecordStatus({ ...savedMedicalRecordStatus, savedTreatment: true })
+                setSaveLoading(false)
                 onOpen()
               })
           })
@@ -598,15 +660,15 @@ const MedicalRecordManagePage = () => {
               <Flex flex={1} justifyContent={'space-between'} gap={4} color={colors.PRIMARY} lineHeight={'26px'}>
                 <Box flex={1}>
                   <Box color={'#505050'} fontSize={'13px'}>Nama lengkap pasien</Box>
-                  <Box fontWeight={'bold'}>{patient.name}</Box>
+                  <Box fontWeight={'bold'}>{patient ? patient.name : ''}</Box>
                 </Box>
                 <Box flex={1}>
                   <Box color={'#505050'} fontSize={'13px'}>Tanggal lahir</Box>
-                  <Box fontWeight={'bold'}>{`${patient.dob}`.replaceAll("-", "/")} - {getAge(patient.dob)} thn</Box>
+                  <Box fontWeight={'bold'}>{patient ? `${patient.dob}`.replaceAll("-", "/") : ''} - {patient ? getAge(patient.dob) : ''} thn</Box>
                 </Box>
                 <Box flex={3}>
                   <Box color={'#505050'} fontSize={'13px'}>Keluhan yang dirasakan</Box>
-                  <Box fontWeight={'bold'}>{stateInputMR.problemForServiceDetail ?? serviceDetail.problem}</Box>
+                  <Box fontWeight={'bold'}>{stateInputMR.problemForServiceDetail && serviceDetail ? serviceDetail.problem : search ? search.split('?complaint=')[1] : ''}</Box>
                 </Box>
               </Flex>
             </Flex>
@@ -641,7 +703,7 @@ const MedicalRecordManagePage = () => {
               : <Box px={40} py={5} textAlign={state.selectedTab === 1 ? 'right' : 'center'}>
                 <ButtonMain width={state.selectedTab === 1 ? '47%' : '100%'} maxW={'700px'} onClick={(e) => {
                   onClickButtonSave()
-                }}>Simpan {updateTitleText(state.selectedTab - 1) ? "Perubahan" : ""} {titleSave}</ButtonMain>
+                }}>Simpan {updateTitleText(state.selectedTab - 1) ? "Perubahan" : ""} {titleSave}{isSaveLoading ? <CircularProgress isIndeterminate size='20px' thickness='4px' color='white' ml='2' /> : ''}</ButtonMain>
               </Box>
           }
         </Box>
