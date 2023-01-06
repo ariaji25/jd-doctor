@@ -3,6 +3,7 @@ import {
   Button, CircularProgress, Flex, ListItem,
   OrderedList,
   Text,
+  Select,
   useDisclosure
 } from '@chakra-ui/react';
 import ButtonMain from 'components/button/ButtonMain';
@@ -15,6 +16,7 @@ import InputUnderlined from 'components/input/InputUnderlined';
 import PageContainer from 'components/PageContainer';
 import SideModal from 'components/SideModal';
 import ToastNotif from 'components/Toast';
+import TextLabel from 'components/text/TextLabel';
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import apiAuth from 'services/apiAuth';
@@ -24,46 +26,70 @@ import stateLogin from 'states/stateLogin';
 import { setCurrentUserToStorage, setTokenToStorage } from 'utils';
 import { useSnapshot } from 'valtio';
 import colors from 'values/colors';
+import TextSmall from 'components/text/TextSmall';
 
 const RecoveryPasswordForm = ({ onClikWaHelp }) => {
   const history = useHistory()
-  const { username, password, processing } = useSnapshot(stateLogin);
-  const [showPassword, setShowPassword] = useState(false)
+  const [mode, setMode] = useState('reset')
+  const [loading, setLoading] = useState(false)
+  const [password, setPassword] = useState({
+    oldPassword: '',
+    newPassword: '',
+    repeatPassword: ''
+  })
+  const [showPassword, setShowPassword] = useState({
+    oldPassword: false,
+    newPassword: false,
+    repeatPassword: false
+  })
 
-  const handleShow = () => {
-    setShowPassword(!showPassword);
+  const handleShowOld = () => {
+    setShowPassword({ ...showPassword, oldPassword: !showPassword.oldPassword });
+  };
+  const handleShowNew = () => {
+    setShowPassword({ ...showPassword, newPassword: !showPassword.newPassword });
+  };
+  const handleShowRepeat = () => {
+    setShowPassword({ ...showPassword, repeatPassword: !showPassword.repeatPassword });
   };
 
-  const onChangeUsername = (username) => {
-    stateLogin.username = username;
+  const onChangeMode = (mode) => {
+    setMode(mode)
   };
-
-  const onChangePassword = (password) => {
-    stateLogin.password = password;
+  const onChangePasswordOld = (password) => {
+    setPassword({ ...password, oldPassword: password })
+  };
+  const onChangePasswordNew = (password) => {
+    setPassword({ ...password, newPassword: password })
+  };
+  const onChangePasswordRepeat = (password) => {
+    setPassword({ ...password, repeatPassword: password })
   };
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true)
+    setLoading(false)
 
-    try {
-      stateLogin.processing = true;
-      const loginResponse = await apiAuth.login(username.target.value, password.target.value)
-      if (loginResponse.code === 200) {
-        setTokenToStorage(loginResponse.data.token)
-        localStorage.setItem("email", username.target.value)
-        const currentUser = await apiDoctor.getDetail();
-        setCurrentUserToStorage(currentUser);
-        window.browserHistory.push("/login")
-      } else {
-        ToastNotif({
-          message: "Username atau password tidak dikenal"
-        })
-      }
-    } catch (error) {
-      console.error('❌ onSubmit:', e);
-    } finally {
-      stateLogin.processing = false;
-    }
+    // try {
+    //   stateLogin.processing = true;
+    //   const loginResponse = await apiAuth.login(username.target.value, password.target.value)
+    //   if (loginResponse.code === 200) {
+    //     setTokenToStorage(loginResponse.data.token)
+    //     localStorage.setItem("email", username.target.value)
+    //     const currentUser = await apiDoctor.getDetail();
+    //     setCurrentUserToStorage(currentUser);
+    //     window.browserHistory.push("/login")
+    //   } else {
+    //     ToastNotif({
+    //       message: "Username atau password tidak dikenal"
+    //     })
+    //   }
+    // } catch (error) {
+    //   console.error('❌ onSubmit:', e);
+    // } finally {
+    //   stateLogin.processing = false;
+    // }
   };
 
   return (
@@ -79,29 +105,46 @@ const RecoveryPasswordForm = ({ onClikWaHelp }) => {
             </Text>
           </Box>
           <Box pt={4}>
-            <InputUnderlined
-              isRequired
-              icon="/icon/credit_card.svg"
-              label='Password lama'
-              onChange={onChangePassword}
-              type='password'
-              handleShow={handleShow}
-              placeholder='Masukkan password lama'
-              value={password}
-              show={showPassword}
-            />
+            <Flex>
+              <TextSmall fontWeight="thin">Mode</TextSmall>
+              <Text fontSize="xs" color={colors.DANGER}>
+                *
+              </Text>
+            </Flex>
+            <Select value={mode} onChange={(e) => {
+              const val = e.target.value
+              onChangeMode(val)
+            }}>
+              <option value='reset'>Reset Password</option>
+              <option value='ganti'>Ganti Password</option>
+            </Select>
           </Box>
+          {mode === 'reset' &&
+            <Box pt={4}>
+              <InputUnderlined
+                isRequired
+                icon="/icon/credit_card.svg"
+                label='Password lama'
+                onChange={onChangePasswordOld}
+                type='password'
+                handleShow={handleShowOld}
+                placeholder='Masukkan password lama'
+                value={password.oldPassword}
+                show={showPassword.oldPassword}
+              />
+            </Box>
+          }
           <Box pt={4}>
             <InputUnderlined
               isRequired
               icon="/icon/credit_card.svg"
               label='Password baru'
-              onChange={onChangePassword}
+              onChange={onChangePasswordNew}
               type='password'
-              handleShow={handleShow}
+              handleShow={handleShowNew}
               placeholder='Masukkan password baru'
-              value={password}
-              show={showPassword}
+              value={password.newPassword}
+              show={showPassword.newPassword}
             />
           </Box>
           <Box pt={4}>
@@ -109,17 +152,17 @@ const RecoveryPasswordForm = ({ onClikWaHelp }) => {
               isRequired
               icon="/icon/credit_card.svg"
               label='Ulangi password'
-              onChange={onChangePassword}
+              onChange={onChangePasswordRepeat}
               type='password'
-              handleShow={handleShow}
+              handleShow={handleShowRepeat}
               placeholder='Ulangi password'
-              value={password}
-              show={showPassword}
+              value={password.repeatPassword}
+              show={showPassword.repeatPassword}
             />
           </Box>
           <Box h="8" />
-          <ButtonMain type="submit" disabled={processing} w="full">
-            {stateLogin.processing ? <CircularProgress isIndeterminate color={colors.PRIMARY} size={'25px'} /> : 'Reset password'}
+          <ButtonMain type="submit" disabled={loading} w="full">
+            {loading ? <CircularProgress isIndeterminate color={colors.PRIMARY} size={'25px'} /> : 'Reset password'}
           </ButtonMain>
         </form>
       </Box>
