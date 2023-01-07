@@ -1,7 +1,12 @@
 import {
   Box,
-  Button, CircularProgress, Flex, ListItem,
+  Button, CircularProgress, Divider, Flex, Image, ListItem,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalOverlay,
   OrderedList,
+  Stack,
   Text,
   useDisclosure
 } from '@chakra-ui/react';
@@ -26,7 +31,7 @@ import { setCurrentUserToStorage, setTokenToStorage } from 'utils';
 import { useSnapshot } from 'valtio';
 import colors from 'values/colors';
 
-const RegistrationStatusForm = ({ onClikWaHelp }) => {
+const RegistrationStatusForm = ({ onOpen }) => {
   const history = useHistory()
   const [email, setEmail] = useState('')
   const [str, setStr] = useState('')
@@ -59,6 +64,7 @@ const RegistrationStatusForm = ({ onClikWaHelp }) => {
 
       setOnProcessing(false)
     } catch (error) {
+      onOpen(true)
       console.error('❌ onSubmit:', e);
     } finally {
       setOnProcessing(false)
@@ -122,28 +128,42 @@ const RegistrationStatusForm = ({ onClikWaHelp }) => {
 };
 
 const RegistrationStatusPage = () => {
-  const { showInputOtp } = useSnapshot(stateLogin);
-  const { isOpen, onToggle } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   return (
     <>
       <PageContainer bg="unset">
         <HeaderClean />
         <Content>
-          {!showInputOtp && (
-            <Box
-              px="4"
-              maxW={{ base: 'md', lg: '5xl' }}
-              mx="auto"
-              display={{ lg: 'flex' }}
-              alignItems="baseline"
-              gap={{ lg: '200px' }}
-            >
-              <RegistrationStatusForm onClikWaHelp={onToggle} />
+          <Box
+            px="4"
+            maxW={{ base: 'md', lg: '5xl' }}
+            mx="auto"
+            display={{ lg: 'flex' }}
+            alignItems="baseline"
+            gap={{ lg: '200px' }}
+          >
+            <RegistrationStatusForm onOpen={onOpen} />
 
-              <Carousel onPage={'login'} />
-            </Box>
-          )}
+            <Carousel onPage={'login'} />
+          </Box>
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalBody>
+                <Stack textAlign={'center'} alignItems={'center'}>
+                  {/* <Flex justifyContent={'center'}> */}
+                  <Image src={'/icon/img-cekstatusregis.png'} alt={''} w={'fit-content'} />
+                  {/* </Flex> */}
+                  <Text>Data tidak ditemukan</Text>
+                  <Divider w={'150px'} />
+                  <ButtonMain type="button" onClick={onClose}>
+                    Kembali
+                  </ButtonMain>
+                </Stack>
+              </ModalBody>
+            </ModalContent>
+          </Modal>
         </Content>
       </PageContainer>
     </>

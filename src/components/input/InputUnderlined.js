@@ -252,9 +252,9 @@ const InputUnderlined = (
               <InputRightElement width='4.5rem'>
                 <Button h='1.75rem' size='sm' bg='transparent' onClick={props.handleShow} _hover={{ background: 'transparent' }} _focus={{ boxShadow: 'none !important' }}>
                   {props.show ?
-                    <Image alt="" ml="4" h="20px" src={'icon/eye.svg'} />
+                    <Image alt="" ml="4" h="20px" src={'/icon/eye.svg'} />
                     :
-                    <Image alt="" ml="4" h="20px" src={'icon/eye-off.svg'} />
+                    <Image alt="" ml="4" h="20px" src={'/icon/eye-off.svg'} />
                   }
                 </Button>
               </InputRightElement>
