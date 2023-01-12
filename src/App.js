@@ -103,7 +103,8 @@ const App = ({ history }) => {
               <Route exact path="/login" component={LoginPage} />
               <Route exact path="/forgot-password" component={ForgotPasswordPage} />
 
-              <Route exact path="/recovery-password/:param" component={RecoveryPasswordPage} />
+              {/* <Route exact path="/recovery-password/:param" component={RecoveryPasswordPage} /> */}
+              <Route exact path="/reset-password" component={RecoveryPasswordPage} />
               <Route exact path="/registration-status" component={RegistrationStatusPage} />
 
               {/* <Route path="/term-and-condition" component={TermAndConditionPage} />
@@ -112,7 +113,7 @@ const App = ({ history }) => {
               <Route path="/payment-success" component={PaymentSuccessPage} /> */}
               <Route exact path="/sign-up" component={RegisterPage} />
               <Route path="/sign-up/:params" component={RegisterPage} />
-              {/* <Route component={PageNotFound} /> */}
+              <Route path="/404" component={PageNotFound} />
 
               {/* Routes below only for authenticated users */}
               <PrivateRoute component={BasePage} />

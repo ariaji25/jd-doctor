@@ -2,12 +2,12 @@ import { Box, Flex, Image, Link } from '@chakra-ui/react';
 import LogoWithText from 'components/LogoWithText';
 import { useHistory } from 'react-router-dom';
 
-const HeaderClean = ({ withBackButton, withoutLogo, maxW }) => {
+const HeaderClean = ({ withBackButton, withoutLogo, maxW, disabled }) => {
   const history = useHistory();
 
   return (
     <Box>
-      <Flex
+      {disabled ? <></> : <Flex
         alignItems="center"
         justifyContent="start"
         maxW={maxW ?? '6xl'}
@@ -33,7 +33,7 @@ const HeaderClean = ({ withBackButton, withoutLogo, maxW }) => {
             </Link>
           </Box>
         )}
-      </Flex>
+      </Flex>}
     </Box>
   );
 };

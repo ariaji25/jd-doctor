@@ -161,9 +161,13 @@ const addZeroPad = (num, totalLength) => {
 
 const useQueryParams = (key) => {
   const { search } = useLocation();
-
-  const queryparams = React.useMemo(() => new URLSearchParams(search), [search]);
-  return queryparams[key]
+  let searchparams = search.replace("?", "").split("&")
+  let searchparamsValue = {}
+  searchparams.forEach((i) => {
+    let item = i.split("=")
+    return searchparamsValue[item[0]] = item[1]
+  })
+  return searchparamsValue[key]
 }
 
 const s4 = () => {
