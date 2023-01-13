@@ -12,10 +12,13 @@ import Content from 'components/Content';
 import HeaderClean from 'components/HeaderClean';
 import InputNoHP from 'components/input/InputNoHP';
 import InputUnderlined from 'components/input/InputUnderlined';
+import LogoWithText from 'components/LogoWithText';
 import PageContainer from 'components/PageContainer';
 import SideModal from 'components/SideModal';
-import React, { useState } from 'react';
+import TextTitle from 'components/text/TextTitle';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import apiAuth from 'services/apiAuth';
 import apiOtp from 'services/apiOtp';
 import stateLogin from 'states/stateLogin';
 import { useSnapshot } from 'valtio';
@@ -30,7 +33,7 @@ const ForgotPasswordForm = ({ onClikWaHelp }) => {
   };
 
   const onChangeEmail = (email) => {
-    stateLogin.email = email;
+    stateLogin.email = email.target.value;
   };
 
   const onSubmit = async (e) => {
@@ -38,8 +41,9 @@ const ForgotPasswordForm = ({ onClikWaHelp }) => {
 
     try {
       stateLogin.processing = true;
-      await apiOtp.request(stateLogin.nohp);
-      stateLogin.showInputOtp = true;
+      await apiAuth.requestResetPassword(stateLogin.email);
+      stateLogin.successRequestRecoveryPassword = true;
+
     } catch (error) {
       console.error('❌ onSubmit:', e);
     } finally {
@@ -83,7 +87,7 @@ const ForgotPasswordForm = ({ onClikWaHelp }) => {
             color='#505050'
             textAlign='center'
             onClick={e => {
-              window.browserHistory.push("/");
+
             }}
           >
             Kembali
@@ -95,15 +99,19 @@ const ForgotPasswordForm = ({ onClikWaHelp }) => {
 };
 
 const ForgotPasswordPage = () => {
-  const { showInputOtp } = useSnapshot(stateLogin);
+  const { successRequestRecoveryPassword } = useSnapshot(stateLogin);
   const { isOpen, onToggle } = useDisclosure();
+
+  useEffect(() => {
+    stateLogin.successRequestRecoveryPassword = false
+  }, [])
 
   return (
     <>
       <PageContainer bg="unset">
-        <HeaderClean />
+        <HeaderClean disabled={successRequestRecoveryPassword} />
         <Content>
-          {!showInputOtp && (
+          {!successRequestRecoveryPassword && (
             <Box
               px="4"
               maxW={{ base: 'md', lg: '5xl' }}
@@ -117,9 +125,32 @@ const ForgotPasswordPage = () => {
               <Carousel onPage={'forgot-password'} />
             </Box>
           )}
-          {showInputOtp && (
-            <Box px="4" maxW="5xl" mx="auto" alignItems="center">
-              <InputOTP />
+          {successRequestRecoveryPassword && (
+            <Box
+              maxW={{ base: 'md', lg: '5xl' }}
+              marginTop={'200px'}
+              mx="auto"
+              display={{ lg: 'flex' }}
+              alignItems="center"
+              gap={{ lg: '100px' }}>
+              <Box w={'full'}>
+                <Box>
+                  <Link href="/">
+                    <LogoWithText h={{ base: '10', md: '12' }} />
+                  </Link>
+                </Box>
+                <Box h={'20px'} />
+
+                <TextTitle>Email Terkirim</TextTitle>
+                <Box h={'20px'} />
+
+                <Text width={'400px'}>
+                  Kami sudah mengirimkan tautan untuk recovery password
+                  silahkan cek email yang anda gunakan untuk mendaftar di JumpaDokter
+                </Text>
+              </Box>
+              <Box h={'20px'} />
+              <Carousel onPage={'success-email'} />
             </Box>
           )}
         </Content>

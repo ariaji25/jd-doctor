@@ -6,6 +6,7 @@ const stateLogin = proxy({
   password: '',
   processing: false,
   showInputOtp: false,
+  successRequestRecoveryPassword: false,
   error: '',
 });
 

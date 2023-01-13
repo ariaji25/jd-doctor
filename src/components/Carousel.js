@@ -28,7 +28,22 @@ const Carousel = ({ onPage }) => {
   const cardsRecovery = [
     '/img/recovery-password-carousel.svg',
   ];
-  const cards = onPage === 'login' ? cardsLogin : onPage === 'recovery' ? cardsRecovery : cardsForgotPassword
+
+  const successEmail = ['/img/email-success.png']
+  const cards = () => {
+    switch(onPage) {
+      case 'login':
+        return cardsLogin
+      case 'forgot-password':
+        return cardsForgotPassword
+      case 'recovery':
+        return cardsRecovery;
+      case 'success-email':
+        return successEmail
+      default:
+        return cardsLogin
+    }
+  }
 
   // const bodys = [
   //   {
@@ -54,7 +69,7 @@ const Carousel = ({ onPage }) => {
     // height={"700px"}
     >
       <Slider {...settings}>
-        {cards.map((url, index) => (
+        {cards().map((url, index) => (
           <div key={index}>
             <Box position="relative" w="full" h="400px" mb="4">
               <Image

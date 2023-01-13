@@ -4,7 +4,8 @@ import {
   OrderedList,
   Text,
   Select,
-  useDisclosure
+  useDisclosure,
+  Badge
 } from '@chakra-ui/react';
 import ButtonMain from 'components/button/ButtonMain';
 import InputOTP from 'components/button/login/InputOTP';
@@ -17,7 +18,7 @@ import PageContainer from 'components/PageContainer';
 import SideModal from 'components/SideModal';
 import ToastNotif from 'components/Toast';
 import TextLabel from 'components/text/TextLabel';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import apiAuth from 'services/apiAuth';
 import apiDoctor from 'services/apiDoctor';
@@ -27,10 +28,15 @@ import { setCurrentUserToStorage, setTokenToStorage } from 'utils';
 import { useSnapshot } from 'valtio';
 import colors from 'values/colors';
 import TextSmall from 'components/text/TextSmall';
+import { useQueryParams } from 'utils';
+import { useLocation } from 'react-router-dom/cjs/react-router-dom';
+import CustomModal from 'components/CustomModal';
+import { useDispatch } from 'react-redux';
 
-const RecoveryPasswordForm = ({ onClikWaHelp }) => {
+const RecoveryPasswordForm = ({ onClikWaHelp, isReset, token }) => {
   const history = useHistory()
-  const [mode, setMode] = useState('reset')
+  const [mode, setMode] = useState(isReset ? 'reset' : 'ganti')
+  const {isOpen, onOpen, onClose} = useDisclosure()
   const [loading, setLoading] = useState(false)
   const [password, setPassword] = useState({
     oldPassword: '',
@@ -43,6 +49,11 @@ const RecoveryPasswordForm = ({ onClikWaHelp }) => {
     repeatPassword: false
   })
 
+
+  const [isValidPassword, setIsValidPassword] = useState(false)
+  const [isEqual, setIsEqual] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
+
   const handleShowOld = () => {
     setShowPassword({ ...showPassword, oldPassword: !showPassword.oldPassword });
   };
@@ -53,43 +64,41 @@ const RecoveryPasswordForm = ({ onClikWaHelp }) => {
     setShowPassword({ ...showPassword, repeatPassword: !showPassword.repeatPassword });
   };
 
-  const onChangeMode = (mode) => {
-    setMode(mode)
+  const onChangePasswordOld = (e) => {
+    setPassword({ ...password, oldPassword: e.target.value })
   };
-  const onChangePasswordOld = (password) => {
-    setPassword({ ...password, oldPassword: password })
+  const onChangePasswordNew = (e) => {
+    setIsValidPassword(checkPassword(e.target.value))
+    setPassword({ ...password, newPassword: e.target.value })
   };
-  const onChangePasswordNew = (password) => {
-    setPassword({ ...password, newPassword: password })
+
+  const onChangePasswordRepeat = (e) => {
+    setIsEqual(e.target.value === password.newPassword)
+    setPassword({ ...password, repeatPassword: e.target.value })
   };
-  const onChangePasswordRepeat = (password) => {
-    setPassword({ ...password, repeatPassword: password })
-  };
+
+
+  const checkPassword = (str) => {
+    var re = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+    return re.test(str);
+  }
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true)
-    setLoading(false)
+    console.log(password.newPassword, token)
+    if (isEqual && isValidPassword) {
+      setLoading(true)
+      apiAuth.resetPassword(password.newPassword, token).then((r) => {
+        setLoading(false)
+        setIsSuccess(true)
+        onOpen()
+      }).catch(err => {
+        setLoading(false)
+        setIsSuccess(false)
+        onOpen()
+      })
 
-    // try {
-    //   stateLogin.processing = true;
-    //   const loginResponse = await apiAuth.login(username.target.value, password.target.value)
-    //   if (loginResponse.code === 200) {
-    //     setTokenToStorage(loginResponse.data.token)
-    //     localStorage.setItem("email", username.target.value)
-    //     const currentUser = await apiDoctor.getDetail();
-    //     setCurrentUserToStorage(currentUser);
-    //     window.browserHistory.push("/login")
-    //   } else {
-    //     ToastNotif({
-    //       message: "Username atau password tidak dikenal"
-    //     })
-    //   }
-    // } catch (error) {
-    //   console.error('❌ onSubmit:', e);
-    // } finally {
-    //   stateLogin.processing = false;
-    // }
+    }
   };
 
   return (
@@ -104,7 +113,7 @@ const RecoveryPasswordForm = ({ onClikWaHelp }) => {
               Silahkan mengganti password sebelum login demi keamanan
             </Text>
           </Box>
-          <Box pt={4}>
+          {/* <Box pt={4}>
             <Flex>
               <TextSmall fontWeight="thin">Mode</TextSmall>
               <Text fontSize="xs" color={colors.DANGER}>
@@ -118,8 +127,8 @@ const RecoveryPasswordForm = ({ onClikWaHelp }) => {
               <option value='reset'>Reset Password</option>
               <option value='ganti'>Ganti Password</option>
             </Select>
-          </Box>
-          {mode === 'reset' &&
+          </Box> */}
+          {!isReset &&
             <Box pt={4}>
               <InputUnderlined
                 isRequired
@@ -146,6 +155,7 @@ const RecoveryPasswordForm = ({ onClikWaHelp }) => {
               value={password.newPassword}
               show={showPassword.newPassword}
             />
+            {!isValidPassword && password && password.newPassword ? <Badge variant={'outline'} colorScheme={'red'} >Password harus memiliki minimal satu huruf besar, angka, dan simbol dengan panjang 8 karakter</Badge> : <></>}
           </Box>
           <Box pt={4}>
             <InputUnderlined
@@ -159,13 +169,24 @@ const RecoveryPasswordForm = ({ onClikWaHelp }) => {
               value={password.repeatPassword}
               show={showPassword.repeatPassword}
             />
+            {!isEqual && password && password.repeatPassword ? <Badge variant={'outline'} colorScheme={'red'}>Password tidak sama</Badge> : <></>}
           </Box>
           <Box h="8" />
           <ButtonMain type="submit" disabled={loading} w="full">
             {loading ? <CircularProgress isIndeterminate color={colors.PRIMARY} size={'25px'} /> : 'Reset password'}
           </ButtonMain>
         </form>
-      </Box>
+      </Box>     
+      <CustomModal
+        isOpen={isOpen}
+        message={isSuccess ? "Berhasil recovery password" : "Gagal recovery password"}
+        type={isSuccess ? "success" : "danger"}
+        onClose={e => {
+          if (isSuccess) {
+            onClose()
+            window.browserHistory.push("/login")
+          } else onClose()
+        }} />
     </>
   );
 };
@@ -173,6 +194,17 @@ const RecoveryPasswordForm = ({ onClikWaHelp }) => {
 const RecoveryPasswordPage = () => {
   const { showInputOtp } = useSnapshot(stateLogin);
   const { isOpen, onToggle } = useDisclosure();
+  const [isReset, setIsReset] = useState(false)
+  const { search, pathname } = useLocation()
+  const token = useQueryParams("token")
+
+  useEffect(() => {
+    if (token && pathname.includes("reset")) {
+      setIsReset(true)
+    } else if (pathname.includes("reset")) {
+      window.location.replace("/404")
+    }
+  }, [search, token, pathname])
 
   return (
     <>
@@ -188,7 +220,7 @@ const RecoveryPasswordPage = () => {
               alignItems="baseline"
               gap={{ lg: '200px' }}
             >
-              <RecoveryPasswordForm onClikWaHelp={onToggle} />
+              <RecoveryPasswordForm onClikWaHelp={onToggle} isReset={isReset} token={token} />
 
               <Carousel onPage={'recovery'} />
             </Box>

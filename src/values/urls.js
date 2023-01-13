@@ -56,6 +56,9 @@ const urls = {
   //ICD9:
   ICD9_URL: `${config.icd9ApiURL}`,
   CHECK_REGISTRATION_STATUS: `${config.apiURL}/api/register-status`,
+  //RESET
+  REQ_RESET_PWD: `/api/request-reset-password`,
+  RESET_PASSWORD: `${config.apiURL}/api/reset-password`
   
 
 };
