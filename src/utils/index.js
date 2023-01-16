@@ -193,6 +193,17 @@ function getInitial(name) {
   }
 }
 
+const checkPassword = (str) => {
+  var re = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+  return re.test(str);
+}
+
+
+const isValidEmail = (str) => {
+  var re = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+  return re.test(str);
+}
+
 
 export {
   addZeroPad,
@@ -217,6 +228,8 @@ export {
   s4,
   getOU,
   getAge,
-  getInitial
+  getInitial,
+  checkPassword,
+  isValidEmail
 };
 

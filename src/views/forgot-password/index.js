@@ -21,34 +21,37 @@ import { Link } from 'react-router-dom';
 import apiAuth from 'services/apiAuth';
 import apiOtp from 'services/apiOtp';
 import stateLogin from 'states/stateLogin';
+import { isValidEmail } from 'utils';
 import { useSnapshot } from 'valtio';
 import colors from 'values/colors';
 
 const ForgotPasswordForm = ({ onClikWaHelp }) => {
   const { email, processing } = useSnapshot(stateLogin);
   const [showPassword, setShowPassword] = useState(false)
+  const [isValidEmailAddress, setIsValidEmailAddress] = useState(false)
 
   const handleShow = () => {
     setShowPassword(!showPassword);
   };
 
   const onChangeEmail = (email) => {
+    setIsValidEmailAddress(isValidEmail(email.target.value))
     stateLogin.email = email.target.value;
   };
 
   const onSubmit = async (e) => {
     e.preventDefault();
-
-    try {
-      stateLogin.processing = true;
-      await apiAuth.requestResetPassword(stateLogin.email);
-      stateLogin.successRequestRecoveryPassword = true;
-
-    } catch (error) {
-      console.error('❌ onSubmit:', e);
-    } finally {
-      stateLogin.processing = false;
+    if (isValidEmailAddress) {
+      try {
+        stateLogin.processing = true;
+        await apiAuth.requestResetPassword(stateLogin.email);
+      } catch (error) {
+      } finally {
+        stateLogin.processing = false;
+        stateLogin.successRequestRecoveryPassword = true;
+      }
     }
+
   };
 
   return (
@@ -76,6 +79,7 @@ const ForgotPasswordForm = ({ onClikWaHelp }) => {
               value={email}
             />
           </Box>
+          {!isValidEmailAddress && email ? <Text color={colors.DANGER} fontSize={'11px'} >Alamat email tidak valid.</Text> : <></>}
           <Box h="8" />
           <ButtonMain type="submit" disabled={processing} w="full">
             Kirim
@@ -141,12 +145,10 @@ const ForgotPasswordPage = () => {
                 </Box>
                 <Box h={'20px'} />
 
-                <TextTitle>Email Terkirim</TextTitle>
+                <TextTitle>Permintaan Recovery Password</TextTitle>
                 <Box h={'20px'} />
-
                 <Text width={'400px'}>
-                  Kami sudah mengirimkan tautan untuk recovery password
-                  silahkan cek email yang anda gunakan untuk mendaftar di JumpaDokter
+                  Jika email anda terdaftar pada JumpaDokter anda akan menerima tautan untuk recovery password pada email dalam beberapa menit.
                 </Text>
               </Box>
               <Box h={'20px'} />

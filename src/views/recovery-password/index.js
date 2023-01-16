@@ -24,7 +24,7 @@ import apiAuth from 'services/apiAuth';
 import apiDoctor from 'services/apiDoctor';
 import apiOtp from 'services/apiOtp';
 import stateLogin from 'states/stateLogin';
-import { setCurrentUserToStorage, setTokenToStorage } from 'utils';
+import { checkPassword, setCurrentUserToStorage, setTokenToStorage } from 'utils';
 import { useSnapshot } from 'valtio';
 import colors from 'values/colors';
 import TextSmall from 'components/text/TextSmall';
@@ -76,12 +76,6 @@ const RecoveryPasswordForm = ({ onClikWaHelp, isReset, token }) => {
     setIsEqual(e.target.value === password.newPassword)
     setPassword({ ...password, repeatPassword: e.target.value })
   };
-
-
-  const checkPassword = (str) => {
-    var re = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-    return re.test(str);
-  }
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -155,7 +149,7 @@ const RecoveryPasswordForm = ({ onClikWaHelp, isReset, token }) => {
               value={password.newPassword}
               show={showPassword.newPassword}
             />
-            {!isValidPassword && password && password.newPassword ? <Badge variant={'outline'} colorScheme={'red'} >Password harus memiliki minimal satu huruf besar, angka, dan simbol dengan panjang 8 karakter</Badge> : <></>}
+            {!isValidPassword && password && password.newPassword ? <Text color={colors.DANGER} fontSize={'11px'} >Password harus mengandung 8 huruf terdiri dari huruf, angka dan karakter khusus</Text> : <></>}
           </Box>
           <Box pt={4}>
             <InputUnderlined
@@ -169,7 +163,7 @@ const RecoveryPasswordForm = ({ onClikWaHelp, isReset, token }) => {
               value={password.repeatPassword}
               show={showPassword.repeatPassword}
             />
-            {!isEqual && password && password.repeatPassword ? <Badge variant={'outline'} colorScheme={'red'}>Password tidak sama</Badge> : <></>}
+            {!isEqual && password && password.repeatPassword ?  <Text color={colors.DANGER} fontSize={'11px'} >Password tidak sama dengan password baru</Text> : <></>}
           </Box>
           <Box h="8" />
           <ButtonMain type="submit" disabled={loading} w="full">
