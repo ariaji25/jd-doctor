@@ -1,11 +1,13 @@
-import { Box, Center, Circle, Image } from '@chakra-ui/react';
+import { Box, Button, Center, Circle, Flex, Image, Stack, Text } from '@chakra-ui/react';
 import ToastNotif from 'components/Toast';
+import ButtonMain from 'components/button/ButtonMain';
 import { useState } from 'react';
 import apiBucket from 'services/apiBucket';
 import { getBase64, readArrayBuffer } from 'utils';
 import { fileValidator, profileFileValidator } from 'utils/inputValidator';
+import colors from 'values/colors';
 
-const size = '100px';
+const size = '150px';
 
 const ProfilePictureEdit = ({ onChange }) => {
   const [selectedFile, setSelectedFile] = useState(null)
@@ -55,60 +57,73 @@ const ProfilePictureEdit = ({ onChange }) => {
     }
   }
   return (
-    <Circle
-      onClick={(e) => selectFile()}
-      w={size}
-      h={size}
-      position="relative"
-      overflow="hidden"
-    >
-      <input
-        type="file"
-        id="profile"
-        onChange={(e) => onFileSelected()}
-        name="files"
-        multiple
-        style={{
-          visibility: 'hidden',
-          height: '0px',
-          width: '0px'
-        }} />
-      <Circle w={size} h={size}>
-        {selectedFile ? <Image
-          alt=""
-          src={selectedFile}
-          width={size}
-          height={size}
-          objectFit="cover"
-        /> : <Image
-          alt=""
-          src="/icon/user.svg"
-          width={size}
-          height={size}
-          objectFit="cover"
-        />}
-      </Circle>
-
+    <Stack>
       <Circle
-        cursor="pointer"
+        onClick={(e) => selectFile()}
         w={size}
         h={size}
-        position="absolute"
-        top="0"
-        left="0"
-        opacity={0}
-        _hover={{ opacity: 1 }}
+        position="relative"
+        overflow="hidden"
       >
-        <Box>
+        <input
+          type="file"
+          id="profile"
+          onChange={(e) => onFileSelected()}
+          name="files"
+          multiple
+          style={{
+            visibility: 'hidden',
+            height: '0px',
+            width: '0px'
+          }}
+          accept="image/png, image/jpg, image/jpeg, .jpg,.jpeg,.png"
+        />
+        <Circle w={size} h={size}>
+          {selectedFile ? <Image
+            alt=""
+            src={selectedFile}
+            width={size}
+            height={size}
+            objectFit="cover"
+          /> : <Image
+            alt=""
+            src="/icon/userupload.svg"
+            width={size}
+            height={size}
+            objectFit="cover"
+          />}
+        </Circle>
+
+        <Circle
+          cursor="pointer"
+          w={size}
+          h={size}
+          position="absolute"
+          top="0"
+          left="0"
+          opacity={0}
+          _hover={{ opacity: 1 }}
+        >
+          {/* <Box>
           <Box h="75px" />
           <Box bg="rgba(255,255,255,0.3)" w={size} h="25px" pt="4px">
             <Center>
               <Image src="/icon/camera_white.svg" alt="" />
             </Center>
           </Box>
-        </Box>
+        </Box> */}
+        </Circle>
       </Circle>
-    </Circle>
+      <ButtonMain bg="white" color={colors.PRIMARY} borderRadius={'6px'}>
+        <Flex gap={2} onClick={(e) => selectFile()}>
+          <Image src="/icon/camera.svg" h={'17px'} />
+          <Text>Unggah foto</Text>
+        </Flex>
+      </ButtonMain>
+      <Center>
+        <Text fontSize={'12px'} textAlign={'center'} color={colors.PRIMARY}>Maksimal 1 Mb<br />(Jpg, Png,Jpeg)</Text>
+      </Center>
+    </Stack>
   );
 };
 

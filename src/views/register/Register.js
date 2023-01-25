@@ -1,4 +1,4 @@
-import { Box, Center, Flex, Grid, GridItem, Image, Modal, ModalBody, ModalContent, ModalOverlay, Stack, Text, useDisclosure, useMediaQuery } from "@chakra-ui/react";
+import { Box, Center, Flex, Grid, GridItem, Image, InputGroup, InputLeftAddon, Modal, ModalBody, ModalContent, ModalOverlay, Stack, Text, useDisclosure, useMediaQuery } from "@chakra-ui/react";
 import { globalContext } from "App";
 import ButtonMain from "components/button/ButtonMain";
 import Content from "components/Content";
@@ -27,7 +27,19 @@ import {
 } from "@choc-ui/chakra-autocomplete";
 import TextSmall from "components/text/TextSmall";
 import LogoWithText from "components/LogoWithText";
+import Footer from "components/Footer";
 
+const listSpecialisasi = ['Dokter Umum', 'Dokter Gigi', 'Penyakit Dalam']
+
+function listSpecialisasiFunc() {
+  return (
+    <>
+      {listSpecialisasi.map((r) => (
+        <option value={r}>{r}</option>
+      ))}
+    </>
+  )
+}
 const containerStyle = {
   width: '100%',
   height: '300px'
@@ -47,8 +59,15 @@ const PlacesAutocomplete = ({ setSelected }) => {
     clearSuggestions
   } = usePlacesAutocomplete();
 
+  const [isValid, setIsValid] = useState(true)
+
   const handleInput = (e) => {
     setValue(e.target.value);
+    if (e.target.value) {
+      setIsValid(true)
+    } else {
+      setIsValid(false)
+    }
   };
 
   const handleSelect = async (val) => {
@@ -57,41 +76,57 @@ const PlacesAutocomplete = ({ setSelected }) => {
     const results = await getGeocode(val)
     const { lat, lng } = await getLatLng(results[0])
     setSelected({ lat, lng })
+    if (val) {
+      setIsValid(true)
+    } else {
+      setIsValid(false)
+    }
   };
 
   return (
-    <AutoComplete openOnFocus>
-      <AutoCompleteInput
-        variant="filled"
-        placeholder="Cari tempat"
-        borderBottom={'1.5px solid #e0e0e0'}
-        bg={'transparent'}
-        marginStart={0}
-        marginInlineStart={0}
-        marginEnd={0}
-        marginInlineEnd={0}
-        paddingLeft={0}
-        fontSize={{ base: 'sm', sm: 'md' }}
-        color={colors.PRIMARY}
-        fontWeight="bold"
-        border="0"
-        _hover={{ background: 'transparent' }}
-        onChange={handleInput}
-        rounded="none"
-        h="35px" />
-      <AutoCompleteList>
-        {status === "OK" &&
-          data.map(({ place_id, description }) => (
-            <AutoCompleteItem
-              key={place_id}
-              value={description}
-              onClick={() => handleSelect({ placeId: place_id })}
-            >
-              {description}
-            </AutoCompleteItem>
-          ))}
-      </AutoCompleteList>
-    </AutoComplete>
+    <>
+      <InputGroup>
+        <InputLeftAddon bg='transparent' borderColor={'#1E3869 !important'} borderRight={'none'} children={
+          <Image alt="" h="25px" src={'/icon/dateicon.svg'} style={{ padding: '3px' }} />
+        } />
+        <AutoComplete openOnFocus>
+          <AutoCompleteInput
+            variant="filled"
+            placeholder="Cari tempat"
+            // borderBottom={'1.5px solid #e0e0e0'}
+            bg={'transparent'}
+            marginStart={0}
+            marginInlineStart={0}
+            marginEnd={0}
+            marginInlineEnd={0}
+            paddingLeft={0}
+            fontSize={{ base: 'sm', sm: 'md' }}
+            color={colors.PRIMARY}
+            fontWeight="bold"
+            // border="0"
+            _hover={{ background: 'transparent' }}
+            onChange={handleInput}
+            // rounded="none"
+            borderRadius={'0 6px 6px 0'}
+            borderLeft={'none'}
+            borderColor={'#1E3869 !important'}
+            h="40px" />
+          <AutoCompleteList>
+            {status === "OK" &&
+              data.map(({ place_id, description }) => (
+                <AutoCompleteItem
+                  key={place_id}
+                  value={description}
+                  onClick={() => handleSelect({ placeId: place_id })}
+                >
+                  {description}
+                </AutoCompleteItem>
+              ))}
+          </AutoCompleteList>
+        </AutoComplete>
+      </InputGroup>
+      {(!value) && <TextSmall color="red.500">{isValid ? "" : 'Titik koordinat tidak boleh kosong'}</TextSmall>}
+    </>
   );
 };
 
@@ -193,8 +228,10 @@ export const RegisterPage = () => {
       id: 'name',
       uid: 'HyfzjNVhlzM',
       isRequired: true,
+      placeholder: 'Nama Kamu',
       errMessage: 'Nama lengkap tidak boleh kosong',
       type: 'text',
+      typeModel: 'outlined',
       icon: '/icon/user.svg',
     },
     {
@@ -204,6 +241,7 @@ export const RegisterPage = () => {
       isRequired: true,
       errMessage: 'NIK harus berupa 16 digit angka',
       type: 'number',
+      typeModel: 'outlined',
       icon: '/icon/credit_card.svg',
       maxLength: 16
     },
@@ -214,7 +252,8 @@ export const RegisterPage = () => {
       isRequired: true,
       errMessage: 'Tanggal lahir tidak boleh kosong',
       type: 'date',
-      icon: '/icon/calendar.svg'
+      typeModel: 'outlined',
+      icon: '/icon/dateicon.svg'
     },
     {
       label: 'Jenis Kelamin',
@@ -223,6 +262,7 @@ export const RegisterPage = () => {
       isRequired: true,
       errMessage: 'Belum memilih jenis kelamin',
       type: 'radio',
+      typeModel: 'outlined',
       options: [{
         value: 'male',
         label: 'Laki-laki'
@@ -239,7 +279,8 @@ export const RegisterPage = () => {
       isRequired: true,
       errMessage: 'Alamat tidak boleh kosong',
       type: 'text',
-      icon: '/icon/map.svg'
+      typeModel: 'outlined',
+      icon: '/icon/addressicon.svg'
     },
     {
       label: 'Nomor HP Dokter',
@@ -248,7 +289,8 @@ export const RegisterPage = () => {
       isRequired: true,
       errMessage: 'Nomor HP tidak boleh kosong',
       type: 'number',
-      icon: '/icon/phone.svg',
+      typeModel: 'outlined',
+      icon: '/icon/hpicon.svg',
       maxLength: 12
     },
     {
@@ -258,17 +300,19 @@ export const RegisterPage = () => {
       isRequired: true,
       errMessage: 'Email tidak boleh kosong',
       type: 'text',
-      icon: '/icon/email.svg'
+      typeModel: 'outlined',
+      icon: '/icon/emailicon.svg'
     },
-    {
-      label: 'Nama Ibu Kandung',
-      id: 'mother_name',
-      uid: null,
-      isRequired: false,
-      errMessage: 'Nama Ibu Kandung tidak boleh kosong',
-      type: 'text',
-      icon: '/icon/user.svg'
-    },
+    // {
+    //   label: 'Nama Ibu Kandung',
+    //   id: 'mother_name',
+    //   uid: null,
+    //   isRequired: false,
+    //   errMessage: 'Nama Ibu Kandung tidak boleh kosong',
+    //   type: 'text',
+    //   typeModel: 'outlined',
+    //   icon: '/icon/user.svg'
+    // },
   ]
   const rightInputModel = [
     {
@@ -278,7 +322,8 @@ export const RegisterPage = () => {
       isRequired: true,
       errMessage: 'Nomor STR tidak boleh kosong',
       type: 'text',
-      icon: '/icon/file.svg'
+      typeModel: 'outlined',
+      icon: '/icon/stricon.svg'
     },
     {
       label: 'Upload file STR',
@@ -287,8 +332,19 @@ export const RegisterPage = () => {
       isRequired: true,
       errMessage: 'File STR tidak boleh kosong',
       type: 'button',
+      typeModel: 'outlined',
       buttonLabel: 'Pilih file STR',
-      icon: '/icon/upload_cloud.svg'
+      icon: '/icon/uploadicon.svg'
+    },
+    {
+      label: 'Tanggal kadaluarsa STR',
+      id: 'exp_str',
+      uid: 'zpc3MLKYNtu',
+      isRequired: true,
+      errMessage: 'Tanggal kadaluarsa STR tidak boleh kosong',
+      type: 'date',
+      typeModel: 'outlined',
+      icon: '/icon/dateicon.svg'
     },
     {
       label: 'Nomor SIP',
@@ -297,7 +353,8 @@ export const RegisterPage = () => {
       isRequired: true,
       errMessage: 'Nomor STR tidak boleh kosong',
       type: 'text',
-      icon: '/icon/file.svg'
+      typeModel: 'outlined',
+      icon: '/icon/stricon.svg'
     },
     {
       label: 'Upload file SIP',
@@ -306,8 +363,40 @@ export const RegisterPage = () => {
       isRequired: true,
       errMessage: 'File SIP tidak boleh kosong',
       type: 'button',
+      typeModel: 'outlined',
       buttonLabel: 'Pilih file SIP',
-      icon: '/icon/upload_cloud.svg'
+      icon: '/icon/uploadicon.svg'
+    },
+    {
+      label: 'Tanggal kadaluarsa SIP',
+      id: 'exp_sip',
+      uid: 'S1CXR9mCYnA',
+      isRequired: true,
+      errMessage: 'Tanggal kadaluarsa SIP tidak boleh kosong',
+      type: 'date',
+      typeModel: 'outlined',
+      icon: '/icon/dateicon.svg'
+    },
+    {
+      label: 'Spesialisasi dokter',
+      id: 'specialization',
+      uid: 'c7ynt8IronO',
+      isRequired: true,
+      errMessage: 'Spesialisasi dokter tidak boleh kosong',
+      type: 'select',
+      typeModel: 'outlined',
+      selectOption: () => listSpecialisasiFunc(),
+      icon: '/icon/spesialisasiicon.svg'
+    },
+    {
+      label: 'Tanggal mulai bekerja sebagai dokter umum/spesialis terkait',
+      id: 'start_work',
+      uid: 'EDOD3USCLVz',
+      isRequired: true,
+      errMessage: 'Tanggal mulai bekerja sebagai dokter umum/spesialis terkait tidak boleh kosong',
+      type: 'date',
+      typeModel: 'outlined',
+      icon: '/icon/dateicon.svg'
     },
     {
       label: 'Lokasi Praktek',
@@ -316,7 +405,8 @@ export const RegisterPage = () => {
       isRequired: true,
       errMessage: 'Lokasi praktek tidak boleh kosong',
       type: 'text',
-      icon: '/icon/map.svg'
+      typeModel: 'outlined',
+      icon: '/icon/mapicon.svg'
     },
   ]
 
@@ -331,27 +421,27 @@ export const RegisterPage = () => {
       })
     }
 
-    if (attributes.length < 11) {
+    // if (attributes.length < 11) {
+    //   ToastNotif({
+    //     message: 'Oops.. Data diri belum lengkap, mohon dilengkapi !',
+    //     type: 'error'
+    //   });
+    // } else {
+    const response = await apiDoctor.create(attributes)
+    if (response.status === 200) {
       ToastNotif({
-        message: 'Oops.. Data diri belum lengkap, mohon dilengkapi !',
-        type: 'error'
-      });
+        message: 'Yeay, Berhasil registrasi',
+        type: 'success'
+      })
+      const email = attributes.find(r => r.attribute === 'KNhGfY4ApxB').value
+      history.push(`/sign-up/${email}`)
     } else {
-      const response = await apiDoctor.create(attributes)
-      if (response.status === 200) {
-        ToastNotif({
-          message: 'Yeay, Berhasil registrasi',
-          type: 'success'
-        })
-        const email = attributes.find(r => r.attribute === 'KNhGfY4ApxB').value
-        history.push(`/sign-up/${email}`)
-      } else {
-        ToastNotif({
-          message: 'Oopss.. Terjadi kesalahan',
-          type: 'error'
-        })
-      }
+      ToastNotif({
+        message: 'Oopss.. Terjadi kesalahan',
+        type: 'error'
+      })
     }
+    // }
   }
 
   const onInputChange = (e) => {
@@ -366,7 +456,7 @@ export const RegisterPage = () => {
   const LeftForms = () => {
     return (
       <>
-        <Box w='md'>
+        <Box w='lg'>
           {leftInputModel.map((e) => <InputWithModel key={e.id} inputModel={e} onChange={onInputChange} validator={validator} />)}
         </Box>
       </>
@@ -378,23 +468,45 @@ export const RegisterPage = () => {
 
     const { isOpen, onOpen, onClose } = useDisclosure()
 
+    const openModal = () => {
+      const attributes = []
+      for (const d in registerData) {
+        if (registerData[d].uid) attributes.push({
+          value: registerData[d].value,
+          attribute: registerData[d].uid
+        })
+      }
+      console.log(attributes, "test")
+      if (attributes.length < 16) {
+        ToastNotif({
+          message: 'Oops.. Data diri belum lengkap, mohon dilengkapi !',
+          type: 'error'
+        });
+      } else {
+        onOpen()
+      }
+    }
     return (
       <>
-        <Box w='md'>
+        <Box w='lg'>
           {rightInputModel.map((e) => <InputWithModel key={e.id} inputModel={e} onChange={onInputChange} validator={validator} />)}
         </Box>
-        <Box w='md'>
+        <Box w='lg'>
           <GoogleMapComponent />
         </Box>
         <Box h='20px' />
-        <Box w='md'>
-          <ButtonMain width={'100%'}
+        <Flex w='lg' mb={8} justifyContent={'end'}>
+          <ButtonMain width={'fit-content'}
+            px={8} borderRadius={'6px'}
             // onClick={(e) => onSave()}
-            onClick={onOpen}
+            onClick={openModal}
           >
-            Lanjut
+            <Flex>
+              <Text>Lanjut</Text>
+              <Image src="/icon/chevron-right.svg" />
+            </Flex>
           </ButtonMain>
-        </Box>
+        </Flex>
         <Modal isOpen={isOpen} onClose={onClose} size='xl' >
           <ModalOverlay />
           <ModalContent minW={isLargerThan1280 ? '1000px' : null}>
@@ -441,7 +553,7 @@ export const RegisterPage = () => {
 
   const [isLargerThan1000] = useMediaQuery('(min-width: 1000px)')
   const getOrgUnit = async () => {
-    const orgUnit = await apiClinicArea.list()
+    await apiClinicArea.list()
   }
 
   const init = useCallback(() => {
@@ -491,17 +603,15 @@ export const RegisterPage = () => {
               </Stepper>
               {step === 0 &&
                 <>
-                  <Box alignContent="center">
-                    <Center>
-                      <ProfilePictureEdit onChange={onInputChange} />
-                    </Center>
-                  </Box>
                   <Box height={"54px"} />
                   <Flex flexWrap={'wrap'} gap={4} justifyContent="center">
-                    <Box flex={1}>
-                      <LeftForms />
+                    <Box flex={0.5}>
+                      <Center ml={8}>
+                        <ProfilePictureEdit onChange={onInputChange} />
+                      </Center>
                     </Box>
                     <Box flex={1}>
+                      <LeftForms />
                       <RightForms />
                     </Box>
                   </Flex>
@@ -570,6 +680,7 @@ export const RegisterPage = () => {
               }
             </Box>
           </Center>
+          <Footer />
         </Content>
       </PageContainer>
     </div>

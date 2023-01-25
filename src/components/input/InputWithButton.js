@@ -104,7 +104,7 @@ const InputWithButton = (
         </Flex>
       )}
       <Flex alignItems="center" w="full">
-        <ButtonOutlined width="181px" height="37px" onClick={selectFile}>
+        <ButtonOutlined width="181px" height="37px" onClick={selectFile} color={'white'} bg={'#1E3869'} borderRadius={'6px'}>
           <Image src={icon} /> <Box w="20px" /> {buttonLabel ?? ""}
         </ButtonOutlined>
         <Box w="16px" />

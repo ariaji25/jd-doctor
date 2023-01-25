@@ -6,33 +6,34 @@ import LogoWithTextDark from './LogoWithTextDark';
 
 const Footer = () => {
   return (
-    <Box position="absolute" top="100%" w="100%" style={{ marginTop: "100px" }}>
+    <Box position="absolute" top="100%" w="100%" style={{ marginTop: "20px" }}>
       <Box bg={colors.PRIMARY}>
         <Flex
           px={{ base: '4', sm: '6' }}
           maxW="6xl"
           mx="auto"
-          py="10"
+          pt={'20'}
+          pb="10"
           color="white"
           display={{ md: 'flex' }}
           justifyContent="space-between"
           alignItems="start"
         >
           <Box mb={{ base: '10' }}>
-            <Text mb="3" fontSize="14px">
-              Powered by:
-            </Text>
 
             <LogoWithTextDark
               h={{ base: 10, sm: 'unset' }}
               mb={{ base: '4', sm: '8' }}
             />
 
-            {/* <Flex gap="2" mb="4">
+            <Text mb="3" fontSize="14px">
+              Powered by:
+            </Text>
+            <Flex gap="2" mb="4">
               <Image
                 h={{ base: '9', sm: '10' }}
-                src="/img/dhis2.svg"
-                title="dhis2"
+                src="/img/castellum.png"
+                title="Castellum Digital Indonesia"
                 alt=""
               />
               <Image
@@ -43,11 +44,11 @@ const Footer = () => {
               />
               <Image
                 h={{ base: '9', sm: '10' }}
-                src="/img/castellum.png"
-                title="Castellum Digital Indonesia"
+                src="/img/dhis2.svg"
+                title="dhis2"
                 alt=""
               />
-            </Flex> */}
+            </Flex>
             {/* <Text fontWeight="bold" mb="3" fontSize="14px">
               Download JumpaDokter
             </Text>
@@ -89,10 +90,15 @@ const Footer = () => {
               Hubungi Kami
             </Text>
 
-            <Flex alignItems="start" mb="6" fontSize="14px">
+            {/* <Flex alignItems="start" mb="6" fontSize="14px">
               <Image alt="" src="/icon/pin_map.svg" />
               &nbsp;&nbsp;
               <Text fontSize="14px">{contact.ALAMAT}</Text>
+            </Flex> */}
+            <Flex alignItems="start" mb="6" fontSize="14px">
+              <Image alt="" src="/icon/ig.svg" />
+              &nbsp;&nbsp;
+              <Text fontSize="14px">{contact.IG}</Text>
             </Flex>
             <Flex alignItems="start" mb="6" fontSize="14px">
               <Image alt="" src="/icon/telephone.svg" />
@@ -108,7 +114,7 @@ const Footer = () => {
               </Link>
             </Flex>
             <Flex alignItems="start" fontSize="14px">
-              <Image alt="" src="/icon/email.svg" />
+              <Image alt="" src="/icon/envelope.svg" />
               &nbsp;&nbsp;
               <Text fontSize="14px">
                 <Link
@@ -124,38 +130,21 @@ const Footer = () => {
           </Box>
         </Flex>
       </Box>
-      <Box bg={colors.BIRU_TERANG} color={colors.PRIMARY}>
+      <Box bg={colors.PRIMARY} color={'white'}>
         <Box
           px="6"
           mx="auto"
           py="5"
           maxW="6xl"
-          display="flex"
-          flexDirection={{ base: 'column', md: 'row' }}
-          alignItems="center"
-          justifyContent="space-between"
         >
           <Box
             order={{ base: 2, md: 1 }}
             fontWeight="semibold"
-            fontSize={{ base: '14px', sm: '18px' }}
+            textAlign={'center'}
+            fontSize={{ base: '14px', sm: '14px' }}
           >
             &copy;JUMPADOKTER, 2022. ALL RIGHTS RESERVED
           </Box>
-          <Flex
-            order={{ base: 1, md: 2 }}
-            alignItems="center"
-            mb={{ base: '4', md: 0 }}
-          >
-            <Text fontSize={{ base: '14px', sm: '18px' }}>
-              Follow kami
-            </Text>
-            &nbsp;&nbsp;&nbsp;
-            <Image h="32px" w="32px" src="/icon/instagram.svg" alt="" mr='2' />
-            <Text fontSize={{ base: '14px', sm: '18px' }} fontWeight='bold'>
-              @Jumpadokter
-            </Text>
-          </Flex>
         </Box>
       </Box>
     </Box>

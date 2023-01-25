@@ -295,7 +295,6 @@ const InputUnderlined = (
           </Circle>
         )}
       </Flex>
-      {console.log(props.errmessage, isValid, "lllllllllloooooollllll", props.value)}
       {(props.errmessage) && <TextSmall color="red.500">{isValid ? "" : props.errmessage}</TextSmall>}
     </Box>
   );
