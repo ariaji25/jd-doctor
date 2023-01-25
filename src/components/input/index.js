@@ -25,7 +25,7 @@ export const InputWithModel = ({ inputModel, validator, onChange }) => {
       </>
     case 'button':
       return <>
-        <InputWithButton uid={inputModel.uid} isRequired buttonLabel={inputModel.buttonLabel} id={inputModel.id} key={inputModel.key} label={inputModel.label} icon={inputModel.icon} onChange={onChange} validator={validator} errmessage={inputModel.errMessage} />
+        <InputWithButton uid={inputModel.uid} isRequired buttonLabel={inputModel.buttonLabel} id={inputModel.id} key={inputModel.key} label={inputModel.label} icon={inputModel.icon} onChange={onChange} validator={validator} errmessage={inputModel.errMessage} accept={inputModel.accept} />
         <Box h='20px' />
       </>
     case 'radio':

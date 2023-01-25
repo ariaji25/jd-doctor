@@ -1,4 +1,4 @@
-import { Box, Center, Flex, Grid, GridItem, Image, InputGroup, InputLeftAddon, Modal, ModalBody, ModalContent, ModalOverlay, Stack, Text, useDisclosure, useMediaQuery } from "@chakra-ui/react";
+import { Box, Center, Flex, Image, InputGroup, InputLeftAddon, Modal, ModalBody, ModalContent, ModalOverlay, Stack, Text, useDisclosure, useMediaQuery, CircularProgress } from "@chakra-ui/react";
 import { globalContext } from "App";
 import ButtonMain from "components/button/ButtonMain";
 import Content from "components/Content";
@@ -17,7 +17,7 @@ import colors from "values/colors";
 import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
 import { Step, Stepper } from 'react-form-stepper';
 import { FiCheck, FiFileText, FiLogIn, FiX } from "react-icons/fi";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, useLocation } from "react-router-dom";
 import usePlacesAutocomplete, { getGeocode, getLatLng } from "use-places-autocomplete";
 import {
   AutoComplete,
@@ -28,6 +28,7 @@ import {
 import TextSmall from "components/text/TextSmall";
 import LogoWithText from "components/LogoWithText";
 import Footer from "components/Footer";
+import QueryString from "qs";
 
 const listSpecialisasi = ['Dokter Umum', 'Dokter Gigi', 'Penyakit Dalam']
 
@@ -194,11 +195,12 @@ function GoogleMapComponent({ children }) {
 export const RegisterPage = () => {
   const history = useHistory()
   const { params } = useParams()
-
+  const { search } = useLocation()
+  const queryStringParam = QueryString.parse(search, { ignoreQueryPrefix: true })
+  const [loading, setLoading] = useState(false)
   const [registerData, setRegisterData] = useState({});
   const [step, setStep] = useState(0)
   const [verif, setVerif] = useState(false)
-
 
   const validator = (e) => {
     switch (e.target.id) {
@@ -210,17 +212,37 @@ export const RegisterPage = () => {
         return e.target.value ? e.target.value.length > 0 : false;
     }
   }
-  useEffect(() => {
-    if (params) {
-      let receivedState = parseInt(params)
-      if (receivedState === 3) {
-        setVerif(true)
-        setStep(2)
-      } else
-        setStep(parseInt(params))
-
+  async function cekStatus() {
+    if (queryStringParam.email && queryStringParam.str) {
+      try {
+        const statusRes = await apiDoctor.checkRegistrationStatus(queryStringParam.email, queryStringParam.str)
+        if (statusRes) {
+          console.log("Status", statusRes)
+          switch (statusRes.status) {
+            case "0":
+              setStep(1)
+              break
+            case "1":
+              setVerif(true)
+              setStep(2)
+              break
+            default:
+              setStep(0)
+              break
+          }
+        }
+      } catch (e) {
+        setStep(0)
+      }
+      setLoading(false)
+    } else {
+      setStep(0)
     }
-  }, [params])
+  }
+  useEffect(() => {
+    if (queryStringParam.email && queryStringParam.str)
+      cekStatus()
+  }, [(queryStringParam.email && queryStringParam.str)])
 
   const leftInputModel = [
     {
@@ -333,6 +355,7 @@ export const RegisterPage = () => {
       errMessage: 'File STR tidak boleh kosong',
       type: 'button',
       typeModel: 'outlined',
+      accept: '.pdf',
       buttonLabel: 'Pilih file STR',
       icon: '/icon/uploadicon.svg'
     },
@@ -364,6 +387,7 @@ export const RegisterPage = () => {
       errMessage: 'File SIP tidak boleh kosong',
       type: 'button',
       typeModel: 'outlined',
+      accept: '.pdf',
       buttonLabel: 'Pilih file SIP',
       icon: '/icon/uploadicon.svg'
     },
@@ -434,7 +458,9 @@ export const RegisterPage = () => {
         type: 'success'
       })
       const email = attributes.find(r => r.attribute === 'KNhGfY4ApxB').value
-      history.push(`/sign-up/${email}`)
+      const str = attributes.find(r => r.attribute === 'x4sNePtpkmR').value
+      setStep(1)
+      history.push(`/sign-up?email=${email}&str=${str}`)
     } else {
       ToastNotif({
         message: 'Oopss.. Terjadi kesalahan',
@@ -549,7 +575,7 @@ export const RegisterPage = () => {
     )
   }
 
-
+  console.log(queryStringParam, "cok")
 
   const [isLargerThan1000] = useMediaQuery('(min-width: 1000px)')
   const getOrgUnit = async () => {
@@ -557,6 +583,7 @@ export const RegisterPage = () => {
   }
 
   const init = useCallback(() => {
+    // setLoading(true)
     getOrgUnit()
   }, [])
 
@@ -570,115 +597,119 @@ export const RegisterPage = () => {
       <PageContainer bg="unset">
         <Content>
           <Center marginTop={"50px"} >
-            <Box w={isLargerThan1000 ? '1000px' : null}>
-              <Flex color={'#505050'} justifyContent={'center'} alignItems={'start'} gap={8} borderBottom={'1px solid #EAEAEA'} pb={8}>
-                <Box left={0}>
-                  <Image
-                    onClick={() => history.push('/login')}
-                    cursor={'pointer'}
-                    alt={'arrow-left'}
-                    src='/icon/arrow-left.svg'
-                  />
-                </Box>
-                <Flex flex={2} justifyContent={'end'} >
-                  <LogoWithText />
+            {loading ?
+              <CircularProgress />
+              :
+              <Box w={isLargerThan1000 ? '1000px' : null}>
+                <Flex color={'#505050'} justifyContent={'center'} alignItems={'start'} gap={8} borderBottom={'1px solid #EAEAEA'} pb={8}>
+                  <Box left={0}>
+                    <Image
+                      onClick={() => history.push('/login')}
+                      cursor={'pointer'}
+                      alt={'arrow-left'}
+                      src='/icon/arrow-left.svg'
+                    />
+                  </Box>
+                  <Flex flex={2} justifyContent={'end'} >
+                    <LogoWithText />
+                  </Flex>
+                  <Box flex={3} >
+                    <Box maxW={'530px'}>
+                      <Text fontSize={'36px'} fontWeight='bold'>Registrasi Dokter</Text>
+                      <Text>Hanya dokter dengan SIP  yang bisa registrasi. Lengkapi identitas diri anda</Text>
+                    </Box>
+                  </Box>
                 </Flex>
-                <Box flex={3} >
-                  <Box maxW={'530px'}>
-                    <Text fontSize={'36px'} fontWeight='bold'>Registrasi Dokter</Text>
-                    <Text>Hanya dokter dengan SIP  yang bisa registrasi. Lengkapi identitas diri anda</Text>
-                  </Box>
-                </Box>
-              </Flex>
-              <Box height={"54px"} />
-              {/* Profile picture input */}
+                <Box height={"54px"} />
+                {/* Profile picture input */}
 
-              <Stepper activeStep={step} connectorStateColors={true}
-                styleConfig={{ activeBgColor: colors.PRIMARY, inactiveBgColor: '#DCE3E9', completedBgColor: colors.PRIMARY, activeTextColor: '#DCE3E9', inactiveTextColor: colors.PRIMARY }}
-                connectorStyleConfig={{ activeColor: colors.PRIMARY, completedColor: colors.PRIMARY, disabledColor: '#DCE3E9' }}
-              >
-                <Step label="Pendaftararan"  >{step === 0 ? '1' : <FiCheck />}</Step>
-                <Step label="Verifikasi"> {((step === 0) || (step === 1)) ? '2' : <FiCheck color="white" />}</Step>
-                <Step label="Hasil" >{((step === 0) || (step === 1) || (step === 2)) ? '3' : <FiCheck />}</Step>
-              </Stepper>
-              {step === 0 &&
-                <>
-                  <Box height={"54px"} />
-                  <Flex flexWrap={'wrap'} gap={4} justifyContent="center">
-                    <Box flex={0.5}>
-                      <Center ml={8}>
-                        <ProfilePictureEdit onChange={onInputChange} />
-                      </Center>
+                <Stepper activeStep={step} connectorStateColors={true}
+                  styleConfig={{ activeBgColor: colors.PRIMARY, inactiveBgColor: '#DCE3E9', completedBgColor: colors.PRIMARY, activeTextColor: '#DCE3E9', inactiveTextColor: colors.PRIMARY }}
+                  connectorStyleConfig={{ activeColor: colors.PRIMARY, completedColor: colors.PRIMARY, disabledColor: '#DCE3E9' }}
+                >
+                  <Step label="Pendaftararan"  >{step === 0 ? '1' : <FiCheck />}</Step>
+                  <Step label="Verifikasi"> {((step === 0) || (step === 1)) ? '2' : <FiCheck color="white" />}</Step>
+                  <Step label="Hasil" >{((step === 0) || (step === 1) || (step === 2)) ? '3' : <FiCheck />}</Step>
+                </Stepper>
+                {step === 0 &&
+                  <>
+                    <Box height={"54px"} />
+                    <Flex flexWrap={'wrap'} gap={4} justifyContent="center">
+                      <Box flex={0.5}>
+                        <Center ml={8}>
+                          <ProfilePictureEdit onChange={onInputChange} />
+                        </Center>
+                      </Box>
+                      <Box flex={1}>
+                        <LeftForms />
+                        <RightForms />
+                      </Box>
+                    </Flex>
+                  </>
+                }
+                {step === 1 &&
+                  <Stack mx={24} my={12}>
+                    <Flex p={8} gap={8} borderRadius={6} borderStyle='dashed' borderWidth='3px' borderColor='#FF6200' bg='#FFEBCC'>
+                      <Center><Image src="/icon/alert-triangle.svg" /></Center>
+                      <Stack color='#FF7400'>
+                        <Text fontSize={'24px'} fontWeight={'bold'}>Data diri berhasil dikirim</Text>
+                        <Text>Mohon menunggu untuk verifikasi data oleh tim JumpaDokter. Selanjutnya kami akan mengirimkan pemberitahuan terkait proses verifikasi melalui email yang anda daftarkan di proses sebelumnya.<br />
+                          <ul style={{ paddingLeft: 20, fontWeight: 'bold' }}>
+                            <li>Estimasi verifikasi 3-4 hari kerja</li>
+                            <li>JumpaDokter akan mengirimkan notifikasi hasil verifikasi data melalui alamat email</li>
+                            <li>Klik <a href='/registration-status'><u color="blue">disini</u></a> untuk cek status verifikasi secara berkala</li>
+                          </ul>
+                        </Text>
+                      </Stack>
+                    </Flex>
+                    <Box textAlign={'right'}>
+                      <ButtonMain minW={'150px'} bg="white" color={colors.PRIMARY} onClick={() => history.push('/login')}>
+                        Kembali
+                      </ButtonMain>
                     </Box>
-                    <Box flex={1}>
-                      <LeftForms />
-                      <RightForms />
+                  </Stack>
+                }
+                {((step === 2) && verif) ?
+                  <Stack mx={24} my={12}>
+                    <Flex p={8} gap={8} borderRadius={6} borderStyle='dashed' borderWidth='3px' borderColor='#2DA771' bg='#CCFFCE'>
+                      <Center><Image src="/icon/check-circle.svg" /></Center>
+                      <Stack color='#2DA771'>
+                        <Text fontSize={'24px'} fontWeight={'bold'}>Halo dok, Selamat bergabung di JumpaDokter</Text>
+                        <Text>
+                          <ul style={{ paddingLeft: 20, fontWeight: 'bold' }}>
+                            <li>Silahkan klik tombol “LOGIN” untuk masuk ke dalam aplikasi JumpaDokter</li>
+                          </ul>
+                        </Text>
+                      </Stack>
+                    </Flex>
+                    <Box textAlign={'right'}>
+                      <ButtonMain minW={'150px'} onClick={() => history.push('/login')}>
+                        <FiLogIn /> Login
+                      </ButtonMain>
                     </Box>
-                  </Flex>
-                </>
-              }
-              {step === 1 &&
-                <Stack mx={24} my={12}>
-                  <Flex p={8} gap={8} borderRadius={6} borderStyle='dashed' borderWidth='3px' borderColor='#FF6200' bg='#FFEBCC'>
-                    <Center><Image src="/icon/alert-triangle.svg" /></Center>
-                    <Stack color='#FF7400'>
-                      <Text fontSize={'24px'} fontWeight={'bold'}>Data diri berhasil dikirim</Text>
-                      <Text>Mohon menunggu untuk verifikasi data oleh tim JumpaDokter. Selanjutnya kami akan mengirimkan pemberitahuan terkait proses verifikasi melalui email yang anda daftarkan di proses sebelumnya.<br />
-                        <ul style={{ paddingLeft: 20, fontWeight: 'bold' }}>
-                          <li>Estimasi verifikasi 3-4 hari kerja</li>
-                          <li>JumpaDokter akan mengirimkan notifikasi hasil verifikasi data melalui alamat email</li>
-                          <li>Klik <a href='/registration-status'><u color="blue">disini</u></a> untuk cek status verifikasi secara berkala</li>
-                        </ul>
-                      </Text>
-                    </Stack>
-                  </Flex>
-                  <Box textAlign={'right'}>
-                    <ButtonMain minW={'150px'} bg="white" color={colors.PRIMARY} onClick={() => history.push('/login')}>
-                      Kembali
-                    </ButtonMain>
-                  </Box>
-                </Stack>
-              }
-              {((step === 2) && verif) ?
-                <Stack mx={24} my={12}>
-                  <Flex p={8} gap={8} borderRadius={6} borderStyle='dashed' borderWidth='3px' borderColor='#2DA771' bg='#CCFFCE'>
-                    <Center><Image src="/icon/check-circle.svg" /></Center>
-                    <Stack color='#2DA771'>
-                      <Text fontSize={'24px'} fontWeight={'bold'}>Halo dok, Selamat bergabung di JumpaDokter</Text>
-                      <Text>
-                        <ul style={{ paddingLeft: 20, fontWeight: 'bold' }}>
-                          <li>Silahkan klik tombol “LOGIN” untuk masuk ke dalam aplikasi JumpaDokter</li>
-                        </ul>
-                      </Text>
-                    </Stack>
-                  </Flex>
-                  <Box textAlign={'right'}>
-                    <ButtonMain minW={'150px'} onClick={() => history.push('/login')}>
-                      <FiLogIn /> Login
-                    </ButtonMain>
-                  </Box>
-                </Stack>
-                : (step === 2) &&
-                <Stack mx={24} my={12}>
-                  <Flex p={8} gap={8} borderRadius={6} borderStyle='dashed' borderWidth='3px' borderColor='#EF0000' bg='#FFCCCC'>
-                    <Center><Image src="/icon/x-circle.svg" /></Center>
-                    <Stack color='#EF0000'>
-                      <Text fontSize={'24px'} fontWeight={'bold'}>Verifikasi anda gagal</Text>
-                      <Text>
-                        <ul style={{ paddingLeft: 20, fontWeight: 'bold' }}>
-                          <li>Silahkan cek kembali data yang anda masukkan dan mengirimkan kembali pastikan data yang anda kirim benar</li>
-                        </ul>
-                      </Text>
-                    </Stack>
-                  </Flex>
-                  <Box textAlign={'right'}>
-                    <ButtonMain minW={'150px'} onClick={() => history.push('/sign-up')}>
-                      <FiFileText /> Perbaiki data
-                    </ButtonMain>
-                  </Box>
-                </Stack>
-              }
-            </Box>
+                  </Stack>
+                  : (step === 2) &&
+                  <Stack mx={24} my={12}>
+                    <Flex p={8} gap={8} borderRadius={6} borderStyle='dashed' borderWidth='3px' borderColor='#EF0000' bg='#FFCCCC'>
+                      <Center><Image src="/icon/x-circle.svg" /></Center>
+                      <Stack color='#EF0000'>
+                        <Text fontSize={'24px'} fontWeight={'bold'}>Verifikasi anda gagal</Text>
+                        <Text>
+                          <ul style={{ paddingLeft: 20, fontWeight: 'bold' }}>
+                            <li>Silahkan cek kembali data yang anda masukkan dan mengirimkan kembali pastikan data yang anda kirim benar</li>
+                          </ul>
+                        </Text>
+                      </Stack>
+                    </Flex>
+                    <Box textAlign={'right'}>
+                      <ButtonMain minW={'150px'} onClick={() => history.push('/sign-up')}>
+                        <FiFileText /> Perbaiki data
+                      </ButtonMain>
+                    </Box>
+                  </Stack>
+                }
+              </Box>
+            }
           </Center>
           <Footer />
         </Content>

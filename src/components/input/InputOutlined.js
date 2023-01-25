@@ -280,6 +280,7 @@ const InputOutlined = (
                   <LeadingIcon />
               } />
               <Select
+                placeholder='Pilih opsi'
                 borderRadius={'0 6px 6px 0'}
                 borderLeft={'none'}
                 borderColor={'#1E3869 !important'}

@@ -88,6 +88,7 @@ const InputWithButton = (
         onChange={(e) => onFileSelected()}
         name="files"
         multiple
+        accept={props.accept}
         style={{
           visibility: 'hidden',
           height: '0px',
