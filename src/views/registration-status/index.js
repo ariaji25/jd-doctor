@@ -47,16 +47,16 @@ const RegistrationStatusForm = ({ onOpen }) => {
         console.log("Status", statusRes)
         switch (statusRes.status) {
           case "0":
-            window.browserHistory.push("/sign-up/1")
+            window.browserHistory.push("/sign-up")
             break
           case "1":
-            window.browserHistory.push("/sign-up/3")
+            window.browserHistory.push(`/sign-up?email=${email}&str=${str}`)
             break
           case "2":
-            window.browserHistory.push("/sign-up/2")
+            window.browserHistory.push(`/sign-up?email=${email}&str=${str}`)
             break
           default:
-            window.browserHistory.push("/sign-up/1")
+            window.browserHistory.push("/sign-up")
             break
 
         }
