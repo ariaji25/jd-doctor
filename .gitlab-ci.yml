@@ -41,7 +41,7 @@ build-dev:
     - docker push $TAG
 
     # Let's do a magic update for app
-    - ssh fhir@castellumdigital.org "(cd demo/jumpadokter && sed -i -r 's/JD_DOCTOR\=(.+)/JD_DOCTOR='"$TAGID"'/g' .env && chmod +x doctor && ./doctor )"
+    - ssh dev@34.168.39.13 "(cd demo/jumpadokter && sed -i -r 's/JD_DOCTOR\=(.+)/JD_DOCTOR='"$TAGID"'/g' .env && chmod +x doctor && ./doctor )"
   only:
     - develop
 
