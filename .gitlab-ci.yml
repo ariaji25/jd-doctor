@@ -33,7 +33,7 @@ build-dev:
     - docker system prune -f -a
     - docker image prune -f -a
     - apk add make git
-    - cat registry.json | docker login -u _json_key --password-stdin https://asia.gcr.io
+    - echo $SA | docker login -u _json_key --password-stdin https://asia.gcr.io
   script:
     - export TAGID=prod-$(date "+%Y%m%d")-$CI_PIPELINE_ID
     - export TAG=asia.gcr.io/castellum-378801/jd-doctor:$TAGID
@@ -60,7 +60,7 @@ build-prod:
     - docker system prune -f -a
     - docker image prune -f -a
     - apk add make git
-    - cat registry.json | docker login -u _json_key --password-stdin https://asia.gcr.io
+    - echo $SA | docker login -u _json_key --password-stdin https://asia.gcr.io
   script:
     - export TAGID=prod-$(date "+%Y%m%d")-$CI_PIPELINE_ID
     - export TAG=asia.gcr.io/castellum-378801/jd-doctor:$TAGID
