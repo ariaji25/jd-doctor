@@ -41,7 +41,7 @@ build-dev:
     - docker push $TAG
 
     # Let's do a magic update for app
-    - ssh dev-app@34.145.5.183 "(cd demo/jumpadokter && sed -i -r 's/JD_DOCTOR\=(.+)/JD_DOCTOR='"$TAGID"'/g' .env && chmod +x doctor && ./doctor )"
+    - ssh dev-app@jd-doctor.castellumdigital.org "(cd demo/jumpadokter && sed -i -r 's/JD_DOCTOR\=(.+)/JD_DOCTOR='"$TAGID"'/g' .env && chmod +x doctor && ./doctor )"
   only:
     - develop
 
@@ -68,4 +68,4 @@ build-prod:
     - docker push $TAG
 
     # Let's do a magic update for app
-    - ssh jumpadokter@jumpadokter.com "(cd doctor && sed -i -r 's/JD_DOCTOR\=(.+)/JD_DOCTOR='"$TAGID"'/g' .env && chmod +x run && ./run)"
+    - ssh app-prod@jumpadokter.com "(cd demo/jumpadokter && sed -i -r 's/JD_DOCTOR\=(.+)/JD_DOCTOR='"$TAGID"'/g' .env && chmod +x doctor && ./doctor )"
