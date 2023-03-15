@@ -51,32 +51,7 @@ const ListPatientPage = () => {
     pageSize: 15,
     total: 0
   })
-  // constants
-  const outerLimit = 2;
-  const innerLimit = 2;
-  // pagination hook
-  const {
-    pages,
-    pagesCount,
-    offset,
-    currentPage,
-    setCurrentPage,
-    setIsDisabled,
-    isDisabled,
-    pageSize,
-    setPageSize,
-  } = usePagination({
-    total: pager.pageCount ? pager.pageCount : undefined,
-    limits: {
-      outer: outerLimit,
-      inner: innerLimit,
-    },
-    initialState: {
-      pageSize: pager.pageSize,
-      isDisabled: false,
-      currentPage: 1,
-    },
-  });
+
   const getPatients = (page) => {
     setIsLoading(true)
     apiPatient.getAllPatients(
@@ -144,7 +119,7 @@ const ListPatientPage = () => {
   }, [init])
 
   const handlePageChange = (page) => {
-    setCurrentPage(page);
+    setPager({ ...pager, page: page });
     getPatients(page)
   }
 
@@ -252,9 +227,9 @@ const ListPatientPage = () => {
               {patients.length > 0 &&
                 <Box paddingTop={'20px'}>
                   <Pagination
-                    pagesCount={pagesCount}
-                    currentPage={currentPage}
-                    isDisabled={isDisabled}
+                    pagesCount={pager.pageCount}
+                    currentPage={pager.page}
+                    isDisabled={false}
                     onPageChange={handlePageChange}
                   >
                     <PaginationContainer
@@ -284,7 +259,7 @@ const ListPatientPage = () => {
                           />
                         }
                       >
-                        {pages.map((page) => (
+                        {Array.from({ length: pager.pageCount }, (_, i) => i + 1).map((page) => (
                           <PaginationPage
                             w={7}
                             bg="white"
