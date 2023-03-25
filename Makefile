@@ -26,11 +26,10 @@ build: clean build-deps
 	docker build \
 		--build-arg CI_PIPELINE_ID=${CI_PIPELINE_ID} \
 		--build-arg BUILD_TYPE=${BUILD_TYPE} \
-		-t ${TAG} .
+		-t ${TAG} -f ./deployments/test/Dockerfile  .
  
 .PHONY: all build 
 
 test:
 	docker-compose -f deployments/test/docker-compose.yml down -v || true
-	docker build -t cdi/jd-docter:test -f ./deployments/test/Dockerfile  .
 	docker-compose -f deployments/test/docker-compose.yml run --rm test

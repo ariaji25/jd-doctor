@@ -17,7 +17,7 @@ test:
     - docker system prune -f -a
     - docker image prune -f -a
   script:
-    - make TAG=cdi/build/frontend:test CI_PIPELINE_ID=$CI_PIPELINE_ID BUILD_TYPE=dev build
+    - make TAG=cdi/jd-doctor:test CI_PIPELINE_ID=$CI_PIPELINE_ID BUILD_TYPE=dev build
     - make test
 
 build-dev:
