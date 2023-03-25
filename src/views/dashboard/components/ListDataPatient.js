@@ -192,7 +192,7 @@ const ListDataPatient = () => {
                       }}>
                         <Td>{r.nrm}</Td>
                         <Td fontWeight={'bold'}>{r.name}</Td>
-                        <Td>{r.gender}</Td>
+                        <Td>{r.gender === 'male' ? 'Laki-Laki' : r.gender === 'female' ? 'Perempuan' : r.gender}</Td>
                         <Td>{r.dob}</Td>
                         <Td>{r.address}</Td>
                       </Tr>

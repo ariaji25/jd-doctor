@@ -108,9 +108,8 @@ const DetailSubProfile = ({ profileDetail }) => {
               <Box flex={3}>
                 <Text>Jenis Kelamin</Text>
                 <Flex alignItems={'start'} gap={3}>
-                  <RadioGroup value={'Laki-laki'}>
-                    <Radio value='Laki-laki'>{profileDetail.jenisKelamin}</Radio>
-                  </RadioGroup>
+                  <Box pt={'5px'}><FiUser fontSize={'18px'} /></Box>
+                  <Box fontWeight={'bold'} color={colors.PRIMARY} fontSize={'18px'}>{profileDetail.jenisKelamin === 'male' ? "Laki-laki" : "Perempuan"}</Box>
                 </Flex>
               </Box>
               {/* <Box flex={4}>

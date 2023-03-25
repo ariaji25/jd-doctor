@@ -701,7 +701,7 @@ const MedicalRecordManagePage = () => {
             mrMethod === siteMode.detail
               ? <></>
               : <Box px={40} py={5} textAlign={state.selectedTab === 1 ? 'right' : 'center'}>
-                <ButtonMain width={state.selectedTab === 1 ? '47%' : '100%'} maxW={'700px'} onClick={(e) => {
+                <ButtonMain whiteSpace='inherit' width={state.selectedTab === 1 ? '47%' : '100%'} maxW={'700px'} onClick={(e) => {
                   onClickButtonSave()
                 }}>Simpan {updateTitleText(state.selectedTab - 1) ? "Perubahan" : ""} {titleSave}{isSaveLoading ? <CircularProgress isIndeterminate size='20px' thickness='4px' color='white' ml='2' /> : ''}</ButtonMain>
               </Box>
