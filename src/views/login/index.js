@@ -61,10 +61,15 @@ const LoginForm = ({ onClikWaHelp }) => {
         window.browserHistory.push("/dashboard")
       } else {
         ToastNotif({
-          message: "Username atau password tidak dikenal"
+          message: "Username atau password tidak dikenal",
+          type: 'error'
         })
       }
     } catch (error) {
+      ToastNotif({
+        message: "Username atau password tidak dikenal",
+        type: 'error'
+      })
       console.error('❌ onSubmit:', error);
     } finally {
       stateLogin.processing = false;

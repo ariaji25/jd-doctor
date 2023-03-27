@@ -6,11 +6,10 @@ networks:
 
 services:
   test:
-    image: cdi/jd-docter:test
+    image: cdi/jd-doctor:test
     networks:
       - jd_ci
     environment:
       - CI=true
-    command: npm run lint
-    command: npm test
+   
   

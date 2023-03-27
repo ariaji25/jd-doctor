@@ -74,10 +74,8 @@ const InputUnderlined = (
   };
 
   const handleOnChange = (e) => {
-    console.log(e, "valalllll")
     if (props.type) switch (props.type) {
       case 'date':
-        console.log(e)
         onChange({
           target: {
             id: props.id,
@@ -104,6 +102,17 @@ const InputUnderlined = (
             }
           });
           if (validator) setIsValid(validator(e))
+        } else {
+          setValue('')
+          onChange({
+            target: {
+              id: props.id,
+              value: '',
+              attributes: [{
+                value: props.uid
+              }]
+            }
+          });
         }
         break
       case 'password':

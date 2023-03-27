@@ -3,6 +3,8 @@ import ScrollToTop from 'components/ScrollToTop';
 import { ConnectedRouter } from "connected-react-router";
 import moment from 'moment';
 import 'moment/locale/id';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 import React from "react";
 import ReactDOM from "react-dom";
 import { Helmet, HelmetProvider } from 'react-helmet-async';
@@ -22,7 +24,7 @@ window.store = store;
 window.browserHistory = history;
 
 if (process.env.NODE_ENV !== "development")
-    console.log = () => { };
+  console.log = () => { };
 
 ReactDOM.render(
   <HelmetProvider>
@@ -50,6 +52,7 @@ ReactDOM.render(
           <ConnectedRouter history={history}>
             <ScrollToTop>
               <App history={history} />
+              <ToastContainer />
             </ScrollToTop>
           </ConnectedRouter>
         </Provider>

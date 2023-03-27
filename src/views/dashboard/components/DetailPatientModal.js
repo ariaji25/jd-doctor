@@ -1,4 +1,4 @@
-import { Box, Flex, Image, Divider, Center, CircularProgress, Avatar, Text } from '@chakra-ui/react';
+import { Box, Flex, Image, Divider, Center, CircularProgress, Avatar, Text, Link } from '@chakra-ui/react';
 import colors from 'values/colors';
 import ButtonMain from 'components/button/ButtonMain';
 import { FaPhone } from 'react-icons/fa';
@@ -11,7 +11,7 @@ import { getInitial } from 'utils';
 
 const DetailPatientModal = ({ data, loading }) => {
   const history = useHistory();
-  console.log(data)
+  console.log(data, 'dataaaaaa')
 
   const day = data.serviceDate && data.serviceDate.split("-")[2]
   const month = data.serviceDate && data.serviceDate.split("-")[2]
@@ -28,7 +28,7 @@ const DetailPatientModal = ({ data, loading }) => {
             </Box>
           </Flex>
           <Box>
-            <ButtonMain width={'100%'} bg={'#27D1B2'} color={colors.PRIMARY} border={`1px solid #27D1B2 !important`}>
+            <ButtonMain as={Link} href={`https://wa.me/${data.phone}`} target='_blank' width={'100%'} bg={'#27D1B2'} color={colors.PRIMARY} border={`1px solid #27D1B2 !important`}>
               <FaPhone /><span style={{ paddingLeft: '5px' }}>Hubungi</span>
             </ButtonMain>
           </Box>
