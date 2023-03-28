@@ -6,10 +6,9 @@ networks:
 
 services:
   test:
-    image: cdi/jd-doctor:test
+    image: cdi/jd-docter:test
     networks:
       - jd_ci
     environment:
       - CI=true
-   
   
