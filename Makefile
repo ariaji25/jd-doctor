@@ -26,8 +26,14 @@ build: clean build-deps
 	docker build \
 		--build-arg CI_PIPELINE_ID=${CI_PIPELINE_ID} \
 		--build-arg BUILD_TYPE=${BUILD_TYPE} \
+		-t ${TAG} .
+
+build-test: clean build-deps
+	docker build \
+		--build-arg CI_PIPELINE_ID=${CI_PIPELINE_ID} \
+		--build-arg BUILD_TYPE=${BUILD_TYPE} \
 		-t ${TAG} -f ./deployments/test/Dockerfile  .
- 
+
 .PHONY: all build 
 
 test:
