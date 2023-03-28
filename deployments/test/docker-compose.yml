@@ -11,6 +11,5 @@ services:
       - jd_ci
     environment:
       - CI=true
-    command: npm lint
     command: npm test
 
