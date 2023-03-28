@@ -1,4 +1,4 @@
-FROM node:14-alpine as builder
+FROM node:19-alpine as builder
 
 ARG BUILD_TYPE
 
