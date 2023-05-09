@@ -143,7 +143,7 @@ const Footer = () => {
             textAlign={'center'}
             fontSize={{ base: '14px', sm: '14px' }}
           >
-            &copy;JUMPADOKTER, 2022. ALL RIGHTS RESERVED
+            &copy;JUMPADOKTER, {new Date().getFullYear()}. ALL RIGHTS RESERVED
           </Box>
         </Box>
       </Box>
