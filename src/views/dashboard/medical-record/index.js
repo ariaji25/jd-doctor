@@ -19,6 +19,8 @@ import { useSnapshot } from 'valtio';
 import stateInputMR, { clearStateInputMR } from 'states/stateInputMedicalRecord';
 import apiBooking from 'services/apiBooking';
 import apiMedicalrecord from 'services/apiMedicalRecord';
+import Rating from 'components/Rating';
+import { StarIcon } from '@chakra-ui/icons';
 
 const MedicalRecordPage = () => {
   const history = useHistory();
@@ -49,6 +51,7 @@ const MedicalRecordPage = () => {
             diagnosis: ev.dataValues.find((e) => e.dataElement === 'PynURTrdTEs') ? ev.dataValues.find((e) => e.dataElement === 'PynURTrdTEs').value ?? '-' : '-',
             treatment: ev.dataValues.find((e) => e.dataElement === 'uQrOU6N2FfL') ? ev.dataValues.find((e) => e.dataElement === 'uQrOU6N2FfL').value ?? '-' : '-',
             // service: ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6') ? ev.dataValues.find((e) => e.dataElement === 'o8Yd7t1qNk6').value ?? '-' : '-',
+            rating: ev.dataValues.find((e) => e.dataElement === 'ABP2rkGCBhe') ? ev.dataValues.find((e) => e.dataElement === 'ABP2rkGCBhe').value ?? 0 : 0,
             serviceID: ev.event
           }
           i++;
@@ -227,8 +230,9 @@ const MedicalRecordPage = () => {
                             <Td>Layanan</Td>
                             <Td>Keluhan</Td>
                             <Td>Dokter</Td>
-                            <Td>Diagnosa</Td>
-                            <Td>Resep Obat</Td>
+                            {/* <Td>Diagnosa</Td>
+                            <Td>Resep Obat</Td> */}
+                            <Td>Rating Layanan</Td>
                             {/* 
                             <Td>Resep Dokter</Td> */}
                           </Tr>
@@ -283,8 +287,16 @@ const MedicalRecordPage = () => {
                               <Td>{r.service}</Td>
                               <Td>{r.problem}</Td>
                               <Td>{r.docterName}</Td>
-                              <Td>{r.diagnosis}</Td>
-                              <Td>{r.treatment}</Td>
+                              {/* <Td>{r.diagnosis}</Td>
+                              <Td>{r.treatment}</Td> */}
+                              <Td><Rating
+                                size={48}
+                                icon={StarIcon}
+                                scale={5}
+                                ratingValue={parseInt(r.rating)}
+                                fillColor="gold"
+                                strokeColor="grey"
+                              /></Td>
                               {/* 
                               <Td>{r.receipt}</Td> */}
                             </Tr>
